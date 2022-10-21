@@ -1,0 +1,11 @@
+.slick-prev{
+    position: relative !important;
+    left: 0 !important;
+    visibility: hidden !important;
+    position: absolute !important;
+}
+.slick-next{
+    right: 0 !important;
+    visibility: hidden !important;
+    position: absolute !important;
+}
