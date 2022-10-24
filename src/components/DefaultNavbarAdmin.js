@@ -89,25 +89,25 @@ export default function DefaultNavbarAdmin() {
                   </NavLink>
                </li>
                <li>
-                  <NavLink activeStyle={{ backgroundColor: 'rgb(243 244 246)', color: 'black' }} to="/CategoriesManagement" className="flex items-center hover:text-black p-2 text-base font-normal  rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <NavLink activeStyle={{ backgroundColor: 'rgb(243 244 246)', color: 'black' }} to="/SeatsManagement" className="flex items-center hover:text-black p-2 text-base font-normal  rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
                      <ChairIcon className="w-6 h-6 text-gray-500 transition -mt-2 duration-75 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" />
                      <span className="flex-1 ml-3 whitespace-nowrap">seat</span>
                   </NavLink>
                </li>
                <li>
-                  <NavLink activeStyle={{ backgroundColor: 'rgb(243 244 246)', color: 'black' }} to="/AreasManagement" className="flex items-center hover:text-black p-2 text-base font-normal  rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <NavLink activeStyle={{ backgroundColor: 'rgb(243 244 246)', color: 'black' }} to="/FilmsManagement" className="flex items-center hover:text-black p-2 text-base font-normal  rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
                      <MovieIcon className="w-6 h-6 text-gray-500 transition -mt-2 duration-75 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" />
                      <span className="flex-1 ml-3 whitespace-nowrap">Film</span>
                   </NavLink>
                </li>
                <li>
-                  <NavLink activeStyle={{ backgroundColor: 'rgb(243 244 246)', color: 'black' }} to="/DeliveryBoyManagement" className="flex items-center hover:text-black p-2 text-base font-normal  rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <NavLink activeStyle={{ backgroundColor: 'rgb(243 244 246)', color: 'black' }} to="/TypeManagement" className="flex items-center hover:text-black p-2 text-base font-normal  rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
                      <CategoryIcon className="w-6 h-6 text-gray-500 transition -mt-2 duration-75 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" />
                      <span className="flex-1 ml-3 whitespace-nowrap">Type</span>
                   </NavLink>
                </li>
                <li>
-                  <NavLink activeStyle={{ backgroundColor: 'rgb(243 244 246)', color: 'black' }} to="/DeliveryBoyManagement" className="flex items-center hover:text-black p-2 text-base font-normal  rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <NavLink activeStyle={{ backgroundColor: 'rgb(243 244 246)', color: 'black' }} to="/ServicesManagement" className="flex items-center hover:text-black p-2 text-base font-normal  rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
                      <FastfoodIcon className="w-6 h-6 text-gray-500 transition -mt-2 duration-75 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" />
                      <span className="flex-1 ml-3 whitespace-nowrap">service</span>
                   </NavLink>

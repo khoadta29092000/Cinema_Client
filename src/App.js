@@ -10,12 +10,13 @@ import ContractUs from 'pages/ContractUs';
 import FAQs from 'pages/FAQs';
 import AdminDashboard from 'pages/AdminDashboard';
 import UsersManagement from 'pages/UsersManagement';
-import CategoriesManagement from 'pages/CategoriesManagement';
+import SeatsManagement from 'pages/SeatsManagement';
 import RoomsManagement from 'pages/RoomsManagement';
 import CinemaManagement from 'pages/CinemaManagement';
+import TypeManagement from 'pages/TypeManagement';
 import Bill from 'pages/Bill';
-import DeliveryBoyManagement from 'pages/DeliveryBoyManagement';
-import AreasManagement from 'pages/AreasManagement';
+import ServicesManagement from 'pages/ServicesManagement';
+import FilmsManagement from 'pages/FilmsManagement';
 import "slick-carousel/slick/slick.css"; 
 //import "slick-carousel/slick/slick-theme.css";
 
@@ -48,16 +49,16 @@ function App() {
             <Route exact path="/FAQs" component={FAQs} />
             <Route exact path="/Admindashboard" component={AdminDashboard} />
             <Route exact path="/AccountsManagement" component={UsersManagement} />
-
-            <Route exact path="/CategoriesManagement" component={CategoriesManagement} />
+            <Route exact path="/TypeManagement" component={TypeManagement} />
+            <Route exact path="/SeatsManagement" component={SeatsManagement} />
             <Route exact path="/RoomsManagement" component={RoomsManagement} />
             <Route exact path="/CinemaManagement" component={CinemaManagement} />
             <Route exact path="/Scheduling" component={Scheduling} />
             <Route exact path="/Bill" component={Bill} />
             <Route exact path="/PackageOrderManagement/Details" component={PackageDetails} />
-            <Route exact path="/DeliveryBoyManagement" component={DeliveryBoyManagement} />
+            <Route exact path="/ServicesManagement" component={ServicesManagement} />
             <Route exact path="/DeliveryBoyDetail" component={DeliveryBoyDetail} />
-            <Route exact path="/AreasManagement" component={AreasManagement} />
+            <Route exact path="/FilmsManagement" component={FilmsManagement} />
             <Route exact path="/text" component={CustomizedInputBase} />
             <Redirect from="*" to="/" />
         </Switch>

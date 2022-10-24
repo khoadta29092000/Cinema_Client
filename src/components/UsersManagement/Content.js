@@ -220,7 +220,7 @@ export default function Content() {
     try {
 
 
-      const requestURL = `http://www.cinemasystem.somee.com/api/Account/UpdateActive?id=${data}`;
+      const requestURL = `http://www.cinemasystem2.somee.com/api/Account/UpdateActive?id=${data}`;
 
       const res = await fetch(requestURL, {
         method: `PUT`,
@@ -276,16 +276,12 @@ export default function Content() {
     Id = (<div className='max-w-5xl my-5 mx-auto'>
       <TextField className='w-96 my-5' defaultValue={id} disabled id="outlined-basic" label="Id" variant="outlined" />
     </div>)
-  } else {
-    Id = (<div className='max-w-5xl my-5 mx-auto'>
-      <TextField className='w-96 my-5' onChange={e => setId(e.target.value)} defaultValue={id} id="outlined-basic" label="Id" variant="outlined" />
-    </div>)
   }
   async function featchAdminList() {
     try {
 
 
-      const requestURL = `http://www.cinemasystem.somee.com/api/Account?search=${search}`;
+      const requestURL = `http://www.cinemasystem2.somee.com/api/Account?search=${search}`;
 
       const response = await fetch(requestURL, {
         method: `GET`,
@@ -310,7 +306,7 @@ export default function Content() {
     try {
 
 
-      const requestURL = `http://www.cinemasystem.somee.com/api/Cinema`;
+      const requestURL = `http://www.cinemasystem2.somee.com/api/Cinema`;
 
       const response = await fetch(requestURL, {
         method: `GET`,
@@ -379,7 +375,7 @@ export default function Content() {
   async function handleUpdateOrCreate() {
 
     if (selectedValue.id != undefined) {
-      const res = await fetch(`http://www.cinemasystem.somee.com/api/Account/${selectedValue.id}`, {
+      const res = await fetch(`http://www.cinemasystem2.somee.com/api/Account/${selectedValue.id}`, {
         method: `PUT`,
         headers: {
           'Content-Type': 'application/json',
@@ -411,7 +407,7 @@ export default function Content() {
 
     } if (selectedValue.id == undefined) {
       console.log("aaangu", selectedValue.id)
-      const res = await fetch(`http://www.cinemasystem.somee.com/api/Account`, {
+      const res = await fetch(`http://www.cinemasystem2.somee.com/api/Account`, {
         method: `POST`,
         headers: {
           'Content-Type': 'application/json',
@@ -446,7 +442,7 @@ export default function Content() {
     try {
 
 
-      const requestURL = `http://www.cinemasystem.somee.com/api/Account/${data?.id}`;
+      const requestURL = `http://www.cinemasystem2.somee.com/api/Account/${data?.id}`;
 
       const res = await fetch(requestURL, {
         method: `DELETE`,

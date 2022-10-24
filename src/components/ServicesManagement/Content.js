@@ -422,11 +422,11 @@ export default function Content() {
             <Paper className='' sx={{ width: '100%', overflow: 'hidden' }}>
                 <TableHead >
                     <div className='pt-2 pl-4 block font-semibold text-xl'>
-                        Delivery Boy Management
+                    Service  Management
                     </div>
                 </TableHead>
                 <button className='bg-blue-600 text-white rounded-md ml-5 my-6 py-2 px-4' onClick={handleClickOpen}>
-                    Add Delivery Boy
+                    Add Service
                 </button>
                 <BootstrapDialog
                     onClose={handleClose}
@@ -434,7 +434,7 @@ export default function Content() {
                     open={open}
                 >
                     <BootstrapDialogTitle onClose={handleClose}>
-                        Add Delivery Boy
+                         Service Details
                     </BootstrapDialogTitle>
                     <DialogContent dividers >
                         {nameError && <div className='text-red-600 ml-11 mb-5 text-xl'>Text 6-30 character </div>}

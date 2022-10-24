@@ -58,7 +58,7 @@ export default function DefaultNavbar() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem.somee.com/api/Account/${id2[prop]}`;
+            const requestURL = `http://www.cinemasystem2.somee.com/api/Account/${id2[prop]}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,

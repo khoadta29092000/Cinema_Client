@@ -12,6 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
@@ -21,11 +22,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import CloseIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
 import { useEffect, useState } from "react";
 import Search from 'components/Search';
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage"
@@ -33,13 +29,20 @@ import { storage } from 'firebase';
 import { v4 } from "uuid";
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-import { useLocation } from 'react-router-dom';
 import PublicOffIcon from '@mui/icons-material/PublicOff';
 import PublicIcon from '@mui/icons-material/Public';
-import Autocomplete from '@mui/material/Autocomplete';
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import { data } from 'autoprefixer';
+
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
+
+
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -50,9 +53,6 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     },
 }));
 
-
-
-
 const columns = [
     { id: 'Id', label: "Id", minWidth: 150 },
     {
@@ -60,11 +60,7 @@ const columns = [
         label: 'Title',
         minWidth: 150,
     },
-    {
-        id: 'Cinema',
-        label: 'Cinema',
-        minWidth: 100,
-    },
+    
     {
         id: 'Active',
         label: 'Active',
@@ -111,63 +107,58 @@ BootstrapDialogTitle.propTypes = {
 };
 
 export default function Content() {
-    const { state } = useLocation()
-
     const [open, setOpen] = React.useState(false);
     const [selectedValue, setSelectedValue] = React.useState([]);
+    const [status, setStatus] = useState("");
     const [id, setId] = useState("");
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [img, setImg] = useState("");
-    const [filterCategoryId, setFilterCategoryId] = useState(state?.name == undefined ? "" : state?.name);
-    const [categoryId, setCategoryId] = useState("");
-    const [Active, setActive] = useState("");
-    const [dataCate, setDataCate] = useState([]);
-    const [data1, setData] = useState([]);
+    const [roomId, setRoomId] = useState("");
+    const [dataCinema, setDataCinema] = useState([]);
+    const [dataType, setDataType] = useState([]);
+    const [dataRoom, setDataRoom] = useState([]);
     const [search, setSearch] = useState("");
-    const [status, setStatus] = useState("success");
+    const [click, SetClick] = useState(false)
+    const [selectedImage, setSelectedImage] = useState("");
     const [alert, setAlert] = useState(false);
     const handleClickOpen = (data) => {
         console.log("111111", data);
         setOpen(true);
         setSelectedValue(data);
         setSelectedImage(data.img);
-        setCategoryId(data.cinemaId)
-        setActive(data.active)
-
+        setRoomId(data.roomId)
         setId(data.id)
         setTitle(data.title)
         setDescription(data.description)
-
     };
     const handleClose = () => {
         setOpen(false);
         setSelectedImage(undefined);
         SetClick(false);
     };
-    const validName = new RegExp(/^.{6,30}$/);
-    const validDes = new RegExp(/^.{6,300}$/);
+
     const body = {
         id: id,
         title: title,
         description: description,
-
-        active: Active,
-        cinemaId: categoryId,
-
+        roomId: roomId,
+        active: true
     };
+    let Id;
+    if (selectedValue.id != undefined) {
+        Id = (<div className='max-w-5xl my-5 mx-auto'>
+            <TextField className='w-96 my-5' onChange={e => setId(e.target.value)} defaultValue={selectedValue.id} disabled id="outlined-basic" label="Id" variant="outlined" />
+        </div>)
+    }
+    useEffect(() => {
+  
+        featchTypeList();
+        setPage(0);
+    }, [search]);
     function createData(data) {
         let Id = data.id;
         let Title = data.title;
-        let Cinema;
-
-        data1.map(item => {
-            if (data.cinemaId == item.id) {
-
-                return Cinema = item.name
-
-            }
-        })
+       
         let Active = (<button className="text-white  outline-none bg-black cursor-pointer rounded-lg   h-8 w-8" onClick={() => handleUpdateStatus(data.id)}>
             {data.active == true ? <PublicIcon /> : <PublicOffIcon />}
         </button>);
@@ -178,13 +169,13 @@ export default function Content() {
             <DeleteIcon />
         </button>);
 
-        return { Id, Title, Cinema, Active, Edit, Delete };
+        return { Id, Title, Active, Edit, Delete };
     }
     async function handleUpdateStatus(data) {
         try {
 
 
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Room/UpdateActive?id=${data}`;
+            const requestURL = `http://www.cinemasystem2.somee.com/api/Type/UpdateActive?id=${data}`;
 
             const res = await fetch(requestURL, {
                 method: `PUT`,
@@ -200,7 +191,7 @@ export default function Content() {
                             setMess(result?.message)
                             setAlert(true)
                             setStatus("success")
-                            featchCategoryList();
+                            featchTypeList();
                         }
 
                     } else {
@@ -215,16 +206,9 @@ export default function Content() {
             console.log('Fail to fetch product list: ', error)
         }
     }
-    useEffect(() => {
-
-        featchCategoryList();
-        featchProductList();
-        setPage(0);
-    }, [search, filterCategoryId]);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
-    const [selectedImage, setSelectedImage] = React.useState();
-    const [click, SetClick] = React.useState(false)
+
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -234,26 +218,20 @@ export default function Content() {
         setPage(0);
     };
 
+
     console.log("----------", page, rowsPerPage)
 
 
 
-    const rows1 = dataCate.map((data, index) => {
+    const rows1 = dataType.map((data, index) => {
         return (createData(data))
     })
 
-
-    let Id;
-    if (selectedValue.id != undefined) {
-        Id = (<div className='max-w-5xl my-5 mx-auto'>
-            <TextField className='w-96 my-5' defaultValue={id} disabled id="outlined-basic" label="Id" variant="outlined" />
-        </div>)
-    }
-    async function featchCategoryList() {
+    async function featchTypeList() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Room?search=${search}`;
+            const requestURL = `http://www.cinemasystem2.somee.com/api/Type?search=${search}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -266,7 +244,7 @@ export default function Content() {
 
             const data = responseJSON;
 
-            setDataCate(responseJSON.data)
+            setDataType(responseJSON.data)
 
             console.log("aa fetch", responseJSON.data)
 
@@ -274,64 +252,19 @@ export default function Content() {
             console.log('Fail to fetch product list: ', error)
         }
     }
-    async function featchProductList() {
-        try {
 
+    
 
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Cinema`;
-
-            const response = await fetch(requestURL, {
-                method: `GET`,
-                headers: {
-                    'Content-Type': 'application/json',
-
-                },
-            });
-            const responseJSON = await response.json();
-
-            const data = responseJSON;
-
-            setData(responseJSON.data)
-
-            console.log("aa fetch", responseJSON.data)
-
-        } catch (error) {
-            console.log('Fail to fetch product list: ', error)
-        }
-    }
 
     const [progresspercent, setProgresspercent] = useState(0);
 
-    async function handleUpload() {
-        if (click == false) { setImg(selectedImage) }
-        else {
-            const storageRef = ref(storage, `Product/${selectedImage.name + v4()}`);
-            const uploadTask = uploadBytesResumable(storageRef, selectedImage);
-            uploadTask.on("state_changed",
-                (snapshot) => {
-                    const progress =
-                        Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                    setProgresspercent(progress);
-                },
-                (error) => {
-                    alert(error);
-                },
-                () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                        setImg(downloadURL)
-                    });
-                }
-            );
-        }
-    }
 
-    const [error, setError] = useState(undefined)
+    const [errorr, setError] = useState("false")
     const [message, setMess] = useState(false)
-
     async function handleUpdateOrCreate() {
 
         if (selectedValue.id != undefined) {
-            const res = await fetch(`http://www.cinemasystem2.somee.com/api/Room/${selectedValue?.id}`, {
+            const res = await fetch(`http://www.cinemasystem2.somee.com/api/Type/${selectedValue?.id}`, {
                 method: `PUT`,
                 headers: {
                     'Content-Type': 'application/json',
@@ -347,10 +280,10 @@ export default function Content() {
                             setAlert(true)
                             setStatus("success")
                             handleClose();
-                            featchCategoryList();
+                            featchTypeList();
                         } if (result?.statusCode == 409) {
                             setError(result?.message)
-                            featchProductList();
+
                         }
 
                     } else {
@@ -365,7 +298,7 @@ export default function Content() {
             return body
 
         } else {
-            const res = await fetch(`http://www.cinemasystem2.somee.com/api/Room`, {
+            const res = await fetch(`http://www.cinemasystem2.somee.com/api/Type`, {
                 method: `POST`,
                 headers: {
                     'Content-Type': 'application/json',
@@ -381,10 +314,10 @@ export default function Content() {
                             setAlert(true)
                             setStatus("success")
                             handleClose();
-                            featchCategoryList();
+                            featchTypeList();
                         } if (result?.statusCode == 409) {
                             setError(result?.message)
-                            featchProductList();
+
                         }
 
                     } else {
@@ -402,31 +335,31 @@ export default function Content() {
     }
     async function handleDelete(data) {
 
-        let res = await fetch(`http://www.cinemasystem2.somee.com/api/Room/${data?.id}`, {
+        let res = await fetch(`http://www.cinemasystem2.somee.com/api/Type/${data?.id}`, {
             method: `DELETE`,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem("token")}`,
             },
-        }).then(function (response) {
-            if (response.ok) {
-                return response.blob();
-            }
-            throw new Error('Not Delete Bacause Product In Order');
-        }).then(result => {
+        }).then(res => res.json())
+            .then(result => {
 
-            setMess("Delete Successfully")
-            setAlert(true)
-            setStatus("success")
-            featchProductList();
+                if (result?.statusCode === 200) {
+                    setMess(result.content)
+                    setAlert(true)
+                    featchTypeList();
+                } else {
+                    alert("delete thất bại")
+                    // setError(result.message)
+                    // alert("tài khoản hoặc mật khẩu sai kìa")
+                }
+                return res
 
-        }).catch(function (error) {
-            console.log('There has been a problem with your fetch operation: ',
-            );
-            setStatus("warning")
-            setMess(error.message)
-            setAlert(true)
-        });
+            })
+            .catch((error) => {
+                throw ('Invalid Token')
+            })
+        return res
     }
     const handleCloseAlert = (event, reason) => {
         if (reason === "clickaway") {
@@ -440,11 +373,9 @@ export default function Content() {
 
     };
 
-    const CinemaOptions = data1.map((item, index) => ({
-        id: item.id,
-        label: item.name
-    }))
-    CinemaOptions.unshift({id:null,label:"All"})
+    
+
+   
     return (
         <section className=" ml-0 xl:ml-64  px-5 pt-10  ">
             <Snackbar open={alert} autoHideDuration={4000} onClose={handleCloseAlert} className="float-left w-screen">
@@ -455,78 +386,28 @@ export default function Content() {
             <Paper className='' sx={{ width: '100%', overflow: 'hidden' }}>
                 <TableHead >
                     <div className='pt-2 pl-4 block font-semibold text-xl'>
-                        Rooms Management
+                    Type Management
                     </div>
                 </TableHead>
-
-                <div className='float-left ml-5 gap-5 my-6  grid grid-cols-6'>
-                    <div className='col-span-1 outline-none hover:outline-none'>
-                        <button className='bg-blue-600 text-white rounded-md ml-5 mt-2 py-2 px-4' onClick={handleClickOpen}>
-                            Rooms Product
-                        </button>
-
-
-                    </div>
-                    <div className='col-span-2 w-full'>
-                        <Autocomplete
-
-                            disableClearable
-                            id="combo-box-demo"
-                            options={CinemaOptions}
-                            sx={{ width: 200 }}
-                            renderInput={(params) => <TextField {...params} label="Cinema" />}
-                            onChange={(event, value) => setCategoryId(value)}
-                        />
-
-                    </div>
-
-                </div>
+                <button className='bg-blue-600 text-white rounded-md ml-5 my-6 py-2 px-4' onClick={handleClickOpen}>
+                    Add Type
+                </button>
                 <BootstrapDialog
                     onClose={handleClose}
-                    aria-labelledby="customized-dialog-title"
+                    aria-labelledby=""
                     open={open}
                 >
-
                     <BootstrapDialogTitle id="" onClose={handleClose}>
-                        Room Details
+                         Type Details
                     </BootstrapDialogTitle>
                     <DialogContent dividers >
-                        {error && <div className='text-red-600 ml-11 mb-5 text-xl'>{error} </div>}
-
 
                         {Id}
-
 
                         <div className='max-w-5xl my-5 mx-auto'>
                             <TextField className='w-96 my-5' onChange={e => setTitle(e.target.value)} defaultValue={selectedValue.title} autoComplete='off' id="outlined-basic" label="Title" variant="outlined" />
                         </div>
-
-                        <div className='max-w-5xl my-5 mx-auto'>
-                            <Box sx={{ minWidth: 120 }}>
-                                <FormControl fullWidth>
-                                    <InputLabel id="demo-simple-select-label">Cinema</InputLabel>
-                                    <Select
-                                        labelId="demo-simple-select-label"
-                                        id="demo-simple-select"
-                                        defaultValue={categoryId}
-                                        label="Supplier"
-                                        onChange={e => setCategoryId(e.target.value)}
-                                    >
-
-                                        {data1.map((cate, index) => {
-                                            return (
-                                                <MenuItem key={index} value={cate.id}>{cate.name}</MenuItem>
-                                            )
-                                        })}
-
-                                    </Select>
-                                </FormControl>
-                            </Box>
-                        </div>
-
-                        <div className='max-w-5xl my-5 mx-auto'>
-
-                        </div>
+                        
                         <div className='max-w-5xl my-5 mx-auto'>
                             <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Description</label>
                             <textarea id="message" onChange={e => setDescription(e.target.value)} defaultValue={selectedValue.description} rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Your message..."></textarea>
@@ -538,14 +419,9 @@ export default function Content() {
                         </Button>
                     </DialogActions>
                 </BootstrapDialog>
-
-
-
-
-                <div className='pr-5 my-6  float-right'>
+                <div className='pr-5 my-6 float-right'>
 
                     <Search parentCallback={callbackSearch} />
-
                 </div>
                 <TableContainer sx={{}}>
                     <Table stickyHeader aria-label="sticky table">

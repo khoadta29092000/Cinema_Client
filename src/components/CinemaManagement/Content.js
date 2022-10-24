@@ -30,6 +30,8 @@ import { storage } from 'firebase';
 import { v4 } from "uuid";
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import PublicOffIcon from '@mui/icons-material/PublicOff';
+import PublicIcon from '@mui/icons-material/Public';
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -59,6 +61,11 @@ const columns = [
     {
         id: 'Location',
         label: 'Location',
+        minWidth: 100,
+    },
+    {
+        id: 'Active',
+        label: 'Active',
         minWidth: 100,
     },
     {
@@ -153,6 +160,9 @@ export default function Content() {
                 loading="lazy"
                 className='h-28 w-28'
             />)
+            let Active = (<button className="text-white  outline-none bg-black cursor-pointer rounded-lg   h-8 w-8" onClick={() => handleUpdateStatus(data.id)}>
+      {data.active == true ? <PublicIcon /> : <PublicOffIcon />}
+    </button>);
         let Edit = (<button className="text-white  outline-none bg-blue-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
             <RemoveRedEyeIcon />
         </button>);
@@ -160,14 +170,48 @@ export default function Content() {
             <DeleteIcon />
         </button>);
 
-        return { Image, Name, Address, Location,Edit, Delete };
+        return { Image, Name, Address, Location,Active,Edit, Delete };
     }
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [selectedImage, setSelectedImage] = React.useState();
     const [click, SetClick] = React.useState(false)
 
-
+    async function handleUpdateStatus(data) {
+        try {
+    
+    
+          const requestURL = `http://www.cinemasystem2.somee.com/api/Cinema/UpdateActive?id=${data}`;
+    
+          const res = await fetch(requestURL, {
+            method: `PUT`,
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem("token")}`,
+            },
+          }).then(res => res.json())
+            .then(result => {
+    
+              if (result) {
+                if (result?.statusCode == 200) {
+                  setMess(result?.message)
+                  setAlert(true)
+                  setStatus("success")
+                  featchCinemaList();
+                }
+    
+              } else {
+                alert("Update UnSuccessfullly")
+              }
+              return res
+    
+            });
+    
+    
+        } catch (error) {
+          console.log('Fail to fetch product list: ', error)
+        }
+      }
 
     useEffect(() => {
         featchCinemaList();
@@ -202,17 +246,12 @@ export default function Content() {
         Id = (<div className='max-w-5xl my-5 mx-auto'>
             <TextField className='w-96 my-5'  defaultValue={id} disabled id="outlined-basic" label="Id" variant="outlined" />
         </div>)
-    } else {
-        Id = (<div className='max-w-5xl my-5 mx-auto'>
-            <TextField className='w-96 my-5' onChange={e => setId(e.target.value)} defaultValue={selectedValue.id} id="outlined-basic" label="Id" variant="outlined" />
-        </div>)
-    }
-
+    } 
     async function featchCinemaList() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem.somee.com/api/Cinema?search=${search}`;
+            const requestURL = `http://www.cinemasystem2.somee.com/api/Cinema?search=${search}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -237,7 +276,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem.somee.com/api/Cinema?search=${search}`;
+            const requestURL = `http://www.cinemasystem2.somee.com/api/Cinema?search=${search}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -295,7 +334,7 @@ export default function Content() {
     async function handleUpdateOrCreate() {
         
             if (selectedValue.id != undefined) {
-                const res = await fetch(`http://www.cinemasystem.somee.com/api/Cinema/${selectedValue.id}`, {
+                const res = await fetch(`http://www.cinemasystem2.somee.com/api/Cinema/${selectedValue.id}`, {
                     method: `PUT`,
                     headers: {
                         'Content-Type': 'application/json',
@@ -326,7 +365,7 @@ export default function Content() {
                 return body
 
             } else {
-                const res = await fetch(`http://www.cinemasystem.somee.com/api/Cinema`, {
+                const res = await fetch(`http://www.cinemasystem2.somee.com/api/Cinema`, {
                     method: `POST`,
                     headers: {
                         'Content-Type': 'application/json',
@@ -362,7 +401,7 @@ export default function Content() {
         try {
     
     
-          const requestURL = `http://www.cinemasystem.somee.com/api/Account/${data?.id}`;
+          const requestURL = `http://www.cinemasystem2.somee.com/api/Account/${data?.id}`;
     
           const res = await fetch(requestURL, {
             method: `DELETE`,
@@ -427,7 +466,7 @@ export default function Content() {
                     open={open}
                 >
                     <BootstrapDialogTitle id="" onClose={handleClose}>
-                        Package Detail
+                        Cinema Detail
                     </BootstrapDialogTitle>
                     <DialogContent dividers >
                         {nameError && <div className='text-red-600 ml-11 mb-5 text-xl'>Text 6 - 30 character </div>}

@@ -12,6 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
@@ -21,21 +22,26 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import CloseIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField';
-import { display } from '@mui/system';
 import { useEffect, useState } from "react";
+import Search from 'components/Search';
+import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage"
+import { storage } from 'firebase';
+import { v4 } from "uuid";
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import PublicOffIcon from '@mui/icons-material/PublicOff';
+import PublicIcon from '@mui/icons-material/Public';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import Search from 'components/Search';
-
+import { data } from 'autoprefixer';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
+
 
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -48,15 +54,21 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 const columns = [
+    { id: 'Id', label: "Id", minWidth: 150 },
     {
         id: 'Title',
         label: 'Title',
         minWidth: 150,
     },
     {
-        id: 'Adress',
-        label: 'Adress',
-        minWidth: 300,
+        id: 'Room',
+        label: 'Room',
+        minWidth: 100,
+    },
+    {
+        id: 'Active',
+        label: 'Active',
+        minWidth: 100,
     },
     {
         id: 'Edit',
@@ -69,7 +81,6 @@ const columns = [
         minWidth: 100,
     },
 ];
-
 const BootstrapDialogTitle = (props) => {
     const { children, onClose, ...other } = props;
 
@@ -102,50 +113,68 @@ BootstrapDialogTitle.propTypes = {
 export default function Content() {
     const [open, setOpen] = React.useState(false);
     const [selectedValue, setSelectedValue] = React.useState([]);
+    const [status, setStatus] = useState("");
     const [id, setId] = useState("");
     const [title, setTitle] = useState("");
-    const [address, setAddress] = useState("");
     const [description, setDescription] = useState("");
-    const [slotId, setSlotId] = useState("");
-    const [data, setData] = useState([]);
+    const [roomId, setRoomId] = useState("");
+    const [dataCinema, setDataCinema] = useState([]);
+    const [dataSeat, setDataSeat] = useState([]);
+    const [dataRoom, setDataRoom] = useState([]);
     const [search, setSearch] = useState("");
+    const [click, SetClick] = useState(false)
+    const [selectedImage, setSelectedImage] = useState("");
     const [alert, setAlert] = useState(false);
-    const validName = new RegExp(/^.{6,30}$/);
-    const validDes = new RegExp(/^.{6,300}$/);
-    const body = {
-        id: id,
-        title: title,
-        address: address,
-        description: description,
-        slotId: slotId
-
-    };
-    const bodyCreate = {
-        id: id,
-
-        title: title,
-        address: address,
-        description: description,
-        slotId: slotId
-    };
     const handleClickOpen = (data) => {
         console.log("111111", data);
         setOpen(true);
-        setId(data.id);
-        setTitle(data.title);
-        setAddress(data.address);
-        setDescription(data.description);
-        setSlotId(data.slotId);
-        setSelectedValue(data)
+        setSelectedValue(data);
+        setSelectedImage(data.img);
+        setRoomId(data.roomId)
+        setId(data.id)
+        setTitle(data.title)
+        setDescription(data.description)
     };
     const handleClose = () => {
         setOpen(false);
-
+        setSelectedImage(undefined);
+        SetClick(false);
     };
+
+    const body = {
+        id: id,
+        title: title,
+        description: description,
+        roomId: roomId,
+        active: true
+    };
+    let Id;
+    if (selectedValue.id != undefined) {
+        Id = (<div className='max-w-5xl my-5 mx-auto'>
+            <TextField className='w-96 my-5' onChange={e => setId(e.target.value)} defaultValue={selectedValue.id} disabled id="outlined-basic" label="Id" variant="outlined" />
+        </div>)
+    }
+    useEffect(() => {
+        featchCinemaList();
+        featchRoomList();
+        featchSeatList();
+        setPage(0);
+    }, [search]);
     function createData(data) {
+        let Id = data.id;
         let Title = data.title;
-        let Adress = data.address;
-        let Description = data.description;
+        let Room;
+
+        dataRoom.map(item => {
+            if (data.roomId == item.id) {
+
+                return Room = item.title
+
+            }
+        })
+        let Active = (<button className="text-white  outline-none bg-black cursor-pointer rounded-lg   h-8 w-8" onClick={() => handleUpdateStatus(data.id)}>
+            {data.active == true ? <PublicIcon /> : <PublicOffIcon />}
+        </button>);
         let Edit = (<button className="text-white  outline-none bg-blue-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
             <EditIcon />
         </button>);
@@ -153,19 +182,43 @@ export default function Content() {
             <DeleteIcon />
         </button>);
 
-        return { Title, Adress, Edit, Delete };
+        return { Id, Title, Room, Active, Edit, Delete };
     }
-    let Id;
-    if (selectedValue.id != undefined) {
-        Id = (<div className='max-w-5xl my-5 mx-auto'>
-            <TextField className='w-96 my-5' onChange={e => setId(e.target.value)} defaultValue={selectedValue.id} disabled id="outlined-basic" label="Id" variant="outlined" />
-        </div>)
-    } else {
-        Id = (<div className='max-w-5xl my-5 mx-auto'>
-            <TextField className='w-96 my-5' onChange={e => setId(e.target.value)} defaultValue={selectedValue.id} id="outlined-basic" label="Id" variant="outlined" />
-        </div>)
-    }
+    async function handleUpdateStatus(data) {
+        try {
 
+
+            const requestURL = `http://www.cinemasystem2.somee.com/api/Seat/UpdateActive?id=${data}`;
+
+            const res = await fetch(requestURL, {
+                method: `PUT`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                },
+            }).then(res => res.json())
+                .then(result => {
+
+                    if (result) {
+                        if (result?.statusCode == 200) {
+                            setMess(result?.message)
+                            setAlert(true)
+                            setStatus("success")
+                            featchSeatList();
+                        }
+
+                    } else {
+                        alert("Update UnSuccessfullly")
+                    }
+                    return res
+
+                });
+
+
+        } catch (error) {
+            console.log('Fail to fetch product list: ', error)
+        }
+    }
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -178,24 +231,19 @@ export default function Content() {
         setPage(0);
     };
 
+
     console.log("----------", page, rowsPerPage)
 
-    const slot = [
-        { id: 1, name: "  Morning : 6:30 AM - 7:00 AM", location: "139-141 Nguyễn Gia Trí, P.25, Q.Bình Thạnh, TP. Hồ Chí Minh" },
-        { id: 2, name: "Noon : 12:00 AM - 12:30 AM ", location: "161 Xa Lộ Hà Nội, P. Thảo Điền, Q.2, TP. Hồ Chí Minh" },
-        { id: 3, name: "Afternoon : 5:30 AM - 6:00 AM ", location: "1311 Ông Cao Thắng, P.Tân Kì, Q.10, TP. Hồ Chí Minh" },
 
-    ]
-    useEffect(() => {
-        featchStationist();
-        setPage(0);
-    }, [search]);
 
-    async function featchStationist() {
+    const rows1 = dataSeat.map((data, index) => {
+        return (createData(data))
+    })
+    async function featchCinemaList() {
         try {
 
 
-            const requestURL = `http://www.subcriptionmilk.somee.com/api/Stations/Getallstations?search=${search}`;
+            const requestURL = `http://www.cinemasystem2.somee.com/api/Cinema`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -208,7 +256,7 @@ export default function Content() {
 
             const data = responseJSON;
 
-            setData(responseJSON.data)
+            setDataCinema(responseJSON.data)
 
             console.log("aa fetch", responseJSON.data)
 
@@ -216,122 +264,143 @@ export default function Content() {
             console.log('Fail to fetch product list: ', error)
         }
     }
-    function TitleExists(title) {
-        return data.some(function (el) {
-            return el.title.toLowerCase() == title.toLowerCase();
-        });
-    }
-    function IdExists(id) {
-        return data.some(function (el) {
-            return el.id == id;
-        });
+    async function featchSeatList() {
+        try {
+
+
+            const requestURL = `http://www.cinemasystem2.somee.com/api/Seat?search=${search}`;
+
+            const response = await fetch(requestURL, {
+                method: `GET`,
+                headers: {
+                    'Content-Type': 'application/json',
+
+                },
+            });
+            const responseJSON = await response.json();
+
+            const data = responseJSON;
+
+            setDataSeat(responseJSON.data)
+
+            console.log("aa fetch", responseJSON.data)
+
+        } catch (error) {
+            console.log('Fail to fetch product list: ', error)
+        }
     }
 
-    const rows1 = data.map((data, index) => {
-        return (createData(data))
-    })
+    async function featchRoomList() {
+        try {
 
-    const [desErrorr, setPhoneErrorr] = useState(false)
-    const [nameError, setNameError] = useState(false)
+
+            const requestURL = `http://www.cinemasystem2.somee.com/api/Room`;
+
+            const response = await fetch(requestURL, {
+                method: `GET`,
+                headers: {
+                    'Content-Type': 'application/json',
+
+                },
+            });
+            const responseJSON = await response.json();
+
+            const data = responseJSON;
+
+            setDataRoom(responseJSON.data)
+
+            console.log("aa fetch", responseJSON.data)
+
+        } catch (error) {
+            console.log('Fail to fetch product list: ', error)
+        }
+    }
+
+
+    const [progresspercent, setProgresspercent] = useState(0);
+
+
+    const [errorr, setError] = useState("false")
     const [message, setMess] = useState(false)
-    const [nameExists, setNameExists] = useState(false)
-    const [idExists, setIdExists] = useState(false)
     async function handleUpdateOrCreate() {
-        if (!validName.test(title) || !validName.test(address)) {
-            setNameError(true)
-            setPhoneErrorr(false)
-            setNameExists(false)
-            setIdExists(false)
-        } else if (!validDes.test(description)) {
-            setNameError(false)
-            setPhoneErrorr(true)
-            setNameExists(false)
-            setIdExists(false)
-        } else if (TitleExists(title) == true && selectedValue.id == undefined) {
-            setNameError(false)
-            setPhoneErrorr(false)
-            setNameExists(true)
-            setIdExists(false)
-        } else if (IdExists(id) == true && selectedValue.id == undefined) {
-            setNameError(false)
-            setPhoneErrorr(false)
-            setNameExists(false)
-            setIdExists(true)
-        }
-        else {
-            setNameExists(false)
-            setIdExists(false)
-            setNameError(false)
-            setPhoneErrorr(false)
-            if (selectedValue.id != undefined) {
-                const res = await fetch(`http://www.subcriptionmilk.somee.com/api/Stations/update`, {
-                    method: `PUT`,
-                    headers: {
-                        'Content-Type': 'application/json',
 
-                    },
-                    body: JSON.stringify(body)
-                }).then(res => res.json())
-                    .then(result => {
+        if (selectedValue.id != undefined) {
+            const res = await fetch(`http://www.cinemasystem2.somee.com/api/Seat/${selectedValue?.id}`, {
+                method: `PUT`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: JSON.stringify(body)
+            }).then(res => res.json())
+                .then(result => {
 
-                        if (result) {
-                            if (result?.statusCode == 201) {
-                                setMess("Update Successfullly")
-                                setAlert(true)
-                                handleClose();
-                                featchStationist();
-                            }
+                    if (result) {
+                        if (result?.statusCode == 200) {
+                            setMess("Update Successfullly")
+                            setAlert(true)
+                            setStatus("success")
+                            handleClose();
+                            featchSeatList();
+                        } if (result?.statusCode == 409) {
+                            setError(result?.message)
 
-                        } else {
-                            alert("Update UnSuccessfullly")
                         }
-                        return res
 
-                    })
-                    .catch((error) => {
-                        throw ('Invalid Token')
-                    })
-                return body
+                    } else {
+                        alert("Update UnSuccessfullly")
+                    }
+                    return res
 
-            } else {
-                const res = await fetch(`http://www.subcriptionmilk.somee.com/api/Stations/create`, {
-                    method: `POST`,
-                    headers: {
-                        'Content-Type': 'application/json',
+                })
+                .catch((error) => {
+                    throw ('Invalid Token')
+                })
+            return body
 
-                    },
-                    body: JSON.stringify(bodyCreate)
-                }).then(res => res.json())
-                    .then(result => {
+        } else {
+            const res = await fetch(`http://www.cinemasystem2.somee.com/api/Seat`, {
+                method: `POST`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: JSON.stringify(body)
+            }).then(res => res.json())
+                .then(result => {
 
-                        if (result) {
-                            if (result?.statusCode == 201) {
-                                setMess("Add Successfullly")
-                                setAlert(true)
-                                handleClose();
-                                featchStationist();
-                            }
+                    if (result) {
+                        if (result?.statusCode == 200) {
+                            setMess("Add Successfullly")
+                            setAlert(true)
+                            setStatus("success")
+                            handleClose();
+                            featchSeatList();
+                        } if (result?.statusCode == 409) {
+                            setError(result?.message)
 
-                        } else {
-                            alert("Add UnSuccessfullly")
                         }
-                        return res
 
-                    })
-                    .catch((error) => {
-                        throw ('Invalid Token')
-                    })
-                return body
-            }
+                    } else {
+                        alert("Add UnSuccessfullly")
+                    }
+                    return res
+
+                })
+                .catch((error) => {
+                    throw ('Invalid Token')
+                })
+            return body
         }
+
     }
     async function handleDelete(data) {
 
-        let res = await fetch(`http://www.subcriptionmilk.somee.com/api/Stations/${data?.id}`, {
+        let res = await fetch(`http://www.cinemasystem2.somee.com/api/Seat/${data?.id}`, {
             method: `DELETE`,
             headers: {
                 'Content-Type': 'application/json',
-
+                'Authorization': `Bearer ${localStorage.getItem("token")}`,
             },
         }).then(res => res.json())
             .then(result => {
@@ -339,7 +408,7 @@ export default function Content() {
                 if (result?.statusCode === 200) {
                     setMess(result.content)
                     setAlert(true)
-                    featchStationist();
+                    featchSeatList();
                 } else {
                     alert("delete thất bại")
                     // setError(result.message)
@@ -364,69 +433,67 @@ export default function Content() {
         setSearch(childData)
 
     };
+
+    
+
+   
     return (
         <section className=" ml-0 xl:ml-64  px-5 pt-10  ">
             <Snackbar open={alert} autoHideDuration={4000} onClose={handleCloseAlert} className="float-left w-screen">
-                <Alert onClose={handleCloseAlert} severity="success" >
+                <Alert onClose={handleCloseAlert} severity={status} >
                     {message}
                 </Alert>
             </Snackbar>
-            <Paper className=' ' sx={{ width: '100%', overflow: 'hidden' }}>
+            <Paper className='' sx={{ width: '100%', overflow: 'hidden' }}>
                 <TableHead >
                     <div className='pt-2 pl-4 block font-semibold text-xl'>
-                        Station Management
+                        Seat Management
                     </div>
                 </TableHead>
                 <button className='bg-blue-600 text-white rounded-md ml-5 my-6 py-2 px-4' onClick={handleClickOpen}>
-                    Add Station
+                    Add Seat
                 </button>
                 <BootstrapDialog
                     onClose={handleClose}
-                    aria-labelledby="customized-dialog-title"
+                    aria-labelledby=""
                     open={open}
                 >
                     <BootstrapDialogTitle id="" onClose={handleClose}>
-                        Station Detail
+                        Add Seat
                     </BootstrapDialogTitle>
                     <DialogContent dividers >
-                        {nameError && <div className='text-red-600 ml-11 mb-5 text-xl'>Text 6 - 30 character </div>}
 
-                        {desErrorr && <div className='text-red-600 ml-11 mb-5 text-xl'>Description 6 - 300 character</div>}
-                        {nameExists && <div className='text-red-600 ml-11 mb-5 text-xl'>Title Exists </div>}
-
-                        {idExists && <div className='text-red-600 ml-11 mb-5 text-xl'>Id Exitsts</div>}
                         {Id}
 
                         <div className='max-w-5xl my-5 mx-auto'>
-                            <TextField className='w-96 my-5' onChange={e => setTitle(e.target.value)} defaultValue={selectedValue.title} id="outlined-basic" label="Title" variant="outlined" />
-                        </div>
-                        <div className='max-w-5xl my-5 mx-auto'>
-                            <TextField className='w-96 my-5' onChange={e => setAddress(e.target.value)} defaultValue={selectedValue.address} autoComplete='off' id="outlined-basic" label="Address" variant="outlined" />
-                        </div>
-                        <div className='max-w-5xl my-5 mx-auto'>
-                            <TextField className='w-96 my-5' onChange={e => setDescription(e.target.value)} defaultValue={selectedValue.description} autoComplete='off' id="outlined-basic" label="Description" variant="outlined" />
+                            <TextField className='w-96 my-5' onChange={e => setTitle(e.target.value)} defaultValue={selectedValue.title} autoComplete='off' id="outlined-basic" label="Title" variant="outlined" />
                         </div>
                         <div className='max-w-5xl my-5 mx-auto'>
                             <Box sx={{ minWidth: 120 }}>
                                 <FormControl fullWidth>
-                                    <InputLabel id="demo-simple-select-label">Slot</InputLabel>
+                                    <InputLabel id="demo-simple-select-label">Room</InputLabel>
                                     <Select
                                         labelId="demo-simple-select-label"
                                         id="demo-simple-select"
-                                        defaultValue={slotId}
-                                        label="Slot"
-                                        onChange={e => setSlotId(e.target.value)}
+                                        defaultValue={roomId}
+                                        label="Supplier"
+                                        onChange={e => setRoomId(e.target.value)}
                                     >
 
-                                        {slot.map((cate, index) => {
-                                            return (
-                                                <MenuItem key={index} value={cate.id}>{cate.name}</MenuItem>
-                                            )
+                                        {dataRoom.map((cate, index) => {
+                                            
+                                                return (
+                                                    <MenuItem value={cate.id}>{cate.title + "," + cate.cinemaId}</MenuItem>
+                                                )
                                         })}
 
                                     </Select>
                                 </FormControl>
                             </Box>
+                        </div>
+                        <div className='max-w-5xl my-5 mx-auto'>
+                            <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Description</label>
+                            <textarea id="message" onChange={e => setDescription(e.target.value)} defaultValue={selectedValue.description} rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Your message..."></textarea>
                         </div>
                     </DialogContent>
                     <DialogActions>
@@ -437,9 +504,7 @@ export default function Content() {
                 </BootstrapDialog>
                 <div className='pr-5 my-6 float-right'>
 
-
                     <Search parentCallback={callbackSearch} />
-
                 </div>
                 <TableContainer sx={{}}>
                     <Table stickyHeader aria-label="sticky table">
@@ -465,6 +530,8 @@ export default function Content() {
                                         <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                                             {columns.map((column) => {
                                                 const value = row[column.id];
+
+
                                                 return (
                                                     <TableCell key={column.id} >
                                                         {value}
