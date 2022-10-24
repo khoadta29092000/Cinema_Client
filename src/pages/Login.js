@@ -55,12 +55,15 @@ export default function Login() {
 console.log("--------------", result.statusCode)
             if (result?.statusCode == 200) {
                 
-                history.push("/")
+                
                 localStorage.setItem("token", result?.data);
+              
+                history.push("/")
+                window.location.reload();       
             }else{
                 setError(result?.message)
             }
-           
+                
 
         }).catch(function (error) {
             console.log('There has been a problem with your fetch operation: ',

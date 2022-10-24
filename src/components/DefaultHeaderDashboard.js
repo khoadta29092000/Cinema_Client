@@ -55,7 +55,7 @@ export default function Header(props) {
     useEffect(() => {
         featchProfile();
         setOpenNav(props.dataOpenNav);
-      }, [openNav]);
+      }, [openNav,]);
     const handleOpenNav = () => {
         setOpenNav(!openNav);
         props.parentCallback(!openNav);

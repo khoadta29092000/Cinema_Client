@@ -11,7 +11,7 @@ import FAQs from 'pages/FAQs';
 import AdminDashboard from 'pages/AdminDashboard';
 import UsersManagement from 'pages/UsersManagement';
 import CategoriesManagement from 'pages/CategoriesManagement';
-import ProductsManagement from 'pages/ProductsManagement';
+import RoomsManagement from 'pages/RoomsManagement';
 import CinemaManagement from 'pages/CinemaManagement';
 import Bill from 'pages/Bill';
 import DeliveryBoyManagement from 'pages/DeliveryBoyManagement';
@@ -50,7 +50,7 @@ function App() {
             <Route exact path="/AccountsManagement" component={UsersManagement} />
 
             <Route exact path="/CategoriesManagement" component={CategoriesManagement} />
-            <Route exact path="/ProductsManagement" component={ProductsManagement} />
+            <Route exact path="/RoomsManagement" component={RoomsManagement} />
             <Route exact path="/CinemaManagement" component={CinemaManagement} />
             <Route exact path="/Scheduling" component={Scheduling} />
             <Route exact path="/Bill" component={Bill} />

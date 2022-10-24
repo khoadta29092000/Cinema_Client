@@ -22,6 +22,7 @@ import DialogActions from '@mui/material/DialogActions';
 import CloseIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField';
 import queryString from 'query-string';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { useEffect, useState } from "react";
 import Search from 'components/Search';
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage"
@@ -153,7 +154,7 @@ export default function Content() {
                 className='h-28 w-28'
             />)
         let Edit = (<button className="text-white  outline-none bg-blue-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
-            <EditIcon />
+            <RemoveRedEyeIcon />
         </button>);
         let Delete = (<button className="text-white  outline-none bg-red-600 rounded-lg   h-8 w-8"onClick={() => handleDelete(data)}> 
             <DeleteIcon />

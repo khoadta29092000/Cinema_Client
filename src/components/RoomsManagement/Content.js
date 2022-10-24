@@ -458,14 +458,14 @@ export default function Content() {
             <Paper className='' sx={{ width: '100%', overflow: 'hidden' }}>
                 <TableHead >
                     <div className='pt-2 pl-4 block font-semibold text-xl'>
-                        Product Management
+                        Rooms Management
                     </div>
                 </TableHead>
 
                 <div className='float-left ml-5 gap-5 my-6  grid grid-cols-6'>
                     <div className='col-span-1 outline-none hover:outline-none'>
                         <button className='bg-blue-600 text-white rounded-md ml-5 mt-2 py-2 px-4' onClick={handleClickOpen}>
-                            Add Product
+                           Rooms Product
                         </button>
 
 

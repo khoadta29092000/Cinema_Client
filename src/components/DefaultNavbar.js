@@ -43,7 +43,7 @@ export default function DefaultNavbar() {
         }
         
 
-    }, []);
+    }, [name]);
     function parseJwt(token) {
         if (!token) { return; }
         const base64Url = token.split('.')[1];
@@ -52,6 +52,7 @@ export default function DefaultNavbar() {
     }
     let id2 = parseJwt(localStorage.getItem('token'))
     let prop = 'Id'
+    let proprole = 'role' 
     console.log("ngu ", id2)
     async function featchProfile() {
         try {
@@ -98,7 +99,7 @@ export default function DefaultNavbar() {
         }
     }
     function handleLogoutClick() {
-        localStorage.removeItem('user-token');
+        localStorage.removeItem('token');
         window.location.reload();
     }
 
@@ -215,21 +216,24 @@ export default function DefaultNavbar() {
             </Link>
         )
     }
-    if (localStorage.getItem(`token`)) {
-        adminDashboard = (
-            <Link to="/Admindashboard">
-                <NavLink
-                    rel="noreferrer"
-                    ripple="light"
-                >
-                    <DashboardIcon
-
-                        size="xl"
-                    />
-                    &nbsp;Admin Dashboard
-                </NavLink>
-            </Link>
-        )
+    if (localStorage.getItem("token") != null) {
+        if(id2[proprole]){
+            adminDashboard = (
+                <Link to="/Admindashboard">
+                    <NavLink
+                        rel="noreferrer"
+                        ripple="light"
+                    >
+                        <DashboardIcon
+    
+                            size="xl"
+                        />
+                        &nbsp;Admin Dashboard
+                    </NavLink>
+                </Link>
+            )
+        }
+       
     }
 
     return (
