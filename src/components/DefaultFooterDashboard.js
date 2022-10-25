@@ -10,7 +10,7 @@ export default function DefaultFooterDashboard() {
                                     href="https://www.creative-tim.com?ref=mtk"
                                     className="text-gray-700 hover:text-gray-900 transition-all"
                                 >
-                                    Creative by FBT-Team
+                                    Creative by DDKV-Team
                                 </a>
                                 .
                             </div>

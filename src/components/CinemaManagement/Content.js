@@ -181,7 +181,7 @@ export default function Content() {
         try {
     
     
-          const requestURL = `http://www.cinemasystem2.somee.com/api/Cinema/UpdateActive?id=${data}`;
+          const requestURL = `http://www.cinemasystem.somee.com/api/Cinema/UpdateActive?id=${data}`;
     
           const res = await fetch(requestURL, {
             method: `PUT`,
@@ -251,7 +251,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Cinema?search=${search}`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Cinema?search=${search}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -276,7 +276,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Cinema?search=${search}`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Cinema?search=${search}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -334,7 +334,7 @@ export default function Content() {
     async function handleUpdateOrCreate() {
         
             if (selectedValue.id != undefined) {
-                const res = await fetch(`http://www.cinemasystem2.somee.com/api/Cinema/${selectedValue.id}`, {
+                const res = await fetch(`http://www.cinemasystem.somee.com/api/Cinema/${selectedValue.id}`, {
                     method: `PUT`,
                     headers: {
                         'Content-Type': 'application/json',
@@ -365,7 +365,7 @@ export default function Content() {
                 return body
 
             } else {
-                const res = await fetch(`http://www.cinemasystem2.somee.com/api/Cinema`, {
+                const res = await fetch(`http://www.cinemasystem.somee.com/api/Cinema`, {
                     method: `POST`,
                     headers: {
                         'Content-Type': 'application/json',
@@ -401,7 +401,7 @@ export default function Content() {
         try {
     
     
-          const requestURL = `http://www.cinemasystem2.somee.com/api/Account/${data?.id}`;
+          const requestURL = `http://www.cinemasystem.somee.com/api/Account/${data?.id}`;
     
           const res = await fetch(requestURL, {
             method: `DELETE`,

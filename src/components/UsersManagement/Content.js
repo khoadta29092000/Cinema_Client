@@ -220,7 +220,7 @@ export default function Content() {
     try {
 
 
-      const requestURL = `http://www.cinemasystem2.somee.com/api/Account/UpdateActive?id=${data}`;
+      const requestURL = `http://www.cinemasystem.somee.com/api/Account/UpdateActive?id=${data}`;
 
       const res = await fetch(requestURL, {
         method: `PUT`,
@@ -281,7 +281,7 @@ export default function Content() {
     try {
 
 
-      const requestURL = `http://www.cinemasystem2.somee.com/api/Account?search=${search}`;
+      const requestURL = `http://www.cinemasystem.somee.com/api/Account?search=${search}`;
 
       const response = await fetch(requestURL, {
         method: `GET`,
@@ -306,7 +306,7 @@ export default function Content() {
     try {
 
 
-      const requestURL = `http://www.cinemasystem2.somee.com/api/Cinema`;
+      const requestURL = `http://www.cinemasystem.somee.com/api/Cinema`;
 
       const response = await fetch(requestURL, {
         method: `GET`,
@@ -375,7 +375,7 @@ export default function Content() {
   async function handleUpdateOrCreate() {
 
     if (selectedValue.id != undefined) {
-      const res = await fetch(`http://www.cinemasystem2.somee.com/api/Account/${selectedValue.id}`, {
+      const res = await fetch(`http://www.cinemasystem.somee.com/api/Account/${selectedValue.id}`, {
         method: `PUT`,
         headers: {
           'Content-Type': 'application/json',
@@ -407,7 +407,7 @@ export default function Content() {
 
     } if (selectedValue.id == undefined) {
       console.log("aaangu", selectedValue.id)
-      const res = await fetch(`http://www.cinemasystem2.somee.com/api/Account`, {
+      const res = await fetch(`http://www.cinemasystem.somee.com/api/Account`, {
         method: `POST`,
         headers: {
           'Content-Type': 'application/json',
@@ -442,7 +442,7 @@ export default function Content() {
     try {
 
 
-      const requestURL = `http://www.cinemasystem2.somee.com/api/Account/${data?.id}`;
+      const requestURL = `http://www.cinemasystem.somee.com/api/Account/${data?.id}`;
 
       const res = await fetch(requestURL, {
         method: `DELETE`,

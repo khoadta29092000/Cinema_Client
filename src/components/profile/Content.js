@@ -72,7 +72,7 @@ export default function Content() {
             setNameError(false)
             setDesErr(false)
 
-            const res = await fetch(`http://www.subcriptionmilk.somee.com/api/Accounts/update`, {
+            const res = await fetch(`http://www.subcriptionmilk2.somee.com/api/Accounts/update`, {
                 method: `PUT`,
                 headers: {
                     'Content-Type': 'application/json',
@@ -104,7 +104,7 @@ export default function Content() {
     }
     async function featchProfile() {
         try {
-            const requestURL = `http://www.subcriptionmilk.somee.com/api/Accounts/getbyid?id=${localStorage.getItem('id-token')}`;
+            const requestURL = `http://www.subcriptionmilk2.somee.com/api/Accounts/getbyid?id=${localStorage.getItem('id-token')}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -128,7 +128,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.subcriptionmilk.somee.com/api/Stations/Getallstations`;
+            const requestURL = `http://www.subcriptionmilk2.somee.com/api/Stations/Getallstations`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,

@@ -16,8 +16,8 @@ export default function Header() {
                         alt="Remy Sharp"
                         sx={{ width: 160, height: 160 }}
                     > <p className="text-5xl">a</p>  </Avatar>
-                    <h2 className='font-bold ml-6 text-3xl my-3'> Anh Khoa</h2>
-                    <p className='ml-10'>0335739928</p>
+                    <h2 className='font-bold ml-6 text-3xl my-3'> duy dan</h2>
+                    <p className='ml-10'>0374650379</p>
                 </div>
             <div className='col-span-2'></div>
             </Paper>

@@ -21,17 +21,17 @@ module.exports = {
               },
             backgroundImage: () => ({
                 'login-background':
-                    "linear-gradient(rgba(0,0,0, 0.75), rgba(0,0,0, 0.75)), url('/src/assets/img/background-1920x1280.jpg')",
+                    "linear-gradient(rgba(0,0,0, 0.75), rgba(0,0,0, 0.75)), url('https://imgproxy4.tinhte.vn/1j2lLcwj3mf_RI8_Ope-M1kAV_W2p0Z6Q4UIPSOTwHE/w:600/plain/https://images2.imgbox.com/d6/ab/3h5rYDCb_o.jpg')",
                 'slide1-background':
-                    'linear-gradient(rgba(0,0,0, 0.75), rgba(0,0,0, 0.75)), url(https://www.farmlyfresh.com/wp-content/uploads/2020/04/slider1.jpg)',
+                    'linear-gradient(rgba(0,0,0, 0.75), rgba(0,0,0, 0.75)), url(http://movieapi.cyberlearn.vn/hinhanh/cuoc-chien-sinh-tu.png)',
                 'slide2-background':
-                    'linear-gradient(rgba(0,0,0, 0.75), rgba(0,0,0, 0.75)), url(https://www.farmlyfresh.com/wp-content/uploads/2020/05/slider-2.jpg)',
+                    'linear-gradient(rgba(0,0,0, 0.75), rgba(0,0,0, 0.75)), url(http://movieapi.cyberlearn.vn/hinhanh/lat-mat-48h.png)',
                 'slide3-background':
-                    'linear-gradient(rgba(0,0,0, 0.75), rgba(0,0,0, 0.75)), url(https://www.farmlyfresh.com/wp-content/uploads/2020/04/slide-1-1080.jpg)',
+                    'linear-gradient(rgba(0,0,0, 0.75), rgba(0,0,0, 0.75)), url(https://movieapi.cyberlearn.vn/hinhanh/game-of-throne_gp01.jpg)',
                 'profile-background':
-                    "linear-gradient(rgba(0,0,0, 0.75), rgba(0,0,0, 0.75)), url('/src/assets/img/background-1920x1080.jpg')",
+                    "linear-gradient(rgba(0,0,0, 0.75), rgba(0,0,0, 0.75)), url('http://movieapi.cyberlearn.vn/hinhanh/cuoc-chien-sinh-tu.png')",
                    
-                        'status-pending': "url('https://static.vecteezy.com/system/resources/previews/001/946/569/original/abstract-geometric-hexagons-yellow-background-with-diagonal-striped-lines-free-vector.jpg')",
+                        'status-pending': "url('http://movieapi.cyberlearn.vn/hinhanh/cuoc-chien-sinh-tu.png')",
                         'footer-texture': "url('/img/footer-texture.png')",
                     
             }),

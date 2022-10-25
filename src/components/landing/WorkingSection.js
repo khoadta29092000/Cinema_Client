@@ -27,7 +27,7 @@ export default function WorkingSection() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Film`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Film`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -53,7 +53,7 @@ export default function WorkingSection() {
 
     return (
         <section className="pb-20  -mt-32">
-            <div className="container max-w-7xl mx-auto px-4">
+            {/* <div className="container max-w-7xl mx-auto px-4">
                 <div className="flex flex-wrap relative z-50">
                     <StatusCard color="red" icon="stars" title="Homemade Paneer">
                         No addtives, no preservatives <br />
@@ -154,7 +154,7 @@ export default function WorkingSection() {
                         />
                     </div>
                 </div>
-            </div>
+            </div> */}
         </section>
     );
 }

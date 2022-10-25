@@ -125,7 +125,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Scheduling/UpdateActive?id=${data}`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Scheduling/UpdateActive?id=${data}`;
 
             const res = await fetch(requestURL, {
                 method: `PUT`,
@@ -275,7 +275,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Scheduling`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Scheduling`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -300,7 +300,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Account`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Account`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -323,7 +323,7 @@ export default function Content() {
     }
     async function featchCinemaList() {
         try {
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Cinema`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Cinema`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -347,7 +347,7 @@ export default function Content() {
 
     async function featchRoomList() {
         try {
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Room`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Room`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -371,7 +371,7 @@ export default function Content() {
 
     async function featchFilmList() {
         try {
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Film`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Film`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,

@@ -175,7 +175,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Type/UpdateActive?id=${data}`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Type/UpdateActive?id=${data}`;
 
             const res = await fetch(requestURL, {
                 method: `PUT`,
@@ -231,7 +231,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Type?search=${search}`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Type?search=${search}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -264,7 +264,7 @@ export default function Content() {
     async function handleUpdateOrCreate() {
 
         if (selectedValue.id != undefined) {
-            const res = await fetch(`http://www.cinemasystem2.somee.com/api/Type/${selectedValue?.id}`, {
+            const res = await fetch(`http://www.cinemasystem.somee.com/api/Type/${selectedValue?.id}`, {
                 method: `PUT`,
                 headers: {
                     'Content-Type': 'application/json',
@@ -298,7 +298,7 @@ export default function Content() {
             return body
 
         } else {
-            const res = await fetch(`http://www.cinemasystem2.somee.com/api/Type`, {
+            const res = await fetch(`http://www.cinemasystem.somee.com/api/Type`, {
                 method: `POST`,
                 headers: {
                     'Content-Type': 'application/json',
@@ -335,7 +335,7 @@ export default function Content() {
     }
     async function handleDelete(data) {
 
-        let res = await fetch(`http://www.cinemasystem2.somee.com/api/Type/${data?.id}`, {
+        let res = await fetch(`http://www.cinemasystem.somee.com/api/Type/${data?.id}`, {
             method: `DELETE`,
             headers: {
                 'Content-Type': 'application/json',
