@@ -37,6 +37,7 @@ import { useLocation } from 'react-router-dom';
 import PublicOffIcon from '@mui/icons-material/PublicOff';
 import PublicIcon from '@mui/icons-material/Public';
 import Autocomplete from '@mui/material/Autocomplete';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -71,15 +72,11 @@ const columns = [
         minWidth: 100,
     },
     {
-        id: 'Edit',
-        label: 'Edit',
+        id: 'Action',
+        label: 'Action',
         minWidth: 100,
     },
-    {
-        id: 'Delete',
-        label: 'Delete',
-        minWidth: 100,
-    },
+  
 ];
 const BootstrapDialogTitle = (props) => {
     const { children, onClose, ...other } = props;
@@ -171,20 +168,28 @@ export default function Content() {
         let Active = (<button className="text-white  outline-none bg-black cursor-pointer rounded-lg   h-8 w-8" onClick={() => handleUpdateStatus(data.id)}>
             {data.active == true ? <PublicIcon /> : <PublicOffIcon />}
         </button>);
-        let Edit = (<button className="text-white  outline-none bg-blue-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
+          let Action = (
+            <div className='gap-x-8 flex'>
+             
+               <button className="text-white  outline-none bg-blue-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
+            <RemoveRedEyeIcon />
+          </button>
+          <button className="text-white  outline-none bg-yellow-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
             <EditIcon />
-        </button>);
-        let Delete = (<button className="text-white  outline-none bg-red-600 rounded-lg   h-8 w-8" onClick={() => handleDelete(data)}>
+          </button>
+          <button className="text-white  outline-none bg-red-600 rounded-lg   h-8 w-8" onClick={() => handleDelete(data)}>
             <DeleteIcon />
-        </button>);
+          </button>
+            </div>
+        );
 
-        return { Id, Title, Cinema, Active, Edit, Delete };
+        return { Id, Title, Cinema, Active, Action };
     }
     async function handleUpdateStatus(data) {
         try {
 
 
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Room/UpdateActive?id=${data}`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Room/UpdateActive?id=${data}`;
 
             const res = await fetch(requestURL, {
                 method: `PUT`,
@@ -253,7 +258,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Room?search=${search}`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Room?search=${search}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -278,7 +283,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Cinema`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Cinema`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -331,7 +336,7 @@ export default function Content() {
     async function handleUpdateOrCreate() {
 
         if (selectedValue.id != undefined) {
-            const res = await fetch(`http://www.cinemasystem2.somee.com/api/Room/${selectedValue?.id}`, {
+            const res = await fetch(`http://www.cinemasystem.somee.com/api/Room/${selectedValue?.id}`, {
                 method: `PUT`,
                 headers: {
                     'Content-Type': 'application/json',
@@ -365,7 +370,7 @@ export default function Content() {
             return body
 
         } else {
-            const res = await fetch(`http://www.cinemasystem2.somee.com/api/Room`, {
+            const res = await fetch(`http://www.cinemasystem.somee.com/api/Room`, {
                 method: `POST`,
                 headers: {
                     'Content-Type': 'application/json',
@@ -402,7 +407,7 @@ export default function Content() {
     }
     async function handleDelete(data) {
 
-        let res = await fetch(`http://www.cinemasystem2.somee.com/api/Room/${data?.id}`, {
+        let res = await fetch(`http://www.cinemasystem.somee.com/api/Room/${data?.id}`, {
             method: `DELETE`,
             headers: {
                 'Content-Type': 'application/json',
@@ -462,7 +467,7 @@ export default function Content() {
                 <div className='float-left ml-5 gap-5 my-6  grid grid-cols-6'>
                     <div className='col-span-1 outline-none hover:outline-none'>
                         <button className='bg-blue-600 text-white rounded-md ml-5 mt-2 py-2 px-4' onClick={handleClickOpen}>
-                            Rooms Product
+                             add Room
                         </button>
 
 

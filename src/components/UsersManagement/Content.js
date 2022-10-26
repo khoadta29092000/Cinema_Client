@@ -37,6 +37,7 @@ import PublicOffIcon from '@mui/icons-material/PublicOff';
 import PublicIcon from '@mui/icons-material/Public';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Autocomplete from '@mui/material/Autocomplete';
+import EditIcon from '@mui/icons-material/Edit';
 import { empty } from 'uuidv4';
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -53,6 +54,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 const columns = [
   { id: 'Image', label: "Image", minWidth: 150 },
+  { id: 'Id', label: "Id", minWidth: 100 },
   { id: 'Email', label: "Email", minWidth: 150 },
   {
     id: 'FullName',
@@ -72,15 +74,10 @@ const columns = [
     minWidth: 100,
     align: '',
   },
+ 
   {
-    id: 'View',
-    label: 'View',
-    minWidth: 100,
-    align: '',
-  },
-  {
-    id: 'Delete',
-    label: 'Delete',
+    id: 'Action',
+    label: 'Action',
     minWidth: 100,
     align: '',
   },
@@ -186,6 +183,7 @@ export default function Content() {
   };
   function createData(data) {
     let Email = data.email;
+    let Id = data.id;
     let FullName = data.fullName;
     let Phone = data.phone;
     let Image = (
@@ -197,13 +195,18 @@ export default function Content() {
     let Active = (<button className="text-white  outline-none bg-black cursor-pointer rounded-lg   h-8 w-8" onClick={() => handleUpdateStatus(data.id)}>
       {data.active == true ? <PublicIcon /> : <PublicOffIcon />}
     </button>);
-    let View = (<button className="text-white  outline-none bg-blue-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
-      <RemoveRedEyeIcon />
-    </button>);
-    let Delete = (<button className="text-white  outline-none bg-red-600 rounded-lg   h-8 w-8" onClick={() => handleDelete(data)}>
+     let Action = (
+      <div className='gap-x-8 flex'>
+         <button className="text-white  outline-none bg-yellow-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
+      <EditIcon />
+    </button>
+    <button className="text-white  outline-none bg-red-600 rounded-lg   h-8 w-8" onClick={() => handleDelete(data)}>
       <DeleteIcon />
-    </button>);
-    return { Image, Email, FullName, Phone, Active, View, Delete };
+    </button>
+      </div>
+  );
+   
+    return { Image, Id, Email, FullName, Phone, Active, Action };
   }
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -220,7 +223,7 @@ export default function Content() {
     try {
 
 
-      const requestURL = `http://www.cinemasystem2.somee.com/api/Account/UpdateActive?id=${data}`;
+      const requestURL = `http://www.cinemasystem.somee.com/api/Account/UpdateActive?id=${data}`;
 
       const res = await fetch(requestURL, {
         method: `PUT`,
@@ -281,7 +284,7 @@ export default function Content() {
     try {
 
 
-      const requestURL = `http://www.cinemasystem2.somee.com/api/Account?search=${search}`;
+      const requestURL = `http://www.cinemasystem.somee.com/api/Account?search=${search}`;
 
       const response = await fetch(requestURL, {
         method: `GET`,
@@ -306,7 +309,7 @@ export default function Content() {
     try {
 
 
-      const requestURL = `http://www.cinemasystem2.somee.com/api/Cinema`;
+      const requestURL = `http://www.cinemasystem.somee.com/api/Cinema`;
 
       const response = await fetch(requestURL, {
         method: `GET`,
@@ -375,7 +378,7 @@ export default function Content() {
   async function handleUpdateOrCreate() {
 
     if (selectedValue.id != undefined) {
-      const res = await fetch(`http://www.cinemasystem2.somee.com/api/Account/${selectedValue.id}`, {
+      const res = await fetch(`http://www.cinemasystem.somee.com/api/Account/${selectedValue.id}`, {
         method: `PUT`,
         headers: {
           'Content-Type': 'application/json',
@@ -407,7 +410,7 @@ export default function Content() {
 
     } if (selectedValue.id == undefined) {
       console.log("aaangu", selectedValue.id)
-      const res = await fetch(`http://www.cinemasystem2.somee.com/api/Account`, {
+      const res = await fetch(`http://www.cinemasystem.somee.com/api/Account`, {
         method: `POST`,
         headers: {
           'Content-Type': 'application/json',
@@ -442,7 +445,7 @@ export default function Content() {
     try {
 
 
-      const requestURL = `http://www.cinemasystem2.somee.com/api/Account/${data?.id}`;
+      const requestURL = `http://www.cinemasystem.somee.com/api/Account/${data?.id}`;
 
       const res = await fetch(requestURL, {
         method: `DELETE`,

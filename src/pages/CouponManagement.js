@@ -1,12 +1,12 @@
 import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import { Link } from 'react-router-dom';
-import Content from 'components/FilmsManagement/Content';
+import Content from 'components/CouponManagement/Content';
 import AdminTemplates from 'components/AdminTemplates';
 import { React, useState, } from 'react';
 
 
-export default function FilmsManagement(props) {
+export default function CouponManagement(props) {
     const [openNav, setOpenNav] = useState(false);
 
     function handleClick(event) {
@@ -22,7 +22,7 @@ export default function FilmsManagement(props) {
                     <Link underline="hover" className='hover:underline' to="/" color="inherit" >
                         Home
                     </Link>
-                    <Typography color="text.primary" className='underline'>Films Management</Typography>
+                    <Typography color="text.primary" className='underline'>Bill</Typography>
                 </Breadcrumbs>
             </div>
             <div className='mb-12'>

@@ -54,16 +54,16 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 const columns = [
-    { id: 'Id', label: "Id", minWidth: 150 },
+    { id: 'Id', label: "Id", minWidth: 100 },
     {
         id: 'Title',
         label: 'Title',
-        minWidth: 150,
+        minWidth: 100,
     },
     {
         id: 'Room',
         label: 'Room',
-        minWidth: 100,
+        minWidth: 200,
     },
     {
         id: 'Active',
@@ -71,15 +71,11 @@ const columns = [
         minWidth: 100,
     },
     {
-        id: 'Edit',
-        label: 'Edit',
+        id: 'Action',
+        label: 'Action',
         minWidth: 100,
     },
-    {
-        id: 'Delete',
-        label: 'Delete',
-        minWidth: 100,
-    },
+ 
 ];
 const BootstrapDialogTitle = (props) => {
     const { children, onClose, ...other } = props;
@@ -168,27 +164,31 @@ export default function Content() {
         dataRoom.map(item => {
             if (data.roomId == item.id) {
 
-                return Room = item.title
+                return Room = item.title + ", " + item.cinema
 
             }
         })
         let Active = (<button className="text-white  outline-none bg-black cursor-pointer rounded-lg   h-8 w-8" onClick={() => handleUpdateStatus(data.id)}>
             {data.active == true ? <PublicIcon /> : <PublicOffIcon />}
         </button>);
-        let Edit = (<button className="text-white  outline-none bg-blue-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
-            <EditIcon />
-        </button>);
-        let Delete = (<button className="text-white  outline-none bg-red-600 rounded-lg   h-8 w-8" onClick={() => handleDelete(data)}>
-            <DeleteIcon />
-        </button>);
+       let Action = (
+        <div className='gap-x-8 flex'>
+           <button className="text-white  outline-none bg-yellow-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
+        <EditIcon />
+      </button>
+      <button className="text-white  outline-none bg-red-600 rounded-lg   h-8 w-8" onClick={() => handleDelete(data)}>
+        <DeleteIcon />
+      </button>
+        </div>
+    );
 
-        return { Id, Title, Room, Active, Edit, Delete };
+        return { Id, Title, Room, Active, Action };
     }
     async function handleUpdateStatus(data) {
         try {
 
 
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Seat/UpdateActive?id=${data}`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Seat/UpdateActive?id=${data}`;
 
             const res = await fetch(requestURL, {
                 method: `PUT`,
@@ -243,7 +243,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Cinema`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Cinema`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -268,7 +268,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Seat?search=${search}`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Seat?search=${search}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -294,7 +294,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Room`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Room`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -320,12 +320,12 @@ export default function Content() {
     const [progresspercent, setProgresspercent] = useState(0);
 
 
-    const [errorr, setError] = useState("false")
+    const [error, setError] = useState("false")
     const [message, setMess] = useState(false)
     async function handleUpdateOrCreate() {
 
         if (selectedValue.id != undefined) {
-            const res = await fetch(`http://www.cinemasystem2.somee.com/api/Seat/${selectedValue?.id}`, {
+            const res = await fetch(`http://www.cinemasystem.somee.com/api/Seat/${selectedValue?.id}`, {
                 method: `PUT`,
                 headers: {
                     'Content-Type': 'application/json',
@@ -359,7 +359,7 @@ export default function Content() {
             return body
 
         } else {
-            const res = await fetch(`http://www.cinemasystem2.somee.com/api/Seat`, {
+            const res = await fetch(`http://www.cinemasystem.somee.com/api/Seat`, {
                 method: `POST`,
                 headers: {
                     'Content-Type': 'application/json',
@@ -396,7 +396,7 @@ export default function Content() {
     }
     async function handleDelete(data) {
 
-        let res = await fetch(`http://www.cinemasystem2.somee.com/api/Seat/${data?.id}`, {
+        let res = await fetch(`http://www.cinemasystem.somee.com/api/Seat/${data?.id}`, {
             method: `DELETE`,
             headers: {
                 'Content-Type': 'application/json',
@@ -411,7 +411,7 @@ export default function Content() {
                     featchSeatList();
                 } else {
                     alert("delete thất bại")
-                    // setError(result.message)
+                     setError(result.message)
                     // alert("tài khoản hoặc mật khẩu sai kìa")
                 }
                 return res
@@ -462,6 +462,7 @@ export default function Content() {
                         Add Seat
                     </BootstrapDialogTitle>
                     <DialogContent dividers >
+                    {error && <div className='text-red-600 ml-11 mb-5 text-xl'>{error}</div>}
 
                         {Id}
 

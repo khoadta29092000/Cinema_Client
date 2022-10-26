@@ -7,31 +7,30 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import InputBase from '@mui/material/InputBase';
+
 import IconButton from '@mui/material/IconButton';
-import SearchIcon from '@mui/icons-material/Search';
+
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-import Search from 'components/Search';
+
 import PropTypes from 'prop-types';
-import Button from '@mui/material/Button';
+
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
+
 import CloseIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField';
 import PublicOffIcon from '@mui/icons-material/PublicOff';
 import PublicIcon from '@mui/icons-material/Public';
 import { useEffect, useState } from "react";
-
+import dayjs from 'dayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 
 import Autocomplete from '@mui/material/Autocomplete';
 
@@ -57,7 +56,7 @@ const columns = [
     { id: 'Time', label: "Time", minWidth: 100 },
     { id: 'Film', label: "Film", minWidth: 150 },
     { id: 'Active', label: "Active", minWidth: 100 },
-    { id: 'View', label: "View", minWidth: 100 },
+    { id: 'Action', label: "Action", minWidth: 100 },
 
 ];
 
@@ -125,7 +124,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Scheduling/UpdateActive?id=${data}`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Scheduling/UpdateActive?id=${data}`;
 
             const res = await fetch(requestURL, {
                 method: `PUT`,
@@ -199,7 +198,7 @@ export default function Content() {
         dataRoom.map(item => {
             if (data.roomId == item.id) {
 
-                return Room = item.title
+                return Room = item.title 
 
             }
         })
@@ -224,12 +223,12 @@ export default function Content() {
             {data.active == true ? <PublicIcon /> : <PublicOffIcon />}
         </button>);
 
-        let View = (<button className="text-white  outline-none bg-blue-600 rounded-lg  cursor-pointer   h-8 w-8" onClick={() => handleClickOpen(data)}>
+        let Action = (<button className="text-white  outline-none bg-blue-600 rounded-lg  cursor-pointer   h-8 w-8" onClick={() => handleClickOpen(data)}>
             <RemoveRedEyeIcon />
         </button>);
 
 
-        return { SchedulingId, Date, Room, Cinema, Time, Film, Active, View };
+        return { SchedulingId, Date, Room, Cinema, Time, Film, Active, Action };
     }
     let Id;
     if (selectedValue.id != undefined) {
@@ -275,7 +274,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Scheduling`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Scheduling`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -300,7 +299,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Account`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Account`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -323,7 +322,7 @@ export default function Content() {
     }
     async function featchCinemaList() {
         try {
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Cinema`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Cinema`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -347,7 +346,7 @@ export default function Content() {
 
     async function featchRoomList() {
         try {
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Room`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Room`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -371,7 +370,7 @@ export default function Content() {
 
     async function featchFilmList() {
         try {
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Film`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Film`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -392,12 +391,18 @@ export default function Content() {
             console.log('Fail to fetch product list: ', error)
         }
     }
+    var today = new Date();
 
-    const [value, setValue] = React.useState('');
-
+    const [value, setValue] = React.useState(dayjs(today));
+    const [startValue, setStartValue] = React.useState(dayjs(today.setDate(today.getDate() - 30)));
     const handleChange = (newValue) => {
         setValue(newValue);
     };
+    const handleChange1 = (newValue) => {
+        setStartValue(newValue);
+    };
+
+
 
 
     const rows1 = dataScheduling.map((data, index) => {
@@ -420,7 +425,7 @@ export default function Content() {
     };
     const RoomOptions = dataRoom.map((item, index) => ({
         id: item.id,
-        label: item.title
+        label: item.title + " ," + item.cinema
     }))
     const CinemaOptions = dataCinema.map((item, index) => ({
         id: item.id,
@@ -450,7 +455,7 @@ export default function Content() {
                             disablePortal
                             id="combo-box-demo"
                             options={RoomOptions}
-                            sx={{ width: 200 }}
+                            sx={{ width: 250 }}
                             renderInput={(params) => <TextField {...params} label="Room" />}
                         />
 
@@ -461,7 +466,7 @@ export default function Content() {
                             disablePortal
                             id="combo-box-demo"
                             options={CinemaOptions}
-                            sx={{ width: 200 }}
+                            sx={{ width: 250 }}
                             renderInput={(params) => <TextField {...params} label="Cinema" />}
                         />
 
@@ -478,16 +483,26 @@ export default function Content() {
 
                     </div>
                     <div className='col-span-1'>
-                        <TextField
-                            id="date"
-                            label="Birthday"
-                            type="date"
-                            
-                            sx={{ width: 220 }}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                        />
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DesktopDatePicker
+                                label="Start Date"
+                                inputFormat="MM/DD/YYYY"
+                                value={startValue}
+                                onChange={handleChange1}
+                                renderInput={(params) => <TextField {...params} />}
+                            />
+                        </LocalizationProvider>
+                    </div>
+                    <div className='col-span-1'>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DesktopDatePicker
+                                label="End Date"
+                                inputFormat="MM/DD/YYYY"
+                                value={value}
+                                onChange={handleChange}
+                                renderInput={(params) => <TextField {...params} />}
+                            />
+                        </LocalizationProvider>
                     </div>
                 </div>
                 <BootstrapDialog

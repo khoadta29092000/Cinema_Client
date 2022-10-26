@@ -78,7 +78,7 @@ export default function Register() {
                 email: email,
                 password: password
             };
-            let res = await fetch("http://www.cinemasystem2.somee.com/api/Account/Register", {
+            let res = await fetch("http://www.cinemasystem.somee.com/api/Account/Register", {
                 method: `POST`,
                 headers: {
                     'Content-Type': 'application/json',

@@ -67,15 +67,11 @@ const columns = [
         minWidth: 100,
     },
     {
-        id: 'Edit',
-        label: 'Edit',
+        id: 'Action',
+        label: 'Action',
         minWidth: 100,
     },
-    {
-        id: 'Delete',
-        label: 'Delete',
-        minWidth: 100,
-    },
+
 ];
 const BootstrapDialogTitle = (props) => {
     const { children, onClose, ...other } = props;
@@ -162,20 +158,23 @@ export default function Content() {
         let Active = (<button className="text-white  outline-none bg-black cursor-pointer rounded-lg   h-8 w-8" onClick={() => handleUpdateStatus(data.id)}>
             {data.active == true ? <PublicIcon /> : <PublicOffIcon />}
         </button>);
-        let Edit = (<button className="text-white  outline-none bg-blue-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
+        let Action = (
+            <div className='gap-x-8 flex'>
+               <button className="text-white  outline-none bg-yellow-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
             <EditIcon />
-        </button>);
-        let Delete = (<button className="text-white  outline-none bg-red-600 rounded-lg   h-8 w-8" onClick={() => handleDelete(data)}>
+          </button>
+          <button className="text-white  outline-none bg-red-600 rounded-lg   h-8 w-8" onClick={() => handleDelete(data)}>
             <DeleteIcon />
-        </button>);
-
-        return { Id, Title, Active, Edit, Delete };
+          </button>
+            </div>
+        );
+        return { Id, Title, Active, Action };
     }
     async function handleUpdateStatus(data) {
         try {
 
 
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Type/UpdateActive?id=${data}`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Type/UpdateActive?id=${data}`;
 
             const res = await fetch(requestURL, {
                 method: `PUT`,
@@ -231,7 +230,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem2.somee.com/api/Type?search=${search}`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Type?search=${search}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -264,7 +263,7 @@ export default function Content() {
     async function handleUpdateOrCreate() {
 
         if (selectedValue.id != undefined) {
-            const res = await fetch(`http://www.cinemasystem2.somee.com/api/Type/${selectedValue?.id}`, {
+            const res = await fetch(`http://www.cinemasystem.somee.com/api/Type/${selectedValue?.id}`, {
                 method: `PUT`,
                 headers: {
                     'Content-Type': 'application/json',
@@ -298,7 +297,7 @@ export default function Content() {
             return body
 
         } else {
-            const res = await fetch(`http://www.cinemasystem2.somee.com/api/Type`, {
+            const res = await fetch(`http://www.cinemasystem.somee.com/api/Type`, {
                 method: `POST`,
                 headers: {
                     'Content-Type': 'application/json',
@@ -335,7 +334,7 @@ export default function Content() {
     }
     async function handleDelete(data) {
 
-        let res = await fetch(`http://www.cinemasystem2.somee.com/api/Type/${data?.id}`, {
+        let res = await fetch(`http://www.cinemasystem.somee.com/api/Type/${data?.id}`, {
             method: `DELETE`,
             headers: {
                 'Content-Type': 'application/json',
@@ -386,7 +385,7 @@ export default function Content() {
             <Paper className='' sx={{ width: '100%', overflow: 'hidden' }}>
                 <TableHead >
                     <div className='pt-2 pl-4 block font-semibold text-xl'>
-                    Type Management
+                    Types Management
                     </div>
                 </TableHead>
                 <button className='bg-blue-600 text-white rounded-md ml-5 my-6 py-2 px-4' onClick={handleClickOpen}>

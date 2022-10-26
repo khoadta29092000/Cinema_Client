@@ -22,7 +22,7 @@ export default function SeatsManagement(props) {
                     <Link underline="hover" className='hover:underline' to="/" color="inherit" >
                         Home
                     </Link>
-                    <Typography color="text.primary" className='underline'>seat</Typography>
+                    <Typography color="text.primary" className='underline'>Seats Management</Typography>
                 </Breadcrumbs>
             </div>
             <div className='mb-12'>

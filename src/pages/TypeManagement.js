@@ -22,7 +22,7 @@ export default function TypeManagement(props) {
                     <Link underline="hover" className='hover:underline' to="/" color="inherit" >
                         Home
                     </Link>
-                    <Typography color="text.primary" className='underline'>Type Manegement</Typography>
+                    <Typography color="text.primary" className='underline'>Types Manegement</Typography>
                 </Breadcrumbs>
             </div>
             <div className='mb-12'>
