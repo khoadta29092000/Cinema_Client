@@ -22,7 +22,7 @@ export default function RoomsManagement(props) {
                     <Link underline="hover" className='hover:underline' to="/" color="inherit" >
                         Home
                     </Link>
-                    <Typography color="text.primary" className='underline'>Bill</Typography>
+                    <Typography color="text.primary" className='underline'>Rooms Management</Typography>
                 </Breadcrumbs>
             </div>
             <div className='mb-12'>

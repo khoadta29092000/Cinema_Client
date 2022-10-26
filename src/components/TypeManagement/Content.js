@@ -67,15 +67,11 @@ const columns = [
         minWidth: 100,
     },
     {
-        id: 'Edit',
-        label: 'Edit',
+        id: 'Action',
+        label: 'Action',
         minWidth: 100,
     },
-    {
-        id: 'Delete',
-        label: 'Delete',
-        minWidth: 100,
-    },
+
 ];
 const BootstrapDialogTitle = (props) => {
     const { children, onClose, ...other } = props;
@@ -162,14 +158,17 @@ export default function Content() {
         let Active = (<button className="text-white  outline-none bg-black cursor-pointer rounded-lg   h-8 w-8" onClick={() => handleUpdateStatus(data.id)}>
             {data.active == true ? <PublicIcon /> : <PublicOffIcon />}
         </button>);
-        let Edit = (<button className="text-white  outline-none bg-blue-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
+        let Action = (
+            <div className='gap-x-8 flex'>
+               <button className="text-white  outline-none bg-yellow-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
             <EditIcon />
-        </button>);
-        let Delete = (<button className="text-white  outline-none bg-red-600 rounded-lg   h-8 w-8" onClick={() => handleDelete(data)}>
+          </button>
+          <button className="text-white  outline-none bg-red-600 rounded-lg   h-8 w-8" onClick={() => handleDelete(data)}>
             <DeleteIcon />
-        </button>);
-
-        return { Id, Title, Active, Edit, Delete };
+          </button>
+            </div>
+        );
+        return { Id, Title, Active, Action };
     }
     async function handleUpdateStatus(data) {
         try {
@@ -386,7 +385,7 @@ export default function Content() {
             <Paper className='' sx={{ width: '100%', overflow: 'hidden' }}>
                 <TableHead >
                     <div className='pt-2 pl-4 block font-semibold text-xl'>
-                    Type Management
+                    Types Management
                     </div>
                 </TableHead>
                 <button className='bg-blue-600 text-white rounded-md ml-5 my-6 py-2 px-4' onClick={handleClickOpen}>

@@ -26,13 +26,15 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 
 // Tailwind CSS Style Sheet
 import 'assets/styles/tailwind.css';
-
 import Scheduling from 'pages/Scheduling';
-import DeliveryBoyDetail from 'pages/DeliveryBoyDetail';
+import CouponManagement from 'pages/CouponManagement';
 import ProfileDashboard from 'pages/ProfileDashboard';
 import PackageDetails from 'pages/PackageDetails';
 import detail from 'pages/detail';
 import Room from 'pages/Room';
+
+import Test from 'components/Test';
+
 
 
 
@@ -41,6 +43,7 @@ function App() {
     return (
         <Switch>
             <Route exact path="/" component={Landing} />
+            <Route exact path="/Test" component={Test} />
             <Route exact path="/AboutUs" component={Aboutus} />
             <Route exact path="/Room/:id" component={Room} />
             <Route exact path="/detail" component={detail} />
@@ -61,7 +64,7 @@ function App() {
             <Route exact path="/Bill" component={Bill} />
             <Route exact path="/PackageOrderManagement/Details" component={PackageDetails} />
             <Route exact path="/ServicesManagement" component={ServicesManagement} />
-            <Route exact path="/DeliveryBoyDetail" component={DeliveryBoyDetail} />
+            <Route exact path="/CouponManagement" component={CouponManagement} />
             <Route exact path="/FilmsManagement" component={FilmsManagement} />
             <Route exact path="/text" component={CustomizedInputBase} />
             <Redirect from="*" to="/" />

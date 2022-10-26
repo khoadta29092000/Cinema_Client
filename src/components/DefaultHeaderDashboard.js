@@ -91,7 +91,7 @@ export default function Header(props) {
         }
     }
     function handleLogoutClick() {
-        localStorage.removeItem('user-token');
+        localStorage.removeItem('token');
         history.push("/");
 
     }

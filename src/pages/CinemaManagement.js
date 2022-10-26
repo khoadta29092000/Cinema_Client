@@ -22,7 +22,7 @@ export default function CinemaManagement(props) {
                     <Link underline="hover" className='hover:underline' to="/" color="inherit" >
                         Home
                     </Link>
-                    <Typography color="text.primary" className='underline'>Cinema Management</Typography>
+                    <Typography color="text.primary" className='underline'>Cinemas Management</Typography>
                 </Breadcrumbs>
             </div>
             <div className='mb-12'>

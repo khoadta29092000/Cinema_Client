@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import PublicOffIcon from '@mui/icons-material/PublicOff';
+import PublicIcon from '@mui/icons-material/Public';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -47,16 +48,23 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 const columns = [
     { id: 'Image', label: "Image", minWidth: 150 },
-    { id: 'UserName', label: "User Name", minWidth: 150 },
+    { id: 'Id', label: "Id", minWidth: 100 },
+    { id: 'Title', label: "Title", minWidth: 150 },
     {
-        id: 'FullName',
-        label: 'Full Name',
-        minWidth: 150,
+        id: 'Price',
+        label: 'Price',
+        minWidth: 100,
         align: '',
     },
     {
-        id: 'PhoneNumber',
-        label: 'Phone Number',
+        id: 'Quantity',
+        label: 'Quantity',
+        minWidth: 100,
+        align: '',
+    },
+    {
+        id: 'Active',
+        label: 'Active',
         minWidth: 100,
         align: '',
     },
@@ -100,10 +108,11 @@ export default function Content() {
     const [open, setOpen] = React.useState(false);
     const [selectedValue, setSelectedValue] = React.useState([]);
     const [id, setId] = useState("");
-    const [fullName, setFullName] = useState("");
-    const [userName, setUserName] = useState("");
-    const [password, setPassword] = useState("");
-    const [phone, setPhone] = useState("");
+    const [status, setStatus] = useState("success");
+    const [title, setTitle] = useState("");
+    const [quantity, setQuantity] = useState("");
+    const [price, setPrice] = useState("");
+    const [description, setDescription] = useState("");
     const [data, setData] = useState([]);
     const [search, setSearch] = useState("");
     const [filters, setFilters] = useState({
@@ -119,75 +128,69 @@ export default function Content() {
         console.log("111111", data);
         setOpen(true);
         setId(data.id);
-        setFullName(data.fullName);
-        setUserName(data.username);
-        setPassword(data.password);
-        setPhone(data.phone);
-        setImg(data.img);
-        setSelectedImage(data.img);
+        setTitle(data.title);
+        setQuantity(data.quantity);
+        setPrice(data.price != undefined ?  data.price.toFixed(3).replace(/\d(?=(\d{3})+\.)/g, "$&.") + "đ" : data.price);
+        setDescription(data.description);
+        setImg(data.image);
+        setSelectedImage(data.image);
         setSelectedValue(data);
     };
     const validName = new RegExp(/^.{6,3000}$/);
-    const validPhone = new RegExp(/(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/);
+    const validdescription = new RegExp(/(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/);
     const body = {
         id: id,
-        fullName: fullName,
-        username: userName,
-        password: password,
-        phone: phone,
-        img: img
+        title: title,
+        quantity: quantity,
+        price: price,
+        description: description,
+        image: img
     };
     const bodyCreate = {
 
-        fullName: fullName,
-        username: userName,
-        password: password,
-        phone: phone,
-        img: img
+        title: title,
+        quantity: quantity,
+        price: price,
+        description: description,
+        image: img
     };
     const handleClose = () => {
+
         setOpen(false);
         setSelectedImage(undefined);
         SetClick(false);
-
+        setSelectedValue([])
     };
     useEffect(() => {
-        featchDeliveryManList();
+        featchServiceList();
         setPage(0);
     }, [search]);
     function createData(data) {
 
-        let UserName = data.username;
-        let FullName = data.fullName;
-        let PhoneNumber = data.phone;
+        let Title = data.title;
+        let Id = data.id;
+        let Quantity = data.quantity;
+        let Price = data.price.toFixed(3).replace(/\d(?=(\d{3})+\.)/g, "$&.") + "đ";
+        let Active = (<button className="text-white  outline-none bg-black cursor-pointer rounded-lg   h-8 w-8" onClick={() => handleUpdateStatus(data.id)}>
+            {data.active == true ? <PublicIcon /> : <PublicOffIcon />}
+        </button>);
         let Action = (
-            <div>
-                <button className="text-white  outline-none bg-lightblue1 rounded-lg   h-8 w-8" >
-                    <Link
-                        to={{
-                            pathname: "/DeliveryBoyDetail",
-                            state: {
-                                name: data.id
-                            }
-                        }} className="">
-                        <RemoveRedEyeIcon />
-                    </Link>
-                </button>
-                <button className="text-white mx-2  outline-none bg-blue-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
-                    <EditIcon />
-                </button>
-                <button className="text-white  outline-none bg-red-600 rounded-lg   h-8 w-8" onClick={() => handleDelete(data)}>
-                    <DeleteIcon />
-                </button>
+            <div className='gap-x-8 flex'>
+               <button className="text-white  outline-none bg-yellow-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
+            <EditIcon />
+          </button>
+          <button className="text-white  outline-none bg-red-600 rounded-lg   h-8 w-8" onClick={() => handleDelete(data)}>
+            <DeleteIcon />
+          </button>
             </div>
         );
         let Image = (
             <img
-                src={data.img}
+                src={data.image}
                 loading="lazy"
                 className='h-28 w-28'
             />)
-        return { Image, UserName, FullName, PhoneNumber, Action };
+        return { Image, Id ,Title, Price, Quantity, Active,Action };
     }
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -195,7 +198,7 @@ export default function Content() {
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
-
+console.log("ngu qua ne", img)
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value);
         setPage(0);
@@ -212,12 +215,46 @@ export default function Content() {
         setSearch(childData)
 
     };
-
-    async function featchDeliveryManList() {
+    async function handleUpdateStatus(data) {
         try {
 
 
-            const requestURL = `http://www.subcriptionmilk.somee.com/api/DeliveryMen?search=${search}`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Service/UpdateActive?id=${data}`;
+
+            const res = await fetch(requestURL, {
+                method: `PUT`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                },
+            }).then(res => res.json())
+                .then(result => {
+
+                    if (result) {
+                        if (result?.statusCode == 200) {
+                            setMess(result?.message)
+                            setAlert(true)
+                            setStatus("success")
+                            featchServiceList();
+                        }
+
+                    } else {
+                        alert("Update UnSuccessfullly")
+                    }
+                    return res
+
+                });
+
+
+        } catch (error) {
+            console.log('Fail to fetch product list: ', error)
+        }
+    }
+    async function featchServiceList() {
+        try {
+
+
+            const requestURL = `http://cinemasystem.somee.com/api/Service?search=${search}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -254,9 +291,9 @@ export default function Content() {
     console.log("----------", page, rowsPerPage)
 
 
-    function UsernameExists(username) {
+    function quantityExists(quantity) {
         return data.some(function (el) {
-            return el.username == username;
+            return el.quantity == quantity;
         });
     }
 
@@ -287,54 +324,36 @@ export default function Content() {
             );
         }
     }
-    const [phoneErrorr, setPhoneErrorr] = useState(false)
-    const [nameError, setNameError] = useState(false)
-    const [message, setMess] = useState(false)
-    const [nameExists, setNameExists] = useState(false)
+    const [error, setError] = useState("")
+    const [message, setMess] = useState("")
 
-    async function handleUpdateOrCreate() {
-        if (!validName.test(fullName) || !validName.test(password) || !validName.test(userName)) {
-            setNameError(true)
-            setPhoneErrorr(false)
-            setNameExists(false)
-
-        } else if (!validPhone.test(phone)) {
-            setNameError(false)
-            setPhoneErrorr(true)
-            setNameExists(false)
-
-        }
-        else if (UsernameExists(userName) == true && selectedValue.id == undefined) {
-            setNameError(false)
-            setPhoneErrorr(false)
-            setNameExists(true)
-        }
-        else {
-            setNameError(false)
-            setPhoneErrorr(false)
-            setNameExists(false)
+    async function handleUpdateOrCreate(data) {
+       
 
             if (selectedValue.id != undefined) {
-                const res = await fetch(`http://www.subcriptionmilk.somee.com/api/DeliveryMen/update`, {
+                const res = await fetch(`http://cinemasystem.somee.com/api/Service/${selectedValue?.id}`, {
                     method: `PUT`,
                     headers: {
                         'Content-Type': 'application/json',
-
+                        'Authorization': `Bearer ${localStorage.getItem("token")}`,
                     },
                     body: JSON.stringify(body)
                 }).then(res => res.json())
                     .then(result => {
 
                         if (result) {
-                            if (result?.statusCode == 201) {
+                            if (result?.statusCode == 200) {
                                 setMess("Update Successfullly")
                                 setAlert(true)
                                 handleClose();
-                                featchDeliveryManList();
+                                featchServiceList();
+                            }else{
+                                setError(result?.message)
                             }
 
                         } else {
                             alert("Update UnSuccessfullly")
+                            
                         }
                         return res
 
@@ -345,22 +364,24 @@ export default function Content() {
                 return body
 
             } else {
-                const res = await fetch(`http://www.subcriptionmilk.somee.com/api/DeliveryMen/create`, {
+                const res = await fetch(`http://cinemasystem.somee.com/api/Service`, {
                     method: `POST`,
                     headers: {
                         'Content-Type': 'application/json',
-
+                        'Authorization': `Bearer ${localStorage.getItem("token")}`,
                     },
                     body: JSON.stringify(bodyCreate)
                 }).then(res => res.json())
                     .then(result => {
 
                         if (result) {
-                            if (result?.statusCode == 201) {
+                            if (result?.statusCode == 200) {
                                 setMess("Add Successfullly")
                                 setAlert(true)
                                 handleClose();
-                                featchDeliveryManList();
+                                featchServiceList();
+                            }else{
+                                setError(result?.message)
                             }
 
                         } else {
@@ -374,15 +395,15 @@ export default function Content() {
                     })
                 return body
             }
-        }
+        
     }
     async function handleDelete(data) {
 
-        let res = await fetch(`http://www.subcriptionmilk.somee.com/api/DeliveryMen/${data?.id}`, {
+        let res = await fetch(`http://cinemasystem.somee.com/api/Service/${data?.id}`, {
             method: `DELETE`,
             headers: {
                 'Content-Type': 'application/json',
-
+                'Authorization': `Bearer ${localStorage.getItem("token")}`,
             },
         }).then(res => res.json())
             .then(result => {
@@ -390,7 +411,7 @@ export default function Content() {
                 if (result?.statusCode === 200) {
                     setMess(result.content)
                     setAlert(true)
-                    featchDeliveryManList();
+                    featchServiceList();
                 } else {
                     alert("delete thất bại")
                     // setError(result.message)
@@ -437,10 +458,9 @@ export default function Content() {
                          Service Details
                     </BootstrapDialogTitle>
                     <DialogContent dividers >
-                        {nameError && <div className='text-red-600 ml-11 mb-5 text-xl'>Text 6-30 character </div>}
-                        {nameExists && <div className='text-red-600 ml-11 mb-5 text-xl'>Name Exists </div>}
+                      
 
-                        {phoneErrorr && <div className='text-red-600 ml-11 mb-5 text-xl'>phone must be valid</div>}
+                        {error && <div className='text-red-600 ml-11 mb-5 text-xl'>{error}</div>}
 
                         {Id}
                         <div className='max-w-5xl my-5 mx-auto'>
@@ -464,7 +484,7 @@ export default function Content() {
 
                         </div>
                         <div className='max-w-5xl my-5 mx-auto'>
-                            {selectedImage == undefined ? <div></div> : <img alt="" className='mx-auto h-48 w-48 my-5' src={click == false ? selectedValue.img : window.URL.createObjectURL(selectedImage)} />}
+                            {selectedImage == undefined ? <div></div> : <img alt="" className='mx-auto h-48 w-48 my-5' src={click == false ? selectedValue.image : window.URL.createObjectURL(selectedImage)} />}
                         </div>
                         <Button variant="contained"
                             component="label"
@@ -473,16 +493,17 @@ export default function Content() {
                             Save Img
                         </Button>
                         <div className='max-w-5xl my-5 mx-auto'>
-                            <TextField className='w-96 my-5' onChange={e => setFullName(e.target.value)} defaultValue={selectedValue.fullName} id="outlined-basic" label="Full Name" variant="outlined" />
+                            <TextField className='w-96 my-5' onChange={e => setTitle(e.target.value)} defaultValue={selectedValue.title} id="outlined-basic" label="Full Name" variant="outlined" />
                         </div>
                         <div className='max-w-5xl my-5 mx-auto'>
-                            <TextField className='w-96 my-5' onChange={e => setUserName(e.target.value)} defaultValue={selectedValue.username} autoComplete='off' id="outlined-basic" label="Username" variant="outlined" />
+                            <TextField className='w-96 my-5' onChange={e => setQuantity(e.target.value)} defaultValue={selectedValue.quantity} autoComplete='off' id="outlined-basic" label="quantity" variant="outlined" />
                         </div>
                         <div className='max-w-5xl my-5 mx-auto'>
-                            <TextField className='w-96 my-5' onChange={e => setPassword(e.target.value)} autoComplete='off' defaultValue={selectedValue.password} id="outlined-basic" label="Password" variant="outlined" type="password" />
+                            <TextField className='w-96 my-5' onChange={e => setPrice(e.target.value)} autoComplete='off' defaultValue={price} id="outlined-basic" label="price" variant="outlined" type="price" />
                         </div>
                         <div className='max-w-5xl my-5 mx-auto'>
-                            <TextField className='w-96 my-5' onChange={e => setPhone(e.target.value)} defaultValue={selectedValue.phone} id="outlined-basic" label="Phone" variant="outlined" />
+                            <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Description</label>
+                            <textarea id="message" onChange={e => setDescription(e.target.value)} defaultValue={selectedValue.description} rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Your message..."></textarea>
                         </div>
                     </DialogContent>
                     <DialogActions>
