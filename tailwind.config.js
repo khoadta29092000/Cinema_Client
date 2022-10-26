@@ -18,6 +18,7 @@ module.exports = {
             colors: {
                 'lightblue2': '#005B88',
                 'lightblue1': '#B2E5FF',
+                
               },
             backgroundImage: () => ({
                 'login-background':

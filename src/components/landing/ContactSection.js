@@ -1,39 +1,85 @@
 import Title from 'components/landing/Title';
-
+import "./HomeApp.css";
 import Form from 'components/landing/Form';
+import React from "react";
+import backGround from "../../../src/assets/img/backgroundlogin.jpg";
+import { Swiper, SwiperSlide } from "swiper/react";
+// import "swiper/css";
+
+import { Autoplay } from "swiper";
 
 export default function ContactSection() {
     return (
-        <section className="pb-20 relative block bg-white">
-            <div className="container max-w-7xl mx-auto px-4 lg:pt-24">
-                <Title heading="Các bộ phim hot trong năm">
-                </Title>
-
-                <div className="grid mx-auto justify-items-center grid-cols-1 md:grid-cols-2  2xl:grid-cols-4">               
-                    <div>
-                    
-                        <h3 className='font-bold text-2xl text-center mb-2'>1.skytour</h3>
-                
-                        <img src="https://www.cgv.vn/media/catalog/product/cache/1/thumbnail/190x260/2e2b8cd282892c71872b9e67d2cb5039/4/7/470x700_skytour.jpg" width="200" /> 
-                       
-                    </div>
-                     <div>
-                       
-                        <h3 className='font-bold text-2xl text-center mb-2'>2.Bỗng dưng trúng số</h3>
-                        <img className='center' src="https://www.cgv.vn/media/catalog/product/cache/1/thumbnail/240x388/c88460ec71d04fa96e628a21494d2fd3/b/d/bdts_main-poster_vi_print_1_.jpg" width="200" /> 
-                    </div>
-                    <div>
-                        <h3 className='font-bold text-2xl  mb-2'>3.Thám tử Lừng Danh conan</h3>
-                        <img src="https://www.cgv.vn/media/catalog/product/cache/1/thumbnail/240x388/c88460ec71d04fa96e628a21494d2fd3/r/s/rsz_conan_movie_2022-_vnese_poster_1_.jpg" width="200" /> 
-                    </div>
-                    <div>
-                        <h3 className='font-bold text-xl text-center mb-2'>4.BLACK ADAM</h3>
-                        <img src="https://media.lottecinemavn.com/Media/MovieFile/MovieImg/202209/10764_103_100003.jpg" width="200" /> 
-                    </div>
-                </div>
-
-                <Form />
+      
+        <div
+        id="homeApp"
+        style={{
+          background: `url(${backGround}) center / cover`,
+          padding: "120px 0",
+        }}
+      >
+        <div className="container xl:max-w-7xl ">
+          <div className="grid grid-cols-1 lg:grid-cols-2">
+            <div className="text-white px-4 py-5 lg:py-20 text-center lg:text-left">
+              <p className="text-3xl font-bold tracking-wider">
+                Ứng dụng tiện lợi dành cho
+              </p>
+              <p className="text-3xl font-bold tracking-wider">
+                người yêu điện ảnh
+              </p>
+              <p className="text-base">
+                Không chỉ đặt vé, bạn còn có thể bình luận phim, chấm điểm rạp và
+                đổi quà hấp dẫn.
+              </p>
+              <a
+                href="https://apps.apple.com/us/app/123phim-mua-ve-lien-tay-chon/id615186197"
+                target="_blank"
+                className="inline-block px-7 py-5 mt-4 text-white text-lg font-semibold rounded text-coolGray-100 uppercase hover:text-white bg-red-500 hover:bg-red-600 transition duration-200"
+              >
+                App miễn phí - Tải về ngay!
+              </a>
+              <p className="mt-3">
+                TIX có hai phiên bản{" "}
+                <a
+                  href="https://apps.apple.com/us/app/123phim-mua-ve-lien-tay-chon/id615186197"
+                  target="_blank"
+                  className="text-white underline hover:underline hover:text-red-400"
+                >
+                  IOS
+                </a>{" "}
+                &{" "}
+                <a
+                  href="https://play.google.com/store/apps/details?id=vn.com.vng.phim123"
+                  target="_blank"
+                  className="text-white underline hover:underline hover:text-red-400"
+                >
+                  Android
+                </a>
+              </p>
             </div>
-        </section>
+            <div className="flex justify-center">
+              <div className="relative">
+                <img
+                  src="./images/img-mobile.png"
+                  alt="imgMobile"
+                  className="w-72 lg:w-52"
+                />
+                <div className="mobile">
+                  <Swiper
+                    className="mySwiper"
+                    loop={true}
+                    autoplay={{
+                      delay: 2500,
+                      disableOnInteraction: false,
+                    }}
+                    modules={[Autoplay]}
+                  >
+                  </Swiper>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     );
 }

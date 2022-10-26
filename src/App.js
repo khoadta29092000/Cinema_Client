@@ -32,6 +32,7 @@ import DeliveryBoyDetail from 'pages/DeliveryBoyDetail';
 import ProfileDashboard from 'pages/ProfileDashboard';
 import PackageDetails from 'pages/PackageDetails';
 import detail from 'pages/detail';
+import Room from 'pages/Room';
 
 
 
@@ -41,6 +42,7 @@ function App() {
         <Switch>
             <Route exact path="/" component={Landing} />
             <Route exact path="/AboutUs" component={Aboutus} />
+            <Route exact path="/Room/:id" component={Room} />
             <Route exact path="/detail" component={detail} />
             <Route exact path="/ServiceAreas" component={ServiceAreas} />
             <Route exact path="/profile" component={Profile} />
