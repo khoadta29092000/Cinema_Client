@@ -52,7 +52,7 @@ export default function WorkingSection() {
 
 
     return (
-        <section className="pb-20  -mt-32">
+        <section className="pb-20 mt-1">
             <div className="container max-w-7xl mx-auto px-4">
                 <div className="flex flex-wrap relative z-50">
                     <StatusCard color="red" icon="stars" title="Homemade Paneer">

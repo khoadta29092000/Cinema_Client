@@ -34,6 +34,7 @@ import detail from 'pages/detail';
 import Room from 'pages/Room';
 
 import Test from 'components/Test';
+import service from 'pages/service';
 
 
 
@@ -43,6 +44,7 @@ function App() {
     return (
         <Switch>
             <Route exact path="/" component={Landing} />
+            <Route exact path="/service" component={service} />
             <Route exact path="/Test" component={Test} />
             <Route exact path="/AboutUs" component={Aboutus} />
             <Route exact path="/Room/:id" component={Room} />
