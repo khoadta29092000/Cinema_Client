@@ -68,6 +68,12 @@ const columns = [
     minWidth: 100,
     align: '',
   },
+   {
+    id: 'Role',
+    label: 'Role',
+    minWidth: 100,
+    align: '',
+  },
   {
     id: 'Active',
     label: 'Active',
@@ -153,9 +159,8 @@ export default function Content() {
     SetClick(false);
 
   };
-  const validName = new RegExp(/^.{4,3000}$/);
-  const validPhone = new RegExp(/(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/);
-  const validNum = new RegExp("^[0-9]*$");
+  let dataRole = [{ id: 1, name: "Admin" }, { id: 2, name: "Employee" }, { id: 3, name: "Customer" },]
+  
 
   const body = {
     id: id,
@@ -186,6 +191,12 @@ export default function Content() {
     let Id = data.id;
     let FullName = data.fullName;
     let Phone = data.phone;
+    let Role;
+    dataRole.map(item => {
+      if(data.roleId == item.id){
+        return Role = item.name
+      }
+    })
     let Image = (
       <img
         src={data.avatar}
@@ -206,7 +217,7 @@ export default function Content() {
       </div>
   );
    
-    return { Image, Id, Email, FullName, Phone, Active, Action };
+    return { Image, Id, Email, FullName, Phone, Role, Active, Action };
   }
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -479,7 +490,7 @@ export default function Content() {
 
 
 
-  let dataRole = [{ id: 1, name: "Admin" }, { id: 2, name: "Employee" }, { id: 3, name: "Customer" },]
+  
 
 
   const AccOptions = dataRole.map((item, index) => ({

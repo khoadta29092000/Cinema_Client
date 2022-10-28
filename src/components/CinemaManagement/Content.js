@@ -115,6 +115,7 @@ export default function Content() {
     const [img, setImg] = useState("");
     const [price, setPrice] = useState("");
     const [data, setData] = useState([]);
+    const [dataLocation, setDataLocation] = useState([]);
     const [search, setSearch] = useState("");
     const [status, setStatus] = useState("success");
     const [alert, setAlert] = useState(false);
@@ -150,8 +151,12 @@ export default function Content() {
         let Name = data.name;
         let Id = data.id;
         let Address = data.address ;
-        let Location = data.locationId ;
-
+        let Location ;
+        dataLocation.map(item => {
+            if(item.id == data.locationId){
+                return Location = item.name;
+            }
+        })
         let Image = (
             <img
                 src={data.image}
@@ -215,6 +220,7 @@ export default function Content() {
       }
 
     useEffect(() => {
+        featchLocationList();
         featchCinemaList();
         setPage(0);
     }, [search]);
@@ -227,16 +233,7 @@ export default function Content() {
         setPage(0);
     };
 
-    function TitleExists(title) {
-        return data.some(function (el) {
-            return el.title.toLowerCase() == title.toLowerCase();
-        });
-    }
-    function IdExists(id) {
-        return data.some(function (el) {
-            return el.id == id;
-        });
-    }
+
     const rows1 = data.map((data, index) => {
         return (createData(data))
     })
@@ -273,11 +270,11 @@ export default function Content() {
             console.log('Fail to fetch product list: ', error)
         }
     }
-    async function featchCinemaList() {
+    async function featchLocationList() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem.somee.com/api/Cinema?search=${search}`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Location`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -290,7 +287,7 @@ export default function Content() {
 
             const data = responseJSON;
 
-            setData(responseJSON.data)
+            setDataLocation(responseJSON.data)
 
             console.log("aa fetch", responseJSON.data)
 

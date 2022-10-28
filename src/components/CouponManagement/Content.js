@@ -7,14 +7,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import InputBase from '@mui/material/InputBase';
 import IconButton from '@mui/material/IconButton';
-import SearchIcon from '@mui/icons-material/Search';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -24,9 +20,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField';
 import { useEffect, useState } from "react";
 import Search from 'components/Search';
-import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage"
-import { storage } from 'firebase';
-import { v4 } from "uuid";
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import PublicOffIcon from '@mui/icons-material/PublicOff';
@@ -128,32 +121,35 @@ export default function Content() {
     const [click, SetClick] = useState(false)
     const [selectedImage, setSelectedImage] = useState("");
     const [alert, setAlert] = useState(false);
-    let closeBody = {
-        id: '',
-        discount: '',
-        startDate: '',
-        endDate: '',
-        description: '',
-    }
+    let DataBody;
     const formik = useFormik({
         initialValues: {
             id: '',
             discount: '',
-           
+            startDate: '',
             endDate: '',
-            
+            description: '',
         },
         validationSchema: Yup.object().shape({
             id: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required('Required'),
-            discount: Yup.number().typeError("Must be number!").required('Required'),
+            discount: Yup.number().typeError("Must be number!").max(100,"Dicount not > 100%").required('Required'),
             startDate: Yup.date().required('Required'),
-            endDate: Yup.date(),              
+            endDate: Yup.date(),
             description: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required("Required"),
 
         }), onSubmit: values => {
-            
-            console.log("da bam", JSON.stringify(values))
-            handleUpdateOrCreate(values);
+           
+           
+                DataBody = {
+                    id: values.id,
+                    discount: values.discount,
+                    startDate: values.startDate,
+                    endDate: values.endDate,
+                    description: values.description,
+                }
+                console.log("da bam", DataBody)
+                handleUpdateOrCreate(values);
+           
         }
     });
     async function handleUpdateOrCreate(values) {
@@ -165,7 +161,7 @@ export default function Content() {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem("token")}`,
                 },
-                body: JSON.stringify(values)
+                body: JSON.stringify(DataBody)
             }).then(res => res.json())
                 .then(result => {
 
@@ -199,7 +195,7 @@ export default function Content() {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem("token")}`,
                 },
-                body: JSON.stringify(values)
+                body: JSON.stringify(DataBody)
             }).then(res => res.json())
                 .then(result => {
 
@@ -233,10 +229,11 @@ export default function Content() {
     const handleClickOpen = (data) => {
         console.log("111111", data);
         setOpen(true);
-        
-        if(data != undefined){
+
+        if (data != undefined) {
             formik.setValues(data);
         }
+
         setSelectedValue(data);
         setSelectedImage(data.img);
         setStartDate(data.startDate)
@@ -248,7 +245,7 @@ export default function Content() {
     const handleClose = () => {
         setOpen(false);
         setSelectedImage(undefined);
-        formik.setValues(closeBody);
+
         SetClick(false);
     };
 
@@ -427,14 +424,14 @@ export default function Content() {
     }
     const handleChange = (newValue) => {
         setStartDate(newValue);
-       
-        
+
+
     };
     const handleChange1 = (newValue) => {
         setEndDate(newValue);
     };
 
-  
+
     return (
         <section className=" ml-0 xl:ml-64  px-5 pt-10  ">
             <Snackbar open={alert} autoHideDuration={4000} onClose={handleCloseAlert} className="float-left w-screen">
@@ -468,11 +465,11 @@ export default function Content() {
                                     {formik.errors.id && formik.touched.id ? (
                                         <Box > <div className="text-red-600 mb-2 font-bold">{formik.errors.id}</div>
                                             <TextField error className='w-96 my-5' onChange={formik.handleChange}
-                                                onBlur={formik.handleBlur} defaultValue={formik.values.id}  id="id" label="Id" variant="outlined"  />
-                                           
+                                                onBlur={formik.handleBlur} defaultValue={formik.values.id} id="id" label="Id" variant="outlined" />
+
                                         </Box>
-                                    ) : <TextField  className='w-96 my-5' onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur} defaultValue={formik.values.id}  id="id" label="Id"/>}
+                                    ) : <TextField className='w-96 my-5' onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur} defaultValue={formik.values.id} id="id" label="Id" />}
                                 </div>
                                 :
                                 <div className='max-w-5xl my-5 mx-auto'>
@@ -482,16 +479,16 @@ export default function Content() {
                             }
 
                             <div className='max-w-5xl my-5 mx-auto'>
-                         
-                                    {formik.errors.discount && formik.touched.discount ? (
-                                        <Box > <div className="text-red-600 mb-2 font-bold">{formik.errors.discount}</div>
-                                            <TextField error className='w-96 my-5' onChange={formik.handleChange}
-                                                onBlur={formik.handleBlur} defaultValue={formik.values.discount}  id="discount" label="discount" variant="outlined"  />           
-                                        </Box>
-                                    ) :  <TextField className='w-96 my-5' onChange={formik.handleChange}
+
+                                {formik.errors.discount && formik.touched.discount ? (
+                                    <Box > <div className="text-red-600 mb-2 font-bold">{formik.errors.discount}</div>
+                                        <TextField error className='w-96 my-5' onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur} defaultValue={formik.values.discount} id="discount" label="discount" variant="outlined" />
+                                    </Box>
+                                ) : <TextField className='w-96 my-5' onChange={formik.handleChange}
                                     onBlur={formik.handleBlur} defaultValue={formik.values.discount} autoComplete='off' id="discount" label="discount" variant="outlined" />}
-                               
-                               
+
+
                             </div>
                             <div className='max-w-5xl my-5 mx-auto'>
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -525,11 +522,11 @@ export default function Content() {
 
                             </div>
                             <div className='max-w-5xl my-5 mx-auto'>
-                            {formik.errors.description && formik.touched.description ? (
-                                       <div className="text-red-600 mb-2 font-bold">{formik.errors.description}</div>
+                                {formik.errors.description && formik.touched.description ? (
+                                    <div className="text-red-600 mb-2 font-bold">{formik.errors.description}</div>
 
-                                    ) : null }
-                                    
+                                ) : null}
+
                                 <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Description</label>
                                 <textarea onChange={formik.handleChange}
                                     onBlur={formik.handleBlur} defaultValue={formik.values.description} id="description" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Your message..."></textarea>

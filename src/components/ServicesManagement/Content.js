@@ -31,7 +31,9 @@ import { storage } from 'firebase';
 import { v4 } from "uuid";
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-
+import { Formik, Form, Field } from 'formik';
+import * as Yup from "yup";
+import { Box } from '@mui/system';
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -125,35 +127,18 @@ export default function Content() {
     const [img, setImg] = useState("");
     const [alert, setAlert] = useState(false);
     const handleClickOpen = (data) => {
-        console.log("111111", data);
+       
         setOpen(true);
         setId(data.id);
         setTitle(data.title);
         setQuantity(data.quantity);
-        setPrice(data.price != undefined ?  data.price.toFixed(3).replace(/\d(?=(\d{3})+\.)/g, "$&.") + "đ" : data.price);
+        setPrice(data.price != undefined ? data.price.toFixed(3).replace(/\d(?=(\d{3})+\.)/g, "$&.") + "đ" : data.price);
         setDescription(data.description);
         setImg(data.image);
         setSelectedImage(data.image);
         setSelectedValue(data);
     };
-    const validName = new RegExp(/^.{6,3000}$/);
-    const validdescription = new RegExp(/(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/);
-    const body = {
-        id: id,
-        title: title,
-        quantity: quantity,
-        price: price,
-        description: description,
-        image: img
-    };
-    const bodyCreate = {
 
-        title: title,
-        quantity: quantity,
-        price: price,
-        description: description,
-        image: img
-    };
     const handleClose = () => {
 
         setOpen(false);
@@ -176,12 +161,12 @@ export default function Content() {
         </button>);
         let Action = (
             <div className='gap-x-8 flex'>
-               <button className="text-white  outline-none bg-yellow-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
-            <EditIcon />
-          </button>
-          <button className="text-white  outline-none bg-red-600 rounded-lg   h-8 w-8" onClick={() => handleDelete(data)}>
-            <DeleteIcon />
-          </button>
+                <button className="text-white  outline-none bg-yellow-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
+                    <EditIcon />
+                </button>
+                <button className="text-white  outline-none bg-red-600 rounded-lg   h-8 w-8" onClick={() => handleDelete(data)}>
+                    <DeleteIcon />
+                </button>
             </div>
         );
         let Image = (
@@ -190,7 +175,7 @@ export default function Content() {
                 loading="lazy"
                 className='h-28 w-28'
             />)
-        return { Image, Id ,Title, Price, Quantity, Active,Action };
+        return { Image, Id, Title, Price, Quantity, Active, Action };
     }
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -198,7 +183,6 @@ export default function Content() {
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
-console.log("ngu qua ne", img)
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value);
         setPage(0);
@@ -276,26 +260,15 @@ console.log("ngu qua ne", img)
         }
     }
 
-    console.log("aa fetch", data)
-
     let Id;
     if (id != undefined) {
         Id = (<div className='max-w-5xl my-5 mx-auto'>
-            <TextField className='w-96 my-5' defaultValue={id} onChange={e => setId(e.target.value)} disabled id="outlined-basic" label="Id" variant="outlined" />
+            <TextField className='w-96 my-5' defaultValue={id} onChange={e => setId(e.target.value)} disabled label="Id" variant="outlined" />
         </div>)
     } else {
 
     }
 
-
-    console.log("----------", page, rowsPerPage)
-
-
-    function quantityExists(quantity) {
-        return data.some(function (el) {
-            return el.quantity == quantity;
-        });
-    }
 
     const rows1 = data.map((data, index) => {
         return (createData(data))
@@ -328,74 +301,74 @@ console.log("ngu qua ne", img)
     const [message, setMess] = useState("")
 
     async function handleUpdateOrCreate(data) {
-       
 
-            if (selectedValue.id != undefined) {
-                const res = await fetch(`http://cinemasystem.somee.com/api/Service/${selectedValue?.id}`, {
-                    method: `PUT`,
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem("token")}`,
-                    },
-                    body: JSON.stringify(body)
-                }).then(res => res.json())
-                    .then(result => {
 
-                        if (result) {
-                            if (result?.statusCode == 200) {
-                                setMess("Update Successfullly")
-                                setAlert(true)
-                                handleClose();
-                                featchServiceList();
-                            }else{
-                                setError(result?.message)
-                            }
+        if (selectedValue.id != undefined) {
+            const res = await fetch(`http://cinemasystem.somee.com/api/Service/${selectedValue?.id}`, {
+                method: `PUT`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: JSON.stringify(data)
+            }).then(res => res.json())
+                .then(result => {
 
+                    if (result) {
+                        if (result?.statusCode == 200) {
+                            setMess("Update Successfullly")
+                            setAlert(true)
+                            handleClose();
+                            featchServiceList();
                         } else {
-                            alert("Update UnSuccessfullly")
-                            
+                            setError(result?.message)
                         }
-                        return res
 
-                    })
-                    .catch((error) => {
-                        throw ('Invalid Token')
-                    })
-                return body
+                    } else {
+                        alert("Update UnSuccessfullly")
 
-            } else {
-                const res = await fetch(`http://cinemasystem.somee.com/api/Service`, {
-                    method: `POST`,
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem("token")}`,
-                    },
-                    body: JSON.stringify(bodyCreate)
-                }).then(res => res.json())
-                    .then(result => {
+                    }
+                    return res
 
-                        if (result) {
-                            if (result?.statusCode == 200) {
-                                setMess("Add Successfullly")
-                                setAlert(true)
-                                handleClose();
-                                featchServiceList();
-                            }else{
-                                setError(result?.message)
-                            }
+                })
+                .catch((error) => {
+                    throw ('Invalid Token')
+                })
+            
 
+        } else {
+            const res = await fetch(`http://cinemasystem.somee.com/api/Service`, {
+                method: `POST`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: JSON.stringify(data)
+            }).then(res => res.json())
+                .then(result => {
+
+                    if (result) {
+                        if (result?.statusCode == 200) {
+                            setMess("Add Successfullly")
+                            setAlert(true)
+                            handleClose();
+                            featchServiceList();
                         } else {
-                            alert("Add UnSuccessfullly")
+                            setError(result?.message)
                         }
-                        return res
 
-                    })
-                    .catch((error) => {
-                        throw ('Invalid Token')
-                    })
-                return body
-            }
-        
+                    } else {
+                        alert("Add UnSuccessfullly")
+                    }
+                    return res
+
+                })
+                .catch((error) => {
+                    throw ('Invalid Token')
+                })
+            
+        }
+
     }
     async function handleDelete(data) {
 
@@ -409,7 +382,7 @@ console.log("ngu qua ne", img)
             .then(result => {
 
                 if (result?.statusCode === 200) {
-                    setMess(result.content)
+                    setMess(result.message)
                     setAlert(true)
                     featchServiceList();
                 } else {
@@ -443,7 +416,7 @@ console.log("ngu qua ne", img)
             <Paper className='' sx={{ width: '100%', overflow: 'hidden' }}>
                 <TableHead >
                     <div className='pt-2 pl-4 block font-semibold text-xl'>
-                    Service  Management
+                        Service  Management
                     </div>
                 </TableHead>
                 <button className='bg-blue-600 text-white rounded-md ml-5 my-6 py-2 px-4' onClick={handleClickOpen}>
@@ -454,64 +427,118 @@ console.log("ngu qua ne", img)
                     aria-labelledby="customized-dialog-title"
                     open={open}
                 >
-                    <BootstrapDialogTitle onClose={handleClose}>
-                         Service Details
-                    </BootstrapDialogTitle>
-                    <DialogContent dividers >
-                      
+                    <Formik
+                        initialValues={{
+                            id: "",
+                            title: "",
+                            quantity: "",
+                            price: "",
+                            description: "",
+                            image: ""
+                        }}
+                        validationSchema={Yup.object().shape({
+                            title: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required('Required'),
+                            quantity: Yup.number().typeError("Must be number!").max(10000, "Too Long!").required('Required'),
+                            price:Yup.number().typeError("Must be number!").max(4000, "Too Long!").required('Required'),
+                            description: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required('Required'),
+                            image: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required('Required'),
+                        })}
+                        onSubmit={values => {
+                            handleUpdateOrCreate(values);
+                            console.log("ngu xa", values);
+                        }}
+                    >
+                        {props => (
+                            <Form>
+                                <BootstrapDialogTitle onClose={handleClose}>
+                                    Service Details
+                                </BootstrapDialogTitle>
+                                <DialogContent dividers >
 
-                        {error && <div className='text-red-600 ml-11 mb-5 text-xl'>{error}</div>}
 
-                        {Id}
-                        <div className='max-w-5xl my-5 mx-auto'>
-                            <Button
-                                variant="contained"
-                                component="label"
-                                className='bg-blue-600 text-white rounded-md ml-5 my-6 py-2 px-4'
-                            >
-                                Upload Image
-                                <input
-                                    type="file"
-                                    hidden
+                                    {error && <div className='text-red-600 ml-11 mb-5 text-xl'>{error}</div>}
 
-                                    onChange={(event) => {
-                                        setSelectedImage(event.target.files[0]);
-                                        SetClick(true);
+                                    {Id}
+                                    {props.errors.image && props.touched.image ? <div className="text-red-600 mb-2 font-bold">{props.errors.image}</div> : null}
+                                    <div className='max-w-5xl my-5 mx-auto'>
+                                        <Button
+                                            variant="contained"
+                                            component="label"
+                                            className='bg-blue-600 text-white rounded-md ml-5 my-6 py-2 px-4'
+                                        >
+                                            Upload Image
+                                            <input
+                                                type="file"
+                                                hidden
 
-                                    }}
-                                />
-                            </Button>
+                                                onChange={(event) => {
+                                                    setSelectedImage(event.target.files[0]);
+                                                    SetClick(true);
 
-                        </div>
-                        <div className='max-w-5xl my-5 mx-auto'>
-                            {selectedImage == undefined ? <div></div> : <img alt="" className='mx-auto h-48 w-48 my-5' src={click == false ? selectedValue.image : window.URL.createObjectURL(selectedImage)} />}
-                        </div>
-                        <Button variant="contained"
-                            component="label"
+                                                }}
+                                            />
+                                        </Button>
 
-                            onClick={handleUpload} className='bg-blue-600 text-white rounded-md ml-5 my-6 py-2 px-4' >
-                            Save Img
-                        </Button>
-                        <div className='max-w-5xl my-5 mx-auto'>
-                            <TextField className='w-96 my-5' onChange={e => setTitle(e.target.value)} defaultValue={selectedValue.title} id="outlined-basic" label="Full Name" variant="outlined" />
-                        </div>
-                        <div className='max-w-5xl my-5 mx-auto'>
-                            <TextField className='w-96 my-5' onChange={e => setQuantity(e.target.value)} defaultValue={selectedValue.quantity} autoComplete='off' id="outlined-basic" label="quantity" variant="outlined" />
-                        </div>
-                        <div className='max-w-5xl my-5 mx-auto'>
-                            <TextField className='w-96 my-5' onChange={e => setPrice(e.target.value)} autoComplete='off' defaultValue={price} id="outlined-basic" label="price" variant="outlined" type="price" />
-                        </div>
-                        <div className='max-w-5xl my-5 mx-auto'>
-                            <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Description</label>
-                            <textarea id="message" onChange={e => setDescription(e.target.value)} defaultValue={selectedValue.description} rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Your message..."></textarea>
-                        </div>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleUpdateOrCreate}>
+                                    </div>
+                                    <div className='max-w-5xl my-5 mx-auto'>
+                                        {selectedImage == undefined ? <div></div> : <img alt="" className='mx-auto h-24 w-24 my-5' src={click == false ? selectedValue.img : window.URL.createObjectURL(selectedImage)} />}
+                                    </div>
+                                    <Button variant="contained"
+                                        component="label"
 
-                            Save
-                        </Button>
-                    </DialogActions>
+                                        onClick={handleUpload} className='bg-blue-600 text-white rounded-md ml-5 my-6 py-2 px-4' >
+                                        Save Img
+                                    </Button>
+                                    <div className='max-w-5xl my-5 mx-auto'>
+                                        {props.errors.title && props.touched.title
+                                            ? (<Box><div className="text-red-600 mb-2 font-bold">{props.errors.title}</div>
+                                                <TextField error onChange={props.handleChange}
+                                                    onBlur={props.handleBlur} value={props.values.title}
+                                                    id="title" className='w-96 my-5' label="Title" variant="outlined" /></Box>)
+                                            : <TextField onChange={props.handleChange}
+                                                onBlur={props.handleBlur} value={props.values.title}
+                                                id="title" className='w-96 my-5' label="Title" variant="outlined" />}
+                                        
+                                    </div>
+                                    <div className='max-w-5xl my-5 mx-auto'>
+                                    {props.errors.quantity && props.touched.quantity
+                                            ? (<Box><div className="text-red-600 mb-2 font-bold">{props.errors.quantity}</div>
+                                                <TextField error onChange={props.handleChange}
+                                                    onBlur={props.handleBlur} value={props.values.quantity}
+                                                    id="quantity" className='w-96 my-5' label="Quantity" variant="outlined" /></Box>)
+                                            : <TextField onChange={props.handleChange}
+                                                onBlur={props.handleBlur} value={props.values.quantity}
+                                                id="quantity" className='w-96 my-5' label="Quantity" variant="outlined" />}
+                                       
+                                    </div>
+                                    <div className='max-w-5xl my-5 mx-auto'>
+                                    {props.errors.price && props.touched.price
+                                            ?( <Box><div className="text-red-600 mb-2 font-bold">{props.errors.price}</div>
+                                                <TextField error onChange={props.handleChange}
+                                                    onBlur={props.handleBlur} value={props.values.price}
+                                                    id="price" className='w-96 my-5' label="Quantity" variant="outlined" /></Box>)
+                                            : <TextField onChange={props.handleChange}
+                                                onBlur={props.handleBlur} value={props.values.price}
+                                                id="price" className='w-96 my-5' label="Quantity" variant="outlined" />}
+                                      
+                                    </div>
+                                    <div className='max-w-5xl my-5 mx-auto'>
+                                    {props.errors.description && props.touched.description ? <div className="text-red-600 mb-2 font-bold">{props.errors.description}</div> : null}
+                                        <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Description</label>
+                                        <textarea onChange={props.handleChange}
+                                            onBlur={props.handleBlur} value={props.values.description} id="description" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Your message..."></textarea>
+                                    </div>
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button type='submit' >
+
+                                        Save
+                                    </Button>
+                                </DialogActions>
+                            </Form>
+                        )}
+                    </Formik>
+
                 </BootstrapDialog>
                 <div className='pr-5 my-6 float-right'>
 
@@ -563,7 +590,7 @@ console.log("ngu qua ne", img)
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
             </Paper>
-        </section>
+        </section >
     );
 }
 

@@ -50,18 +50,18 @@ const columns = [
     { id: 'Image', label: "Image", minWidth: 150 },
     { id: 'Id', label: "Id", minWidth: 100 },
     {
-        id: 'Name',
-        label: 'Name',
+        id: 'Title',
+        label: 'Title',
         minWidth: 150,
     },
     {
-        id: 'Address',
-        label: 'Address',
+        id: 'Time',
+        label: 'Time',
         minWidth: 100,
     },
     {
-        id: 'Location',
-        label: 'Location',
+        id: 'Rated',
+        label: 'Rated',
         minWidth: 100,
     },
     {
@@ -147,9 +147,9 @@ export default function Content() {
         price: price
     };
     function createData(data) {
-        let Name = data.name;
-        let Address = data.address ;
-        let Location = data.locationId ;
+        let Title = data.title;
+        let Time = data.time + " Phút" ;
+        let Rated = data.rated ;
         let Id = data.id ;
         
         let Image = (
@@ -172,7 +172,7 @@ export default function Content() {
         </div>
     );
 
-        return { Image, Id,Name, Address, Location,Active,Action };
+        return { Image, Id,Title, Time, Rated,Active,Action };
     }
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -183,7 +183,7 @@ export default function Content() {
         try {
     
     
-          const requestURL = `http://www.cinemasystem.somee.com/api/Cinema/UpdateActive?id=${data}`;
+          const requestURL = `http://www.cinemasystem.somee.com/api/Film/UpdateActive?id=${data}`;
     
           const res = await fetch(requestURL, {
             method: `PUT`,
@@ -253,7 +253,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem.somee.com/api/Cinema?search=${search}`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Film?search=${search}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -274,34 +274,7 @@ export default function Content() {
             console.log('Fail to fetch product list: ', error)
         }
     }
-    async function featchCinemaList() {
-        try {
-
-
-            const requestURL = `http://www.cinemasystem.somee.com/api/Cinema?search=${search}`;
-
-            const response = await fetch(requestURL, {
-                method: `GET`,
-                headers: {
-                    'Content-Type': 'application/json',
-
-                },
-            });
-            const responseJSON = await response.json();
-
-            const data = responseJSON;
-
-            setData(responseJSON.data)
-
-            console.log("aa fetch", responseJSON.data)
-
-        } catch (error) {
-            console.log('Fail to fetch product list: ', error)
-        }
-    }
-    console.log("aa fetch", data)
-
-
+    
     const [progresspercent, setProgresspercent] = useState(0);
 
     async function handleUpload() {
@@ -336,7 +309,7 @@ export default function Content() {
     async function handleUpdateOrCreate() {
         
             if (selectedValue.id != undefined) {
-                const res = await fetch(`http://www.cinemasystem.somee.com/api/Cinema/${selectedValue.id}`, {
+                const res = await fetch(`http://www.cinemasystem.somee.com/api/Film/${selectedValue.id}`, {
                     method: `PUT`,
                     headers: {
                         'Content-Type': 'application/json',
