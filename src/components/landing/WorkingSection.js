@@ -8,7 +8,7 @@ import Button from '@mui/material/Button';
 import CardMedia from '@mui/material/CardMedia';
 import { Link } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
-
+import './Flim_Flip.css'
 export default function WorkingSection() {
     const [dataProducts, setDataProduct] = useState([]);
     var data = [
@@ -52,7 +52,7 @@ export default function WorkingSection() {
 
 
     return (
-        <section className="pb-20  -mt-32">
+        <section className="pb-20 mt-1">
             <div className="container max-w-7xl mx-auto px-4">
                 <div className="flex flex-wrap relative z-50">
                     <StatusCard color="red" icon="stars" title="Homemade Paneer">
@@ -76,10 +76,9 @@ export default function WorkingSection() {
                     </StatusCard>
                 </div>
                 <div className='mt-32 text-center '>
-                    <h2 className='font-bold text-5xl mb-5'>Discover Our Products</h2>
-                    <p className='text-gray-500 text-sm '> All products will be delivered the following day due to shortage of staff</p>
+                
                     <div className='mt-5 w-full h-full  grid grid-cols-1 lg:grid-cols-3 sm:grid-cols-2 2xl:grid-cols-4 gap-4'>
-                        {dataProducts.map((product, index) => {
+                        {dataProducts.slice(0, 8).map((product, index) => {
                             return (
                                 <Card key={product.id} className=" relative mx-auto " sx={{ minWidth: 100 }}>
                                     <div className="relative w-72 h-56 text-white overflow-hidden cursor-pointer transition-all duration-700 card">
@@ -103,57 +102,20 @@ export default function WorkingSection() {
                                     </CardContent>
                                     <CardActions>
                                         <Link to={{
-                                            pathname: "/post/view",
+                                            pathname: "/detail",
                                             state: {
                                                 name: product
                                             }
-                                        }} > <Button size="small">Learn More</Button></Link>
+                                        }} > 
+                                     
+                                        <Button className="bg-orange-300 text-center cursor-pointer py-2 bg-indigo-300 my-2 text-success-50 font-bold" size="small">Đặt vé</Button></Link>
                                     </CardActions>
                                 </Card>
                             )
                         })}
                     </div>
                 </div>
-                <div className="flex flex-wrap items-center mt-32">
-                    <div className="w-full 2xl:w-4/12 px-4 mx-auto">
-                        <h2 className='font-bold mb-4 text-5xl'>Raw and Fresh</h2>
-                        <h2 className='font-bold mb-4 text-5xl'>Cow Milk</h2>
-                        <p className='text-gray-500 font-serif  mb-4'>FarmlyFresh milk is delivered the way it comes out from <br /> the udder. Raw and unprocessed. We deliver in a <br /> hygienically packed glass bottle.</p>
-                        <div className='grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4'>
-                            <div className='font-semibold'>
-                                Category:
-                                <hr className='w-11/12 my-2 border-gray-300' />
-                                <p className='font-serif  text-sm text-gray-400'>Milk</p>
-                            </div>
-                            <div className='font-semibold'>
-                                Packaging:
-                                <hr className='w-11/12 my-2 border-gray-300' />
-                                <p className='font-serif   text-sm text-gray-400'>Glass bottle</p>
-                            </div>
-                            <div className='font-semibold'>
-                                Shelf life:
-                                <hr className='w-11/12 my-2 border-gray-300' />
-                                <p className='font-serif  text-sm text-gray-400'>2 Days if kept refrigerated after boiling</p>
-                            </div>
-                            <div className='font-semibold'>
-                                Bottle size:
-                                <hr className='w-11/12 my-2 border-gray-300' />
-                                <p className='font-serif   text-sm text-gray-400'>Cow Milk</p>
-                            </div>
-
-                        </div>
-                        <button className='p-3 px-5 rounded-full bg-green-500 hover:bg-green-600'>Subscribe now</button>
-
-                    </div>
-
-                    <div className="2xl:w-7/12 h-full  px-4 mx-auto flex justify-center mt-24 lg:mt-0">
-                        <CardMedia
-                            component="img"
-                            image="https://www.farmlyfresh.com/wp-content/uploads/2020/04/cow-milk-683x590.png"
-                            className="w-full h-full"
-                        />
-                    </div>
-                </div>
+              
             </div>
         </section>
     );

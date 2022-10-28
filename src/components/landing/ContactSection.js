@@ -1,40 +1,85 @@
 import Title from 'components/landing/Title';
-
+import "./HomeApp.css";
 import Form from 'components/landing/Form';
+import React from "react";
+import backGround from "../../../src/assets/img/backgroundlogin.jpg";
+import { Swiper, SwiperSlide } from "swiper/react";
+// import "swiper/css";
+
+import { Autoplay } from "swiper";
 
 export default function ContactSection() {
     return (
-        <section className="pb-20 relative block bg-white">
-            <div className="container max-w-7xl mx-auto px-4 lg:pt-24">
-                <Title heading="Reasons To Choose FarmlyFresh Today">
-                    Among hundreds of reasons, here are a few
-                </Title>
-
-                <div className="grid mx-auto justify-items-center grid-cols-1 md:grid-cols-2  2xl:grid-cols-4 ">               
-                    <div>
-                        <h2 className='font-bold text-4xl mb-2'>1.</h2>
-                        <h3 className='font-bold text-xl mb-2'>Fresh Produce</h3>
-                        <p className='text-gray-400 w-8/12'>All our products reach your home within hours of being prepared at no extra cost.</p>
-                    </div>
-                    <div>
-                        <h2 className='font-bold text-4xl mb-2'>2.</h2>
-                        <h3 className='font-bold text-xl mb-2'>No Additives No Preservatives</h3>
-                        <p className='text-gray-400 w-8/12'>We deliver milk as it is extracted. We do not add any kind of preservatives and our milk does not go through processing at all.</p>
-                    </div>
-                    <div>
-                        <h2 className='font-bold text-4xl mb-2'>3.</h2>
-                        <h3 className='font-bold text-xl mb-2'>Hygienically Packed</h3>
-                        <p className='text-gray-400 w-8/12'>At every stage of our process right from milk extraction to its delivery, we follow strict hygiene.</p>
-                    </div>
-                    <div>
-                        <h2 className='font-bold text-4xl mb-2'>4.</h2>
-                        <h3 className='font-bold text-xl mb-2'>Home Delivered</h3>
-                        <p className='text-gray-400 w-8/12'>We follow the strict, Farm-to-Table method in our operations. We deliver all our products at your doorstep.</p>
-                    </div>
-                </div>
-
-                <Form />
+      
+        <div
+        id="homeApp"
+        style={{
+          background: `url(${backGround}) center / cover`,
+          padding: "120px 0",
+        }}
+      >
+        <div className="container xl:max-w-7xl ">
+          <div className="grid grid-cols-1 lg:grid-cols-2">
+            <div className="text-white px-4 py-5 lg:py-20 text-center lg:text-left">
+              <p className="text-3xl font-bold tracking-wider">
+                Ứng dụng tiện lợi dành cho
+              </p>
+              <p className="text-3xl font-bold tracking-wider">
+                người yêu điện ảnh
+              </p>
+              <p className="text-base">
+                Không chỉ đặt vé, bạn còn có thể bình luận phim, chấm điểm rạp và
+                đổi quà hấp dẫn.
+              </p>
+              <a
+                href="https://apps.apple.com/us/app/123phim-mua-ve-lien-tay-chon/id615186197"
+                target="_blank"
+                className="inline-block px-7 py-5 mt-4 text-white text-lg font-semibold rounded text-coolGray-100 uppercase hover:text-white bg-red-500 hover:bg-red-600 transition duration-200"
+              >
+                App miễn phí - Tải về ngay!
+              </a>
+              <p className="mt-3">
+                TIX có hai phiên bản{" "}
+                <a
+                  href="https://apps.apple.com/us/app/123phim-mua-ve-lien-tay-chon/id615186197"
+                  target="_blank"
+                  className="text-white underline hover:underline hover:text-red-400"
+                >
+                  IOS
+                </a>{" "}
+                &{" "}
+                <a
+                  href="https://play.google.com/store/apps/details?id=vn.com.vng.phim123"
+                  target="_blank"
+                  className="text-white underline hover:underline hover:text-red-400"
+                >
+                  Android
+                </a>
+              </p>
             </div>
-        </section>
+            <div className="flex justify-center">
+              <div className="relative">
+                <img
+                  src="./images/img-mobile.png"
+                  alt="imgMobile"
+                  className="w-72 lg:w-52"
+                />
+                <div className="mobile">
+                  <Swiper
+                    className="mySwiper"
+                    loop={true}
+                    autoplay={{
+                      delay: 2500,
+                      disableOnInteraction: false,
+                    }}
+                    modules={[Autoplay]}
+                  >
+                  </Swiper>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     );
 }

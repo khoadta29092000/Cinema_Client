@@ -121,14 +121,19 @@ export default function Content() {
     const [click, SetClick] = useState(false)
     const [selectedImage, setSelectedImage] = useState("");
     const [alert, setAlert] = useState(false);
+
     let DataBody;
+
     const formik = useFormik({
         initialValues: {
             id: '',
             discount: '',
+
             startDate: '',
             endDate: '',
             description: '',
+
+
         },
         validationSchema: Yup.object().shape({
             id: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required('Required'),
@@ -245,7 +250,6 @@ export default function Content() {
     const handleClose = () => {
         setOpen(false);
         setSelectedImage(undefined);
-
         SetClick(false);
     };
 

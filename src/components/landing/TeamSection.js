@@ -1,79 +1,129 @@
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-
-export default function TeamSection() {
+import * as React from 'react';
+import PropTypes from 'prop-types';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import { NavLink } from 'react-router-dom';
+function TabPanel(props) {
+    const { children, value, index, ...other } = props;
+  
     return (
-        <section className="pt-20  ">
-            <div className="text-center bg-gray-100 justify-items-center w-full mb-5 px-4">
-                <h2 className='font-bold text-5xl mb-5 pt-2'>Our Process</h2>
-                <p className='text-gray-500 text-sm mb-5'> It might look like a complex process. But we assure you that what comes to your doorstep, goes through these four stages. Nothing more nothing less </p>
-                <img src="https://www.farmlyfresh.com/wp-content/uploads/2020/05/process.png" className="block mx-auto pb-10" />
-            </div>
-            <div className="container max-w-7xl mx-auto ">
-                <div className="text-center   justify-items-center w-full mb-5 px-4">
-                    <h2 className='font-bold text-5xl mb-5 pt-2'>Good of Milk</h2>
-                    <p className='text-gray-500 text-sm mb-5'>The following are a few reasons why milk should be an important diet of your daily life</p>
-                    <div className="  grid  grid-cols-1 lg:grid-cols-3 gap-2  ">
-                        <div className=' w-full lg:w-6/12  ml-auto'>
-                            <div className="text-right ">
-                                <h2 className='font-bold text-xl mb-2 pt-2'>Packed with Nutrients</h2>
-                                <p className='text-gray-500 text-sm mb-5'> Milk is an excellent source of vitamins and minerals, including “nutrients of concern,” it’s a known fact. </p>
-                            </div>
-                            <div className="text-right  ml-auto">
-                                <h2 className='font-bold text-xl mb-2 pt-2'>Healthy Bones</h2>
-                                <p className='text-gray-500 text-sm mb-5'>Milk have all of those nutrients that are essential for maintaining strong, healthy bones even mind too. </p>
-                            </div>
-                            <div className="text-right  ml-auto">
-                                <h2 className='font-bold text-xl mb-2 pt-2'>Good For Heart</h2>
-                                <p className='text-gray-500 text-sm mb-5'> Milk is a source of potassium, which can help the blood vessels dilate and reduce blood pressure. </p>
-                            </div>
-
-                        </div>
-                        <div>
-                            <img src="https://www.farmlyfresh.com/wp-content/uploads/2017/06/milk-buy.png" />
-                        </div>
-                        <div className="text-left w-full  lg:w-6/12 mr-auto">
-                            <div>
-                                <h2 className='font-bold text-xl mb-5 pt-2'>Protein Rich</h2>
-                                <p className='text-gray-500 text-sm mb-5'>There are two main types of protein found in milk — casein and whey protein. Both are considered high-quality proteins.</p>
-                            </div>
-                            <div>
-                                <h2 className='font-bold text-xl mb-5 pt-2'>Healthy Babies</h2>
-                                <p className='text-gray-500 text-sm mb-5'>Milk can aid muscle growth. Cow’s milk is a rich source of high quality protein, containing all essential amino acids.</p>
-                            </div>
-                            <div>
-                                <h2 className='font-bold text-xl mb-5 pt-2'>Reduces Stress</h2>
-                                <p className='text-gray-500 text-sm mb-5'>Adequate vitamin D levels support the production of serotonin, a hormone people associate with mood, appetite, and sleep.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className='grid lg:grid-cols-2  grid-cols-1 text-left bg-gray-100 justify-items-center w-full pt-20   px-4'>
-                <div>
-                    <img src="https://www.farmlyfresh.com/wp-content/uploads/2020/04/farm-cow-n.png" />
-                </div>
-                <div className=''>
-                    <h2 className='font-bold text-5xl mb-5 pt-2'>Our Journey so Far</h2>
-                    <p className='text-gray-500 w-8/12 text-sm mb-5'>We would like to thank you for showering us with so much love and keeping faith in us. The below figure is a reward to our commitment to purity and our passion to deliver quality products and keep our customers happy.</p>
-                    <div className='grid  grid-cols-1 sm:grid-cols-3'>
-                        <div>
-                            <h2 className='font-bold text-xl mb-1 pt-2'>3360</h2>
-                            <h2 className='font-bold text-xl mb-1 '>HAPPY CUSTOMERS</h2>
-                            <p className='text-gray-500 text-sm mb-5'>In and around Guwahati</p>
-                        </div>
-                        <div>
-                            <h2 className='font-bold text-xl mb-1 pt-2'>106000</h2>
-                            <h2 className='font-bold text-xl mb-1 '>LITRES OF MILK SOLD</h2>
-                            <p className='text-gray-500 text-sm mb-5'>From FarmlyFresh farms</p>
-                        </div>
-                        <div>
-                            <h2 className='font-bold text-xl mb-1 pt-2'>86421</h2>
-                            <h2 className='font-bold text-xl mb-1'>KILOMETRE TRAVELLED</h2>
-                            <p className='text-gray-500 text-sm mb-5'>By our products</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`vertical-tabpanel-${index}`}
+        aria-labelledby={`vertical-tab-${index}`}
+        {...other}
+      >
+        {value === index && (
+          <Box sx={{ p: 3 }}>
+            <Typography>{children}</Typography>
+          </Box>
+        )}
+      </div>
     );
+  }
+  
+  TabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.number.isRequired,
+    value: PropTypes.number.isRequired,
+  };
+  
+  function a11yProps(index) {
+
+    return {
+      id: `vertical-tab-${index}`,
+      'aria-controls': `vertical-tabpanel-${index}`,
+    };
+  }
+  
+export default function TeamSection() {
+    const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+    return (
+        <Box
+      sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: 224 }}
+    >
+      <Tabs
+        orientation="vertical"
+        variant="scrollable"
+        value={value}
+        onChange={handleChange}
+        aria-label="Vertical tabs example"
+        sx={{ borderRight: 1, borderColor: 'divider' }}
+      >
+        <Tab label={<div text-left my-5  mx-4 style={{  display: 'flex' }}   >
+          <img src="https://kdq-react-movie-app.surge.sh/images/CGV_theater.jpg"  className="rounded-full" width="50"/>
+          <h3 className="mt-4" > CGV nguyễn hồng đào </h3> <br/>
+        
+        </div>} {...a11yProps(1)}/>
+   
+        <Tab label={<div text-left ml-2 my-5 mt-2 mx-4 style={{  display: 'flex' }}   >
+          <img src="https://kdq-react-movie-app.surge.sh/images/CGV_theater.jpg"  className="rounded-full" width="50"/>
+          <h3  className="mt-4" > CGV Nguyễn Cửu Đàm </h3> <br/>
+        
+        </div>} {...a11yProps(2)} />
+        <Tab label={<div text-left ml-2 my-5 mt-2 mx-4  style={{  display: 'flex' }}  >
+          <img src="https://kdq-react-movie-app.surge.sh/images/CGV_theater.jpg"  className="rounded-full" width="50"/>
+          <h3  className="mt-4"> CGV nguyễn Thái sơn </h3> <br/>
+        
+        </div>} {...a11yProps(3)} />
+        <Tab label={<div text-left ml-2 my-5 mt-2 mx-4 style={{  display: 'flex' }}   >
+          <img src="https://kdq-react-movie-app.surge.sh/images/CGV_theater.jpg"  className="rounded-full" width="50"/>
+          <h3  className="mt-4" > CGV nguyễn Hồng đức </h3> <br/>
+      
+        </div>} {...a11yProps(4)} />
+
+      </Tabs>
+      <TabPanel   value={value} index={0}> 
+      <div style={{ width: '300px', display: 'flex' }} >
+      <img   width={50} height={50} src="https://www.cgv.vn/media/catalog/product/cache/1/thumbnail/190x260/2e2b8cd282892c71872b9e67d2cb5039/4/7/470x700_skytour.jpg" /> <br/>
+      <div className="text-left ml-2 my-5 mt-2 mx-4  ">
+        <h3 className="text-2xl text-green-700-300"> Hạ cánh khẩn cấp </h3>
+        <div className="grid grid cols-6 gap-20">
+           <NavLink to ="/Room/:id" >
+               < p>  20:00</p>
+           </NavLink>
+        </div>
+       </div>
+      </div>
+     
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+      <div style={{ width: '300px', display: 'flex' }} >
+      <img src="http://movieapi.cyberlearn.vn/hinhanh/cuoc-chien-sinh-tu.png" width="50" /> 
+      <div className="text-left ml-2 my-5 mt-2 mx-4  ">
+        <h3 className="text-2xl text-green-700-300"> Hạ cánh khẩn cấp </h3>
+        <div className="grid grid cols-6 gap-20">
+           <NavLink to ="/Room/:id" >
+               < p>  21:00</p>
+           </NavLink>
+        </div>
+       </div>
+      </div>
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+      <div style={{ width: '300px', display: 'flex' }} >
+      <img src="https://movieapi.cyberlearn.vn/hinhanh/game-of-throne_gp01.jpg" width="50" /> 
+      <div className="text-left ml-2 my-5 mt-2 mx-4  ">
+        <h3 className="text-2xl text-green-700-300"> Hạ cánh khẩn cấp </h3>
+        <div className="grid grid cols-6 gap-20">
+           <NavLink to ="/Room/:id" >
+               < p>  21:00</p>
+           </NavLink>
+        </div>
+       </div>
+      </div>
+      </TabPanel>
+      <TabPanel value={value} index={3}>
+      <img src="https://movieapi.cyberlearn.vn/hinhanh/game-of-throne_gp01.jpg" width="50" /> 
+      </TabPanel>
+      
+    </Box>
+  );
 }

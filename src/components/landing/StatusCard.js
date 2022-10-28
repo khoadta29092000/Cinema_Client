@@ -29,7 +29,7 @@ const colors = {
 export default function StatusCard({ color, icon, title, children }) {
     return (
         <div className="w-full md:w-4/12 px-4 flex justify-center text-center">
-            <Card>
+            {/* <Card>
                 <CardBody>
                     <div
                         className={`p-3 text-center inline-flex items-center justify-center w-12 h-12 mb-5 shadow-md rounded-full ${colors[color]}`}
@@ -39,7 +39,7 @@ export default function StatusCard({ color, icon, title, children }) {
                     <H6 color="gray">{title}</H6>
                     <Paragraph color="blueGray">{children}</Paragraph>
                 </CardBody>
-            </Card>
+            </Card> */}
         </div>
     );
 }
