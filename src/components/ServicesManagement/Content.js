@@ -9,10 +9,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import InputBase from '@mui/material/InputBase';
 import IconButton from '@mui/material/IconButton';
-import SearchIcon from '@mui/icons-material/Search';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PropTypes from 'prop-types';
@@ -31,7 +28,7 @@ import { storage } from 'firebase';
 import { v4 } from "uuid";
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-import { Formik, Form, Field } from 'formik';
+import {  useFormik } from 'formik';
 import * as Yup from "yup";
 import { Box } from '@mui/system';
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -111,10 +108,6 @@ export default function Content() {
     const [selectedValue, setSelectedValue] = React.useState([]);
     const [id, setId] = useState("");
     const [status, setStatus] = useState("success");
-    const [title, setTitle] = useState("");
-    const [quantity, setQuantity] = useState("");
-    const [price, setPrice] = useState("");
-    const [description, setDescription] = useState("");
     const [data, setData] = useState([]);
     const [search, setSearch] = useState("");
     const [filters, setFilters] = useState({
@@ -126,15 +119,54 @@ export default function Content() {
     const [selectedImage, setSelectedImage] = useState("");
     const [img, setImg] = useState("");
     const [alert, setAlert] = useState(false);
+    const formik = useFormik({
+        initialValues: {
+            id: "",
+            title: "",
+            quantity: "",
+            price: "",
+            description: "",
+            image: ""
+        },
+        validationSchema: Yup.object().shape({
+            title: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required(),
+            quantity: Yup.number().typeError("Must be number!").max(10000, "Too Long!").required(),
+            price: Yup.number().typeError("Must be number!").max(4000, "Too Long!").required(),
+            description: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required(),
+        }), onSubmit: values => {
+
+            let DataBody
+            if (values.id == "") {
+                DataBody = {
+
+                    title: values.title,
+                    quantity: values.quantity,
+                    price: values.price,
+                    description: values.description,
+                    image: img,
+                    active: true
+                }
+            } else {
+                DataBody = {
+                    id: values.id,
+                    title: values.title,
+                    quantity: values.quantity,
+                    price: values.price,
+                    description: values.description,
+                    image: img,
+                    active: true
+                }
+            }
+            handleUpdateOrCreate(DataBody);
+        },
+    });
+
     const handleClickOpen = (data) => {
-       
+        if (data != undefined) {
+            formik.setValues(data);
+        }
         setOpen(true);
         setId(data.id);
-        setTitle(data.title);
-        setQuantity(data.quantity);
-        setPrice(data.price != undefined ? data.price.toFixed(3).replace(/\d(?=(\d{3})+\.)/g, "$&.") + "đ" : data.price);
-        setDescription(data.description);
-        setImg(data.image);
         setSelectedImage(data.image);
         setSelectedValue(data);
     };
@@ -302,7 +334,7 @@ export default function Content() {
 
     async function handleUpdateOrCreate(data) {
 
-
+        console.log(data)
         if (selectedValue.id != undefined) {
             const res = await fetch(`http://cinemasystem.somee.com/api/Service/${selectedValue?.id}`, {
                 method: `PUT`,
@@ -334,7 +366,7 @@ export default function Content() {
                 .catch((error) => {
                     throw ('Invalid Token')
                 })
-            
+
 
         } else {
             const res = await fetch(`http://cinemasystem.somee.com/api/Service`, {
@@ -366,7 +398,7 @@ export default function Content() {
                 .catch((error) => {
                     throw ('Invalid Token')
                 })
-            
+
         }
 
     }
@@ -405,7 +437,8 @@ export default function Content() {
 
         setAlert(false);
     };
-    console.log("selected img", selectedValue.id)
+
+
     return (
         <section className=" ml-0 xl:ml-64  px-5 pt-10  ">
             <Snackbar open={alert} autoHideDuration={4000} onClose={handleCloseAlert} className="float-left w-screen">
@@ -427,117 +460,92 @@ export default function Content() {
                     aria-labelledby="customized-dialog-title"
                     open={open}
                 >
-                    <Formik
-                        initialValues={{
-                            id: "",
-                            title: "",
-                            quantity: "",
-                            price: "",
-                            description: "",
-                            image: ""
-                        }}
-                        validationSchema={Yup.object().shape({
-                            title: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required('Required'),
-                            quantity: Yup.number().typeError("Must be number!").max(10000, "Too Long!").required('Required'),
-                            price:Yup.number().typeError("Must be number!").max(4000, "Too Long!").required('Required'),
-                            description: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required('Required'),
-                            image: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required('Required'),
-                        })}
-                        onSubmit={values => {
-                            handleUpdateOrCreate(values);
-                            console.log("ngu xa", values);
-                        }}
-                    >
-                        {props => (
-                            <Form>
-                                <BootstrapDialogTitle onClose={handleClose}>
-                                    Service Details
-                                </BootstrapDialogTitle>
-                                <DialogContent dividers >
 
 
-                                    {error && <div className='text-red-600 ml-11 mb-5 text-xl'>{error}</div>}
+                    <form onSubmit={formik.handleSubmit}>
+                        <BootstrapDialogTitle onClose={handleClose}>
+                            Service Details
+                        </BootstrapDialogTitle>
+                        <DialogContent dividers >
 
-                                    {Id}
-                                    {props.errors.image && props.touched.image ? <div className="text-red-600 mb-2 font-bold">{props.errors.image}</div> : null}
-                                    <div className='max-w-5xl my-5 mx-auto'>
-                                        <Button
-                                            variant="contained"
-                                            component="label"
-                                            className='bg-blue-600 text-white rounded-md ml-5 my-6 py-2 px-4'
-                                        >
-                                            Upload Image
-                                            <input
-                                                type="file"
-                                                hidden
+                            {error && <div className='text-red-600 ml-11 mb-5 text-xl'>{error}</div>}
 
-                                                onChange={(event) => {
-                                                    setSelectedImage(event.target.files[0]);
-                                                    SetClick(true);
+                            {id != undefined ? <div className='max-w-5xl my-5 mx-auto'>
+                                <TextField className='w-96 my-5' value={formik.values.id} disabled label="Id" variant="outlined" />
+                            </div> : null}
 
-                                                }}
-                                            />
-                                        </Button>
 
-                                    </div>
-                                    <div className='max-w-5xl my-5 mx-auto'>
-                                        {selectedImage == undefined ? <div></div> : <img alt="" className='mx-auto h-24 w-24 my-5' src={click == false ? selectedValue.img : window.URL.createObjectURL(selectedImage)} />}
-                                    </div>
-                                    <Button variant="contained"
-                                        component="label"
+                            <div className='max-w-5xl my-5 mx-auto'>
+                                <Button
+                                    variant="contained"
+                                    component="label"
+                                    className='bg-blue-600 text-white rounded-md ml-5 my-6 py-2 px-4'
+                                >
+                                    Upload Image
+                                    <input
+                                        type="file"
+                                        hidden
+                                        id="image"
+                                        onChange={(event) => {
+                                            setSelectedImage(event.target.files[0]);
+                                            SetClick(true);
 
-                                        onClick={handleUpload} className='bg-blue-600 text-white rounded-md ml-5 my-6 py-2 px-4' >
-                                        Save Img
-                                    </Button>
-                                    <div className='max-w-5xl my-5 mx-auto'>
-                                        {props.errors.title && props.touched.title
-                                            ? (<Box><div className="text-red-600 mb-2 font-bold">{props.errors.title}</div>
-                                                <TextField error onChange={props.handleChange}
-                                                    onBlur={props.handleBlur} value={props.values.title}
-                                                    id="title" className='w-96 my-5' label="Title" variant="outlined" /></Box>)
-                                            : <TextField onChange={props.handleChange}
-                                                onBlur={props.handleBlur} value={props.values.title}
-                                                id="title" className='w-96 my-5' label="Title" variant="outlined" />}
-                                        
-                                    </div>
-                                    <div className='max-w-5xl my-5 mx-auto'>
-                                    {props.errors.quantity && props.touched.quantity
-                                            ? (<Box><div className="text-red-600 mb-2 font-bold">{props.errors.quantity}</div>
-                                                <TextField error onChange={props.handleChange}
-                                                    onBlur={props.handleBlur} value={props.values.quantity}
-                                                    id="quantity" className='w-96 my-5' label="Quantity" variant="outlined" /></Box>)
-                                            : <TextField onChange={props.handleChange}
-                                                onBlur={props.handleBlur} value={props.values.quantity}
-                                                id="quantity" className='w-96 my-5' label="Quantity" variant="outlined" />}
-                                       
-                                    </div>
-                                    <div className='max-w-5xl my-5 mx-auto'>
-                                    {props.errors.price && props.touched.price
-                                            ?( <Box><div className="text-red-600 mb-2 font-bold">{props.errors.price}</div>
-                                                <TextField error onChange={props.handleChange}
-                                                    onBlur={props.handleBlur} value={props.values.price}
-                                                    id="price" className='w-96 my-5' label="Quantity" variant="outlined" /></Box>)
-                                            : <TextField onChange={props.handleChange}
-                                                onBlur={props.handleBlur} value={props.values.price}
-                                                id="price" className='w-96 my-5' label="Quantity" variant="outlined" />}
-                                      
-                                    </div>
-                                    <div className='max-w-5xl my-5 mx-auto'>
-                                    {props.errors.description && props.touched.description ? <div className="text-red-600 mb-2 font-bold">{props.errors.description}</div> : null}
-                                        <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Description</label>
-                                        <textarea onChange={props.handleChange}
-                                            onBlur={props.handleBlur} value={props.values.description} id="description" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Your message..."></textarea>
-                                    </div>
-                                </DialogContent>
-                                <DialogActions>
-                                    <Button type='submit' >
+                                        }}
+                                    />
+                                </Button>
 
-                                        Save
-                                    </Button>
-                                </DialogActions>
-                            </Form>
-                        )}
-                    </Formik>
+                            </div>
+                            <div className='max-w-5xl my-5 mx-auto'>
+                                {selectedImage == undefined ? <div></div> : <img alt="" className='mx-auto h-24 w-24 my-5' error src={click == false ? selectedValue.img : window.URL.createObjectURL(selectedImage)} />}
+                            </div>
+                            <Button variant="contained"
+                                component="label"
+
+                                onClick={handleUpload} className='bg-blue-600 text-white rounded-md ml-5 my-6 py-2 px-4' >
+                                Save Img
+                            </Button>
+                            <div className='max-w-5xl my-5 mx-auto'>
+                                {formik.errors.title
+                                    ? (<Box><div className="text-red-600 mb-2 font-bold">{formik.errors.title}</div>
+                                    </Box>)
+                                    : null}
+                                <TextField error={formik.errors.title ? "error" : null} onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur} value={formik.values.title}
+                                    id="title" className='w-96 my-5' label="Title" variant="outlined" />
+                            </div>
+                            <div className='max-w-5xl my-5 mx-auto'>
+                                {formik.errors.quantity
+                                    ? (<Box><div className="text-red-600 mb-2 font-bold">{formik.errors.quantity}</div>
+                                    </Box>)
+                                    : null}
+                                <TextField onChange={formik.handleChange} error={formik.errors.quantity ? "error" : null}
+                                    onBlur={formik.handleBlur} value={formik.values.quantity}
+                                    id="quantity" className='w-96 my-5' label="Quantity" variant="outlined" />
+                            </div>
+                            <div className='max-w-5xl my-5 mx-auto'>
+                                {formik.errors.price
+                                    ? (<Box><div className="text-red-600 mb-2 font-bold">{formik.errors.price}</div>
+                                    </Box>)
+                                    : null}
+                                <TextField onChange={formik.handleChange} error={formik.errors.price ? "error" : null}
+                                    onBlur={formik.handleBlur} value={formik.values.price}
+                                    id="price" className='w-96 my-5' label="Price" variant="outlined" />
+                            </div>
+                            <div className='max-w-5xl my-5 mx-auto'>
+                                {formik.errors.description ? <div className="text-red-600 mb-2 font-bold">{formik.errors.description}</div> : null}
+                                <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Description</label>
+                                <textarea onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur} value={formik.values.description} id="description" rows="4" className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Your message..."></textarea>
+                            </div>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button type='submit' >
+
+                                Save
+                            </Button>
+                        </DialogActions>
+                    </form>
+
 
                 </BootstrapDialog>
                 <div className='pr-5 my-6 float-right'>

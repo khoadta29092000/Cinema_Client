@@ -7,12 +7,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import InputBase from '@mui/material/InputBase';
 import IconButton from '@mui/material/IconButton';
-import SearchIcon from '@mui/icons-material/Search';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
@@ -24,9 +21,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField';
 import { useEffect, useState } from "react";
 import Search from 'components/Search';
-import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage"
-import { storage } from 'firebase';
-import { v4 } from "uuid";
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import PublicOffIcon from '@mui/icons-material/PublicOff';
@@ -36,7 +30,8 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import { data } from 'autoprefixer';
+import { useFormik } from 'formik';
+import * as Yup from "yup";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -75,7 +70,7 @@ const columns = [
         label: 'Action',
         minWidth: 100,
     },
- 
+
 ];
 const BootstrapDialogTitle = (props) => {
     const { children, onClose, ...other } = props;
@@ -121,8 +116,44 @@ export default function Content() {
     const [click, SetClick] = useState(false)
     const [selectedImage, setSelectedImage] = useState("");
     const [alert, setAlert] = useState(false);
+            const formik = useFormik({
+                initialValues: {
+                    id: "",
+                    title: "",
+                    description: "",
+                    roomId: "",
+                },
+                validationSchema: Yup.object().shape({
+                    title: Yup.string().min(1, "Too Short!").max(4000, "Too Long!").required(),
+                    description: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required(),
+                    roomId: Yup.number().required(),
+                }), onSubmit: values => {
+
+                    let DataBody
+                    if (values.id == "") {
+                        DataBody = {
+                            title: values.title,
+                            description: values.description,
+                            roomId: values.roomId,
+                            active: true
+                        }
+                    } else {
+                        DataBody = {
+                            id: values.id,
+                            title: values.title,
+                            description: values.description,
+                            roomId: values.roomId,
+                            active: true
+                        }
+                    }
+                    handleUpdateOrCreate(DataBody);
+                },
+            });
     const handleClickOpen = (data) => {
-        console.log("111111", data);
+        if (data != undefined) {
+            formik.setValues(data);
+
+        }
         setOpen(true);
         setSelectedValue(data);
         setSelectedImage(data.img);
@@ -137,19 +168,8 @@ export default function Content() {
         SetClick(false);
     };
 
-    const body = {
-        id: id,
-        title: title,
-        description: description,
-        roomId: roomId,
-        active: true
-    };
-    let Id;
-    if (selectedValue.id != undefined) {
-        Id = (<div className='max-w-5xl my-5 mx-auto'>
-            <TextField className='w-96 my-5' onChange={e => setId(e.target.value)} defaultValue={selectedValue.id} disabled id="outlined-basic" label="Id" variant="outlined" />
-        </div>)
-    }
+
+  
     useEffect(() => {
         featchCinemaList();
         featchRoomList();
@@ -171,16 +191,16 @@ export default function Content() {
         let Active = (<button className="text-white  outline-none bg-black cursor-pointer rounded-lg   h-8 w-8" onClick={() => handleUpdateStatus(data.id)}>
             {data.active == true ? <PublicIcon /> : <PublicOffIcon />}
         </button>);
-       let Action = (
-        <div className='gap-x-8 flex'>
-           <button className="text-white  outline-none bg-yellow-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
-        <EditIcon />
-      </button>
-      <button className="text-white  outline-none bg-red-600 rounded-lg   h-8 w-8" onClick={() => handleDelete(data)}>
-        <DeleteIcon />
-      </button>
-        </div>
-    );
+        let Action = (
+            <div className='gap-x-8 flex'>
+                <button className="text-white  outline-none bg-yellow-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
+                    <EditIcon />
+                </button>
+                <button className="text-white  outline-none bg-red-600 rounded-lg   h-8 w-8" onClick={() => handleDelete(data)}>
+                    <DeleteIcon />
+                </button>
+            </div>
+        );
 
         return { Id, Title, Room, Active, Action };
     }
@@ -322,16 +342,16 @@ export default function Content() {
 
     const [error, setError] = useState("false")
     const [message, setMess] = useState(false)
-    async function handleUpdateOrCreate() {
+    async function handleUpdateOrCreate(data) {
 
         if (selectedValue.id != undefined) {
-            const res = await fetch(`http://www.cinemasystem.somee.com/api/Seat/${selectedValue?.id}`, {
+            const res = await fetch(`http://www.cinemasystem.somee.com/api/Seat/${data  ?.id}`, {
                 method: `PUT`,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem("token")}`,
                 },
-                body: JSON.stringify(body)
+                body: JSON.stringify(data)
             }).then(res => res.json())
                 .then(result => {
 
@@ -356,7 +376,7 @@ export default function Content() {
                 .catch((error) => {
                     throw ('Invalid Token')
                 })
-            return body
+
 
         } else {
             const res = await fetch(`http://www.cinemasystem.somee.com/api/Seat`, {
@@ -365,7 +385,7 @@ export default function Content() {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem("token")}`,
                 },
-                body: JSON.stringify(body)
+                body: JSON.stringify(data)
             }).then(res => res.json())
                 .then(result => {
 
@@ -390,7 +410,7 @@ export default function Content() {
                 .catch((error) => {
                     throw ('Invalid Token')
                 })
-            return body
+
         }
 
     }
@@ -411,7 +431,7 @@ export default function Content() {
                     featchSeatList();
                 } else {
                     alert("delete thất bại")
-                     setError(result.message)
+                    setError(result.message)
                     // alert("tài khoản hoặc mật khẩu sai kìa")
                 }
                 return res
@@ -434,9 +454,9 @@ export default function Content() {
 
     };
 
-    
 
-   
+
+console.log(formik.values)
     return (
         <section className=" ml-0 xl:ml-64  px-5 pt-10  ">
             <Snackbar open={alert} autoHideDuration={4000} onClose={handleCloseAlert} className="float-left w-screen">
@@ -458,50 +478,68 @@ export default function Content() {
                     aria-labelledby=""
                     open={open}
                 >
-                    <BootstrapDialogTitle id="" onClose={handleClose}>
-                        Add Seat
-                    </BootstrapDialogTitle>
-                    <DialogContent dividers >
-                    {error && <div className='text-red-600 ml-11 mb-5 text-xl'>{error}</div>}
+                    <form onSubmit={formik.handleSubmit}>
+                        <BootstrapDialogTitle id="" onClose={handleClose}>
+                            Seat Details
+                        </BootstrapDialogTitle>
+                        <DialogContent dividers >
+                           
 
-                        {Id}
+                            {id != undefined ? <div className='max-w-5xl my-5 mx-auto'>
+                                <TextField className='w-96 my-5' value={formik.values.id} disabled label="Id" variant="outlined" />
+                            </div> : null}
 
-                        <div className='max-w-5xl my-5 mx-auto'>
-                            <TextField className='w-96 my-5' onChange={e => setTitle(e.target.value)} defaultValue={selectedValue.title} autoComplete='off' id="outlined-basic" label="Title" variant="outlined" />
-                        </div>
-                        <div className='max-w-5xl my-5 mx-auto'>
-                            <Box sx={{ minWidth: 120 }}>
-                                <FormControl fullWidth>
-                                    <InputLabel id="demo-simple-select-label">Room</InputLabel>
-                                    <Select
-                                        labelId="demo-simple-select-label"
-                                        id="demo-simple-select"
-                                        defaultValue={roomId}
-                                        label="Supplier"
-                                        onChange={e => setRoomId(e.target.value)}
-                                    >
+                            <div className='max-w-5xl my-5 mx-auto'>
+                                {formik.errors.title
+                                    ? (<Box><div className="text-red-600 mb-2 font-bold">{formik.errors.title}</div>
+                                    </Box>)
+                                    : null}
+                                <TextField error={formik.errors.title ? "error" : null} onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur} value={formik.values.title}
+                                    id="title" className='w-96 my-5' label="Title" variant="outlined" />
+                            </div>
+                            <div className='max-w-5xl my-5 mx-auto'>
+                                <Box sx={{ minWidth: 120 }}>
+                                    {formik.errors.roomId
+                                        ? (<Box><div className="text-red-600 mb-2 font-bold">{formik.errors.roomId}</div>
+                                        </Box>)
+                                        : null}
+                                    <FormControl fullWidth>
+                                        <InputLabel id="demo-simple-select-label">Room</InputLabel>
+                                        <Select
+                                  
+                                            id="roomId"
+                                            defaultValue={formik.values.roomId}
+                                            label="Room"
+                                            onChange=   {e => formik.setFieldValue("roomId",e.target.value)}
+                                        >
 
-                                        {dataRoom.map((cate, index) => {
-                                            
+                                            {dataRoom.map((cate, index) => {
+                                            if(cate.active ==   true){
                                                 return (
-                                                    <MenuItem value={cate.id}>{cate.title + "," + cate.cinemaId}</MenuItem>
+                                                    <MenuItem value={cate.id}>{cate.title + "," + cate.cinema}</MenuItem>
                                                 )
-                                        })}
+                                            }
+                                                
+                                            })}
 
-                                    </Select>
-                                </FormControl>
-                            </Box>
-                        </div>
-                        <div className='max-w-5xl my-5 mx-auto'>
-                            <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Description</label>
-                            <textarea id="message" onChange={e => setDescription(e.target.value)} defaultValue={selectedValue.description} rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Your message..."></textarea>
-                        </div>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleUpdateOrCreate}>
-                            Save
-                        </Button>
-                    </DialogActions>
+                                        </Select>
+                                    </FormControl>
+                                </Box>
+                            </div>
+                            <div className='max-w-5xl my-5 mx-auto'>
+                                {formik.errors.description ? <div className="text-red-600 mb-2 font-bold">{formik.errors.description}</div> : null}
+                                <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Description</label>
+                                <textarea onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur} value={formik.values.description} id="description" rows="4" className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Your message..."></textarea>
+                            </div>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button type='submit' >
+                                Save
+                            </Button>
+                        </DialogActions>
+                    </form>
                 </BootstrapDialog>
                 <div className='pr-5 my-6 float-right'>
 

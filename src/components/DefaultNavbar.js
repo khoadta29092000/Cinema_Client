@@ -270,7 +270,7 @@ export default function DefaultNavbar() {
                                     <Icon name="apps" size="2xl" />
                                     &nbsp;About Us
                                 </NavLink></Link>
-                            {/* <div className="text-white">
+                             <div className="text-white">
                                 <Dropdown
                                     color="transparent"
                                     size="sm"
@@ -301,7 +301,7 @@ export default function DefaultNavbar() {
                                     </Link>
 
                                 </Dropdown>
-                            </div> */}
+                            </div> 
 
                             <Link to="/ServiceAreas">
                                 <NavLink
@@ -314,7 +314,7 @@ export default function DefaultNavbar() {
                                     <div className="">Areas</div>
                                 </NavLink>
                             </Link>
-                            {/* <div className="text-white mr-5">
+                             <div className="text-white mr-5">
                                 <Dropdown
                                     color="transparent"
                                     size="sm"
@@ -340,7 +340,7 @@ export default function DefaultNavbar() {
                                         </DropdownItem>
                                     </Link>
                                 </Dropdown>
-                            </div> */}
+                            </div>  
                             <Dropdown
                                 color="transparent"
                                 size="sm"

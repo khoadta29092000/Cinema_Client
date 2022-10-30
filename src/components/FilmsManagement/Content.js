@@ -9,7 +9,6 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import InputBase from '@mui/material/InputBase';
 import IconButton from '@mui/material/IconButton';
-import SearchIcon from '@mui/icons-material/Search';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PropTypes from 'prop-types';
@@ -21,8 +20,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import CloseIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField';
-import queryString from 'query-string';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { useEffect, useState } from "react";
 import Search from 'components/Search';
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage"
@@ -32,6 +29,8 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import PublicOffIcon from '@mui/icons-material/PublicOff';
 import PublicIcon from '@mui/icons-material/Public';
+import { useFormik } from 'formik';
+import * as Yup from "yup";
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -74,7 +73,7 @@ const columns = [
         label: 'Action',
         minWidth: 100,
     }
-   
+
 ];
 
 const BootstrapDialogTitle = (props) => {
@@ -118,8 +117,70 @@ export default function Content() {
     const [search, setSearch] = useState("");
     const [status, setStatus] = useState("success");
     const [alert, setAlert] = useState(false);
+    const formik = useFormik({
+        initialValues: {
+            id: "",
+            title: "",
+            director: "",
+            actor: "",
+            time: "",
+            language: "",
+            rated: "",
+            trailer: "",
+            description: "",
+            image: ""
+        },
+        validationSchema: Yup.object().shape({
+            title: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required(),
+            director: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required(),
+            actor: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required(),
+            time: Yup.number().typeError("Must be number!").max(500, "Time to Film not > 500 Minutes").required(),
+            language: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required(),
+            rated: Yup.number().typeError("Must be number!").max(100, "Old not > 100").required(),
+            trailer: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required(),
+            description: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required(),
+            image: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required(),
+        }), onSubmit: values => {
+
+            let DataBody
+            if (values.id == "") {
+                DataBody = {
+
+                    title: values.title,
+                    director: values.director,
+                    actor: values.actor,
+                    time: values.time,
+                    language: values.language,
+                    rated: values.rated,
+                    trailer: values.trailer,
+                    description: values.description,
+                    image: values.image,
+                    active: true
+                }
+            } else {
+                DataBody = {
+                    id: values.id,
+                    title: values.title,
+                    director: values.director,
+                    actor: values.actor,
+                    time: values.time,
+                    language: values.language,
+                    rated: values.rated,
+                    trailer: values.trailer,
+                    description: values.description,
+                    image: values.image,
+                    active: true
+                }
+            }
+            handleUpdateOrCreate(DataBody);
+        },
+    });
     const handleClickOpen = (data) => {
-        console.log("111111", data);
+
+        if (data != undefined) {
+            formik.setValues(data);
+
+        }
         setOpen(true);
         setSelectedValue(data);
         setSelectedImage(data.img);
@@ -133,46 +194,36 @@ export default function Content() {
         setOpen(false);
         setSelectedImage(undefined);
         SetClick(false);
-   
-    };
-    const validName = new RegExp(/^.{6,30}$/);
-    const validDes = new RegExp(/^.{6,3000}$/);
-    const validNum = new RegExp("^[0-9]*$");
 
-    const body = {
-        id: id,
-        name: title,
-        description: description,
-        img: img,
-        price: price
     };
+
     function createData(data) {
         let Title = data.title;
-        let Time = data.time + " Phút" ;
-        let Rated = data.rated ;
-        let Id = data.id ;
-        
+        let Time = data.time + " Phút";
+        let Rated = data.rated;
+        let Id = data.id;
+
         let Image = (
             <img
                 src={data.image}
                 loading="lazy"
                 className='h-28 w-28'
             />)
-            let Active = (<button className="text-white  outline-none bg-black cursor-pointer rounded-lg   h-8 w-8" onClick={() => handleUpdateStatus(data.id)}>
-      {data.active == true ? <PublicIcon /> : <PublicOffIcon />}
-    </button>);
-       let Action = (
-        <div className='gap-x-8 flex'>
-           <button className="text-white  outline-none bg-yellow-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
-        <EditIcon />
-      </button>
-      <button className="text-white  outline-none bg-red-600 rounded-lg   h-8 w-8" onClick={() => handleDelete(data)}>
-        <DeleteIcon />
-      </button>
-        </div>
-    );
+        let Active = (<button className="text-white  outline-none bg-black cursor-pointer rounded-lg   h-8 w-8" onClick={() => handleUpdateStatus(data.id)}>
+            {data.active == true ? <PublicIcon /> : <PublicOffIcon />}
+        </button>);
+        let Action = (
+            <div className='gap-x-8 flex'>
+                <button className="text-white  outline-none bg-yellow-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
+                    <EditIcon />
+                </button>
+                <button className="text-white  outline-none bg-red-600 rounded-lg   h-8 w-8" onClick={() => handleDelete(data)}>
+                    <DeleteIcon />
+                </button>
+            </div>
+        );
 
-        return { Image, Id,Title, Time, Rated,Active,Action };
+        return { Image, Id, Title, Time, Rated, Active, Action };
     }
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -181,39 +232,39 @@ export default function Content() {
 
     async function handleUpdateStatus(data) {
         try {
-    
-    
-          const requestURL = `http://www.cinemasystem.somee.com/api/Film/UpdateActive?id=${data}`;
-    
-          const res = await fetch(requestURL, {
-            method: `PUT`,
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${localStorage.getItem("token")}`,
-            },
-          }).then(res => res.json())
-            .then(result => {
-    
-              if (result) {
-                if (result?.statusCode == 200) {
-                  setMess(result?.message)
-                  setAlert(true)
-                  setStatus("success")
-                  featchCinemaList();
-                }
-    
-              } else {
-                alert("Update UnSuccessfullly")
-              }
-              return res
-    
-            });
-    
-    
+
+
+            const requestURL = `http://www.cinemasystem.somee.com/api/Film/UpdateActive?id=${data}`;
+
+            const res = await fetch(requestURL, {
+                method: `PUT`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                },
+            }).then(res => res.json())
+                .then(result => {
+
+                    if (result) {
+                        if (result?.statusCode == 200) {
+                            setMess(result?.message)
+                            setAlert(true)
+                            setStatus("success")
+                            featchCinemaList();
+                        }
+
+                    } else {
+                        alert("Update UnSuccessfullly")
+                    }
+                    return res
+
+                });
+
+
         } catch (error) {
-          console.log('Fail to fetch product list: ', error)
+            console.log('Fail to fetch product list: ', error)
         }
-      }
+    }
 
     useEffect(() => {
         featchCinemaList();
@@ -227,17 +278,6 @@ export default function Content() {
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
-
-    function TitleExists(title) {
-        return data.some(function (el) {
-            return el.title.toLowerCase() == title.toLowerCase();
-        });
-    }
-    function IdExists(id) {
-        return data.some(function (el) {
-            return el.id == id;
-        });
-    }
     const rows1 = data.map((data, index) => {
         return (createData(data))
     })
@@ -246,9 +286,9 @@ export default function Content() {
     let Id;
     if (selectedValue.id != undefined) {
         Id = (<div className='max-w-5xl my-5 mx-auto'>
-            <TextField className='w-96 my-5'  defaultValue={id} disabled id="outlined-basic" label="Id" variant="outlined" />
+            <TextField className='w-96 my-5' defaultValue={id} disabled id="outlined-basic" label="Id" variant="outlined" />
         </div>)
-    } 
+    }
     async function featchCinemaList() {
         try {
 
@@ -274,7 +314,7 @@ export default function Content() {
             console.log('Fail to fetch product list: ', error)
         }
     }
-    
+
     const [progresspercent, setProgresspercent] = useState(0);
 
     async function handleUpload() {
@@ -299,114 +339,110 @@ export default function Content() {
             );
         }
     }
-    console.log("img nenaenan", img)
-    const [NumError, setNum] = useState(false)
-    const [phoneErrorr, setDesErr] = useState(false)
-    const [nameError, setNameError] = useState(false)
+
     const [message, setMess] = useState(false)
-    const [nameExists, setNameExists] = useState(false)
-    const [idExists, setIdExists] = useState(false)
-    async function handleUpdateOrCreate() {
-        
-            if (selectedValue.id != undefined) {
-                const res = await fetch(`http://www.cinemasystem.somee.com/api/Film/${selectedValue.id}`, {
-                    method: `PUT`,
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem("token")}`,
-                    },
-                    body: JSON.stringify(body)
-                }).then(res => res.json())
-                    .then(result => {
 
-                        if (result) {
-                            if (result?.statusCode == 200) {
-                                setMess("Update Successfullly")
-                                setAlert(true)
-                                setStatus("success")
-                                handleClose();
-                                featchCinemaList();
-                            }
+    async function handleUpdateOrCreate(data) {
 
-                        } else {
-                            alert("Update UnSuccessfullly")
+        if (selectedValue.id != undefined) {
+            const res = await fetch(`http://www.cinemasystem.somee.com/api/Film/${selectedValue.id}`, {
+                method: `PUT`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: JSON.stringify(data)
+            }).then(res => res.json())
+                .then(result => {
+
+                    if (result) {
+                        if (result?.statusCode == 200) {
+                            setMess("Update Successfullly")
+                            setAlert(true)
+                            setStatus("success")
+                            handleClose();
+                            featchCinemaList();
                         }
-                        return res
 
-                    })
-                    .catch((error) => {
-                        throw ('Invalid Token')
-                    })
-                return body
+                    } else {
+                        alert("Update UnSuccessfullly")
+                    }
+                    return res
 
-            } else {
-                const res = await fetch(`http://www.cinemasystem.somee.com/api/Cinema`, {
-                    method: `POST`,
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem("token")}`,
-                    },
-                    body: JSON.stringify(body)
-                }).then(res => res.json())
-                    .then(result => {
+                })
+                .catch((error) => {
+                    throw ('Invalid Token')
+                })
 
-                        if (result) {
-                            if (result?.statusCode == 200) {
-                                setMess("Add Successfullly")
-                                setAlert(true)
-                                setStatus("success")
-                                handleClose();
-                                featchCinemaList();
-                            }
 
-                        } else {
-                            alert("Add UnSuccessfullly")
+        } else {
+            const res = await fetch(`http://www.cinemasystem.somee.com/api/Cinema`, {
+                method: `POST`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: JSON.stringify(data)
+            }).then(res => res.json())
+                .then(result => {
+
+                    if (result) {
+                        if (result?.statusCode == 200) {
+                            setMess("Add Successfullly")
+                            setAlert(true)
+                            setStatus("success")
+                            handleClose();
+                            featchCinemaList();
                         }
-                        return res
 
-                    })
-                    .catch((error) => {
-                        throw ('Invalid Token')
-                    })
-                return body
-            }
-        
+                    } else {
+                        alert("Add UnSuccessfullly")
+                    }
+                    return res
+
+                })
+                .catch((error) => {
+                    throw ('Invalid Token')
+                })
+
+        }
+
     }
     async function handleDelete(data) {
         try {
-    
-    
-          const requestURL = `http://www.cinemasystem.somee.com/api/Account/${data?.id}`;
-    
-          const res = await fetch(requestURL, {
-            method: `DELETE`,
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${localStorage.getItem("token")}`,
-            },
-          }).then(res => res.json())
-            .then(result => {
-    
-              if (result) {
-                if (result?.statusCode == 200) {
-                  setMess(result?.message)
-                  setAlert(true)
-                  setStatus("success")
-                  featchCinemaList();
-                }
-    
-              } else {
-                alert("Update UnSuccessfullly")
-              }
-              return res
-    
-            });
-    
-    
+
+
+            const requestURL = `http://www.cinemasystem.somee.com/api/Account/${data?.id}`;
+
+            const res = await fetch(requestURL, {
+                method: `DELETE`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                },
+            }).then(res => res.json())
+                .then(result => {
+
+                    if (result) {
+                        if (result?.statusCode == 200) {
+                            setMess(result?.message)
+                            setAlert(true)
+                            setStatus("success")
+                            featchCinemaList();
+                        }
+
+                    } else {
+                        alert("Update UnSuccessfullly")
+                    }
+                    return res
+
+                });
+
+
         } catch (error) {
-          console.log('Fail to fetch product list: ', error)
+            console.log('Fail to fetch product list: ', error)
         }
-      }
+    }
     const handleCloseAlert = (event, reason) => {
         if (reason === "clickaway") {
             return;
@@ -418,7 +454,7 @@ export default function Content() {
         setSearch(childData)
 
     };
-
+    console.log(formik.values)
     return (
         <section className=" ml-0 xl:ml-64  px-5 pt-10  ">
             <Snackbar open={alert} autoHideDuration={4000} onClose={handleCloseAlert} className="float-left w-screen">
@@ -439,59 +475,126 @@ export default function Content() {
                     onClose={handleClose}
                     aria-labelledby="customized-dialog-title"
                     open={open}
+                    className="max-h-full"
                 >
-                    <BootstrapDialogTitle id="" onClose={handleClose}>
-                    Film Detail
-                    </BootstrapDialogTitle>
-                    <DialogContent dividers >
-                        {nameError && <div className='text-red-600 ml-11 mb-5 text-xl'>Text 6 - 30 character </div>}
-                        {NumError && <div className='text-red-600 ml-11 mb-5 text-xl'>Id or Price Not Number</div>}
-                        {phoneErrorr && <div className='text-red-600 ml-11 mb-5 text-xl'>Description 6 - 300 character</div>}
-                        {nameExists && <div className='text-red-600 ml-11 mb-5 text-xl'>Title Exists </div>}
+                    <form onSubmit={formik.handleSubmit}>
+                        <BootstrapDialogTitle id="" onClose={handleClose}>
+                            Film Detail
+                        </BootstrapDialogTitle>
+                        <DialogContent dividers >
 
-                        {idExists && <div className='text-red-600 ml-11 mb-5 text-xl'>Id Exitsts</div>}
-                        {Id}
-                        <div className='max-w-5xl my-5 mx-auto'>
-                            <Button
-                                variant="contained"
+                            {id != undefined ? <div className='max-w-5xl my-5 mx-auto'>
+                                <TextField className='w-96 my-5' value={formik.values.id} disabled label="Id" variant="outlined" />
+                            </div> : null}
+                            {formik.errors.image
+                                ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.image}</div>
+                                )
+                                : null}
+                            <div className='max-w-5xl my-5 mx-auto'>
+                                <Button
+                                    variant="contained"
+                                    component="label"
+                                >
+                                    Upload Image
+                                    <input
+                                        type="file"
+                                        hidden
+                                        onChange={(event) => {
+                                            setSelectedImage(event.target.files[0]);
+                                            SetClick(true);
+                                            formik.setFieldValue("image", event.target.files[0]);
+                                        }}
+                                    />
+                                </Button>
+                            </div>
+                            <div className='max-w-5xl my-5 mx-auto'>
+                                {selectedImage == undefined ? <div></div> : <img alt="" className='mx-auto h-24 w-24 my-5' src={click == false ? selectedValue.img : window.URL.createObjectURL(selectedImage)} />}
+                            </div>
+                            <Button variant="contained"
                                 component="label"
-                            >
-                                Upload Image
-                                <input
-                                    type="file"
-                                    hidden
-                                    onChange={(event) => {
-                                        setSelectedImage(event.target.files[0]);
-                                        SetClick(true);
-                                    }}
-                                />
-                            </Button>
-                        </div>
-                        <div className='max-w-5xl my-5 mx-auto'>
-                            {selectedImage == undefined ? <div></div> : <img alt="" className='mx-auto h-24 w-24 my-5' src={click == false ? selectedValue.img : window.URL.createObjectURL(selectedImage)} />}
-                        </div>
-                        <Button variant="contained"
-                            component="label"
 
-                            onClick={handleUpload} className='bg-blue-600 text-white rounded-md ml-5 my-6 py-2 px-4' >
-                            Save Img
-                        </Button>
-                        <div className='max-w-5xl my-5 mx-auto'>
-                            <TextField className='w-96 my-5' onChange={e => setTitle(e.target.value)} defaultValue={selectedValue.title} autoComplete='off' id="outlined-basic" label="Title" variant="outlined" />
-                        </div>
-                        <div className='max-w-5xl my-5 mx-auto'>
-                            <TextField className='w-96 my-5' onChange={e => setPrice(e.target.value)} autoComplete='off' defaultValue={selectedValue.price} id="outlined-basic" label="Prcie" variant="outlined" />
-                        </div>
-                        <div className='max-w-5xl my-5 mx-auto'>
-                            <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Description</label>
-                            <textarea id="message" onChange={e => setDescription(e.target.value)} defaultValue={selectedValue.description} rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Your message..."></textarea>
-                        </div>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleUpdateOrCreate}>
-                            Save
-                        </Button>
-                    </DialogActions>
+                                onClick={handleUpload} className='bg-blue-600 text-white rounded-md ml-5 my-6 py-2 px-4' >
+                                Save Img
+                            </Button>
+                            <div className='max-w-5xl  my-5 mx-auto'>
+                                {formik.errors.title
+                                    ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.title}</div>
+                                    )
+                                    : null}
+                                <TextField error={formik.errors.title ? "error" : null} onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur} value={formik.values.title}
+                                    id="title" className='w-96 my-5' label="Title" variant="outlined" />
+                            </div>
+                            <div className='max-w-5xl my-5 mx-auto'>
+                                {formik.errors.director
+                                    ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.director}</div>
+                                    )
+                                    : null}
+                                <TextField error={formik.errors.director ? "error" : null} onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur} value={formik.values.director}
+                                    id="director" className='w-96 my-5' label="Director" variant="outlined" />
+                            </div>
+                            <div className='max-w-5xl my-5 mx-auto'>
+                                {formik.errors.actor
+                                    ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.actor}</div>
+                                    )
+                                    : null}
+                                <TextField error={formik.errors.actor ? "error" : null} onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur} value={formik.values.actor}
+                                    id="actor" className='w-96 my-5' label="Actor" variant="outlined" />
+                            </div>
+                            <div className='max-w-5xl my-5 mx-auto'>
+                                {formik.errors.time
+                                    ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.time}</div>
+                                    )
+                                    : null}
+                                <TextField error={formik.errors.time ? "error" : null} onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur} value={formik.values.time}
+                                    id="time" className='w-96 my-5' label="Time" variant="outlined" />
+                            </div>
+                            <div className='max-w-5xl my-5 mx-auto'>
+                                {formik.errors.language
+                                    ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.language}</div>
+                                    )
+                                    : null}
+                                <TextField error={formik.errors.language ? "error" : null} onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur} value={formik.values.language}
+                                    id="language" className='w-96 my-5' label="Language" variant="outlined" />
+                            </div>
+                            <div className='max-w-5xl my-5 mx-auto'>
+                                {formik.errors.rated
+                                    ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.rated}</div>
+                                    )
+                                    : null}
+                                <TextField error={formik.errors.rated ? "error" : null} onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur} value={formik.values.rated}
+                                    id="rated" className='w-96 my-5' label="Rated" variant="outlined" />
+                            </div>
+                            <div className='max-w-5xl my-5 mx-auto'>
+                                {formik.errors.trailer
+                                    ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.trailer}</div>
+                                    )
+                                    : null}
+                                <TextField error={formik.errors.trailer ? "error" : null} onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur} value={formik.values.trailer}
+                                    id="trailer" className='w-96 my-5' label="Trailer" variant="outlined" />
+                            </div>
+                            <div className='max-w-5xl my-5 mx-auto'>
+                                {formik.errors.description ? <div className="text-red-600 mb-2 font-bold">{formik.errors.description}</div> : null}
+                                <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Description</label>
+                                <textarea onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur} value={formik.values.description} id="description" rows="4" className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Your message..."></textarea>
+                            </div>
+
+
+
+                        </DialogContent>
+                        <DialogActions>
+                            <Button type='submit'>
+                                Save
+                            </Button>
+                        </DialogActions>
+                    </form>
                 </BootstrapDialog>
                 <div className='pr-5 my-6 float-right'>
                     <Search parentCallback={callbackSearch} />

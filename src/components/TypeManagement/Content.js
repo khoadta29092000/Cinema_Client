@@ -7,12 +7,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import InputBase from '@mui/material/InputBase';
 import IconButton from '@mui/material/IconButton';
-import SearchIcon from '@mui/icons-material/Search';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
@@ -24,20 +21,13 @@ import CloseIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField';
 import { useEffect, useState } from "react";
 import Search from 'components/Search';
-import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage"
-import { storage } from 'firebase';
-import { v4 } from "uuid";
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import PublicOffIcon from '@mui/icons-material/PublicOff';
 import PublicIcon from '@mui/icons-material/Public';
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import { data } from 'autoprefixer';
-
+import { useFormik } from 'formik';
+import * as Yup from "yup";
+import { Box } from '@mui/system';
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -60,7 +50,7 @@ const columns = [
         label: 'Title',
         minWidth: 150,
     },
-    
+
     {
         id: 'Active',
         label: 'Active',
@@ -107,25 +97,52 @@ export default function Content() {
     const [selectedValue, setSelectedValue] = React.useState([]);
     const [status, setStatus] = useState("");
     const [id, setId] = useState("");
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
-    const [roomId, setRoomId] = useState("");
-    const [dataCinema, setDataCinema] = useState([]);
     const [dataType, setDataType] = useState([]);
-    const [dataRoom, setDataRoom] = useState([]);
+
     const [search, setSearch] = useState("");
     const [click, SetClick] = useState(false)
     const [selectedImage, setSelectedImage] = useState("");
     const [alert, setAlert] = useState(false);
+    const formik = useFormik({
+        initialValues: {
+            id: "",
+            title: "",
+            description: "",
+        },
+        validationSchema: Yup.object().shape({
+            title: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required(),
+            description: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required(),
+        }), onSubmit: values => {
+
+            let DataBody
+            if (values.id == "") {
+                DataBody = {
+                    title: values.title,
+                    description: values.description,
+                    active: true
+                }
+            } else {
+                DataBody = {
+                    id: values.id,
+                    title: values.title,
+                    description: values.description,
+                    active: true
+                }
+            }
+            handleUpdateOrCreate(DataBody);
+        },
+    });
     const handleClickOpen = (data) => {
+        if (data != undefined) {
+            formik.setValues(data);
+
+        }
         console.log("111111", data);
+        setId(data.id);
         setOpen(true);
         setSelectedValue(data);
         setSelectedImage(data.img);
-        setRoomId(data.roomId)
-        setId(data.id)
-        setTitle(data.title)
-        setDescription(data.description)
+
     };
     const handleClose = () => {
         setOpen(false);
@@ -133,39 +150,27 @@ export default function Content() {
         SetClick(false);
     };
 
-    const body = {
-        id: id,
-        title: title,
-        description: description,
-        roomId: roomId,
-        active: true
-    };
-    let Id;
-    if (selectedValue.id != undefined) {
-        Id = (<div className='max-w-5xl my-5 mx-auto'>
-            <TextField className='w-96 my-5' onChange={e => setId(e.target.value)} defaultValue={selectedValue.id} disabled id="outlined-basic" label="Id" variant="outlined" />
-        </div>)
-    }
+
     useEffect(() => {
-  
+
         featchTypeList();
         setPage(0);
     }, [search]);
     function createData(data) {
         let Id = data.id;
         let Title = data.title;
-       
+
         let Active = (<button className="text-white  outline-none bg-black cursor-pointer rounded-lg   h-8 w-8" onClick={() => handleUpdateStatus(data.id)}>
             {data.active == true ? <PublicIcon /> : <PublicOffIcon />}
         </button>);
         let Action = (
             <div className='gap-x-8 flex'>
-               <button className="text-white  outline-none bg-yellow-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
-            <EditIcon />
-          </button>
-          <button className="text-white  outline-none bg-red-600 rounded-lg   h-8 w-8" onClick={() => handleDelete(data)}>
-            <DeleteIcon />
-          </button>
+                <button className="text-white  outline-none bg-yellow-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
+                    <EditIcon />
+                </button>
+                <button className="text-white  outline-none bg-red-600 rounded-lg   h-8 w-8" onClick={() => handleDelete(data)}>
+                    <DeleteIcon />
+                </button>
             </div>
         );
         return { Id, Title, Active, Action };
@@ -251,16 +256,9 @@ export default function Content() {
             console.log('Fail to fetch product list: ', error)
         }
     }
-
-    
-
-
-    const [progresspercent, setProgresspercent] = useState(0);
-
-
     const [errorr, setError] = useState("false")
     const [message, setMess] = useState(false)
-    async function handleUpdateOrCreate() {
+    async function handleUpdateOrCreate(data) {
 
         if (selectedValue.id != undefined) {
             const res = await fetch(`http://www.cinemasystem.somee.com/api/Type/${selectedValue?.id}`, {
@@ -269,7 +267,7 @@ export default function Content() {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem("token")}`,
                 },
-                body: JSON.stringify(body)
+                body: JSON.stringify(data)
             }).then(res => res.json())
                 .then(result => {
 
@@ -294,7 +292,7 @@ export default function Content() {
                 .catch((error) => {
                     throw ('Invalid Token')
                 })
-            return body
+
 
         } else {
             const res = await fetch(`http://www.cinemasystem.somee.com/api/Type`, {
@@ -303,7 +301,7 @@ export default function Content() {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem("token")}`,
                 },
-                body: JSON.stringify(body)
+                body: JSON.stringify(data)
             }).then(res => res.json())
                 .then(result => {
 
@@ -328,7 +326,7 @@ export default function Content() {
                 .catch((error) => {
                     throw ('Invalid Token')
                 })
-            return body
+
         }
 
     }
@@ -372,9 +370,9 @@ export default function Content() {
 
     };
 
-    
 
-   
+
+
     return (
         <section className=" ml-0 xl:ml-64  px-5 pt-10  ">
             <Snackbar open={alert} autoHideDuration={4000} onClose={handleCloseAlert} className="float-left w-screen">
@@ -385,7 +383,7 @@ export default function Content() {
             <Paper className='' sx={{ width: '100%', overflow: 'hidden' }}>
                 <TableHead >
                     <div className='pt-2 pl-4 block font-semibold text-xl'>
-                    Types Management
+                        Types Management
                     </div>
                 </TableHead>
                 <button className='bg-blue-600 text-white rounded-md ml-5 my-6 py-2 px-4' onClick={handleClickOpen}>
@@ -396,27 +394,38 @@ export default function Content() {
                     aria-labelledby=""
                     open={open}
                 >
-                    <BootstrapDialogTitle id="" onClose={handleClose}>
-                         Type Details
-                    </BootstrapDialogTitle>
-                    <DialogContent dividers >
+                    <form onSubmit={formik.handleSubmit}>
+                        <BootstrapDialogTitle id="" onClose={handleClose}>
+                            Type Details
+                        </BootstrapDialogTitle>
+                        <DialogContent dividers >
+                            {id != undefined ? <div className='max-w-5xl my-5 mx-auto'>
+                                <TextField className='w-96 my-5' value={formik.values.id} disabled label="Id" variant="outlined" />
+                            </div> : null}
 
-                        {Id}
+                            <div className='max-w-5xl my-5 mx-auto'>
+                                {formik.errors.title
+                                    ? (<Box><div className="text-red-600 mb-2 font-bold">{formik.errors.title}</div>
+                                    </Box>)
+                                    : null}
+                                <TextField error={formik.errors.title ? "error" : null} onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur} value={formik.values.title}
+                                    id="title" className='w-96 my-5' label="Title" variant="outlined" />
+                            </div>
 
-                        <div className='max-w-5xl my-5 mx-auto'>
-                            <TextField className='w-96 my-5' onChange={e => setTitle(e.target.value)} defaultValue={selectedValue.title} autoComplete='off' id="outlined-basic" label="Title" variant="outlined" />
-                        </div>
-                        
-                        <div className='max-w-5xl my-5 mx-auto'>
-                            <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Description</label>
-                            <textarea id="message" onChange={e => setDescription(e.target.value)} defaultValue={selectedValue.description} rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Your message..."></textarea>
-                        </div>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleUpdateOrCreate}>
-                            Save
-                        </Button>
-                    </DialogActions>
+                            <div className='max-w-5xl my-5 mx-auto'>
+                                {formik.errors.description ? <div className="text-red-600 mb-2 font-bold">{formik.errors.description}</div> : null}
+                                <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Description</label>
+                                <textarea onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur} value={formik.values.description} id="description" rows="4" className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Your message..."></textarea>
+                            </div>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button type='submit' >
+                                Save
+                            </Button>
+                        </DialogActions>
+                    </form>
                 </BootstrapDialog>
                 <div className='pr-5 my-6 float-right'>
 

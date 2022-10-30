@@ -128,33 +128,32 @@ export default function Content() {
         initialValues: {
             id: '',
             discount: '',
-
             startDate: '',
             endDate: '',
             description: '',
-
-
         },
         validationSchema: Yup.object().shape({
             id: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required('Required'),
-            discount: Yup.number().typeError("Must be number!").max(100,"Dicount not > 100%").required('Required'),
-            startDate: Yup.date().required('Required'),
-            endDate: Yup.date(),
+            discount: Yup.number().typeError("Must be number!").max(100, "Dicount not > 100%").required('Required'),
+            startDate: Yup.date(),
+            endDate: Yup.date().min(Yup.ref('startDate'),
+                "end date can't be before start date"
+            ),
             description: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required("Required"),
 
         }), onSubmit: values => {
-           
-           
-                DataBody = {
-                    id: values.id,
-                    discount: values.discount,
-                    startDate: values.startDate,
-                    endDate: values.endDate,
-                    description: values.description,
-                }
-                console.log("da bam", DataBody)
-                handleUpdateOrCreate(values);
-           
+
+
+            DataBody = {
+                id: values.id,
+                discount: values.discount,
+                startDate: values.startDate,
+                endDate: values.endDate,
+                description: values.description,
+            }
+            console.log("da bam", DataBody)
+            handleUpdateOrCreate(values);
+
         }
     });
     async function handleUpdateOrCreate(values) {
@@ -466,14 +465,14 @@ export default function Content() {
 
                             {selectedValue.id == undefined ?
                                 <div className='max-w-5xl my-5 mx-auto'>
-                                    {formik.errors.id && formik.touched.id ? (
+                                    {formik.errors.id ? (
                                         <Box > <div className="text-red-600 mb-2 font-bold">{formik.errors.id}</div>
-                                            <TextField error className='w-96 my-5' onChange={formik.handleChange}
-                                                onBlur={formik.handleBlur} defaultValue={formik.values.id} id="id" label="Id" variant="outlined" />
+
 
                                         </Box>
-                                    ) : <TextField className='w-96 my-5' onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur} defaultValue={formik.values.id} id="id" label="Id" />}
+                                    ) : null}
+                                    <TextField error={formik.errors.id ? "error" : null} className='w-96 my-5' onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur} defaultValue={formik.values.id} id="id" label="Id" />
                                 </div>
                                 :
                                 <div className='max-w-5xl my-5 mx-auto'>
@@ -484,19 +483,24 @@ export default function Content() {
 
                             <div className='max-w-5xl my-5 mx-auto'>
 
-                                {formik.errors.discount && formik.touched.discount ? (
+                                {formik.errors.discount ? (
                                     <Box > <div className="text-red-600 mb-2 font-bold">{formik.errors.discount}</div>
-                                        <TextField error className='w-96 my-5' onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur} defaultValue={formik.values.discount} id="discount" label="discount" variant="outlined" />
+
                                     </Box>
-                                ) : <TextField className='w-96 my-5' onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur} defaultValue={formik.values.discount} autoComplete='off' id="discount" label="discount" variant="outlined" />}
+                                ) : null}
 
-
+                                <TextField className='w-96 my-5' onChange={formik.handleChange} error={formik.errors.discount ? "error" : null}
+                                    onBlur={formik.handleBlur} defaultValue={formik.values.discount} autoComplete='off' id="discount" label="discount" variant="outlined" />
                             </div>
                             <div className='max-w-5xl my-5 mx-auto'>
+                                {formik.errors.startDate ? (
+                                    <div className="text-red-600 mb-2 font-bold">{formik.errors.startDate}</div>
+
+                                ) : null}
+
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <DesktopDatePicker
+                                    
                                         className='w-96 my-5'
                                         label="Start Date"
                                         inputFormat="MM/DD/YYYY"
@@ -509,8 +513,14 @@ export default function Content() {
                                 </LocalizationProvider>
                             </div>
                             <div className='max-w-5xl my-5 mx-auto'>
+                                {formik.errors.endDate ? (
+                                    <div className="text-red-600 mb-2 font-bold">{formik.errors.endDate}</div>
+
+                                ) : null}
+
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <DesktopDatePicker
+                                    
                                         className='w-96 my-5'
                                         label="End Date"
                                         inputFormat="MM/DD/YYYY"
@@ -526,7 +536,7 @@ export default function Content() {
 
                             </div>
                             <div className='max-w-5xl my-5 mx-auto'>
-                                {formik.errors.description && formik.touched.description ? (
+                                {formik.errors.description ? (
                                     <div className="text-red-600 mb-2 font-bold">{formik.errors.description}</div>
 
                                 ) : null}

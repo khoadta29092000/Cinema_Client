@@ -1,12 +1,12 @@
 import * as React from 'react';
-import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
+    import Paper from '@mui/material/Paper';
+    import Table from '@mui/material/Table';
+    import TableBody from '@mui/material/TableBody';
+    import TableCell from '@mui/material/TableCell';
+    import TableContainer from '@mui/material/TableContainer';
+    import TableHead from '@mui/material/TableHead';
+    import TablePagination from '@mui/material/TablePagination';
+    import TableRow from '@mui/material/TableRow';
 import InputBase from '@mui/material/InputBase';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
@@ -38,6 +38,8 @@ import PublicOffIcon from '@mui/icons-material/PublicOff';
 import PublicIcon from '@mui/icons-material/Public';
 import Autocomplete from '@mui/material/Autocomplete';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import { useFormik } from 'formik';
+import * as Yup from "yup";
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -76,7 +78,7 @@ const columns = [
         label: 'Action',
         minWidth: 100,
     },
-  
+
 ];
 const BootstrapDialogTitle = (props) => {
     const { children, onClose, ...other } = props;
@@ -124,8 +126,44 @@ export default function Content() {
     const [search, setSearch] = useState("");
     const [status, setStatus] = useState("success");
     const [alert, setAlert] = useState(false);
+    const formik = useFormik({
+        initialValues: {
+            id: "",
+            title: "",
+            description: "",
+            cinemaId: "",
+        },
+        validationSchema: Yup.object().shape({
+            title: Yup.string().min(1, "Too Short!").max(4000, "Too Long!").required(),
+            description: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required(),
+            cinemaId: Yup.number().required(),
+        }), onSubmit: values => {
+
+            let DataBody
+            if (values.id == "") {
+                DataBody = {
+                    title: values.title,
+                    description: values.description,
+                    cinemaId: values.cinemaId,
+                    active: true
+                }
+            } else {
+                DataBody = {
+                    id: values.id,
+                    title: values.title,
+                    description: values.description,
+                    cinemaId: values.cinemaId,
+                    active: values.active   
+                }
+            }
+            handleUpdateOrCreate(DataBody);
+        },
+    });
     const handleClickOpen = (data) => {
-        console.log("111111", data);
+        if (data != undefined) {
+            formik.setValues(data);
+
+        }
         setOpen(true);
         setSelectedValue(data);
         setSelectedImage(data.img);
@@ -142,17 +180,7 @@ export default function Content() {
         setSelectedImage(undefined);
         SetClick(false);
     };
-    const validName = new RegExp(/^.{6,30}$/);
-    const validDes = new RegExp(/^.{6,300}$/);
-    const body = {
-        id: id,
-        title: title,
-        description: description,
 
-        active: Active,
-        cinemaId: categoryId,
-
-    };
     function createData(data) {
         let Id = data.id;
         let Title = data.title;
@@ -168,18 +196,18 @@ export default function Content() {
         let Active = (<button className="text-white  outline-none bg-black cursor-pointer rounded-lg   h-8 w-8" onClick={() => handleUpdateStatus(data.id)}>
             {data.active == true ? <PublicIcon /> : <PublicOffIcon />}
         </button>);
-          let Action = (
+        let Action = (
             <div className='gap-x-8 flex'>
-             
-               <button className="text-white  outline-none bg-blue-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
-            <RemoveRedEyeIcon />
-          </button>
-          <button className="text-white  outline-none bg-yellow-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
-            <EditIcon />
-          </button>
-          <button className="text-white  outline-none bg-red-600 rounded-lg   h-8 w-8" onClick={() => handleDelete(data)}>
-            <DeleteIcon />
-          </button>
+
+                <button className="text-white  outline-none bg-blue-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
+                    <RemoveRedEyeIcon />
+                </button>
+                <button className="text-white  outline-none bg-yellow-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
+                    <EditIcon />
+                </button>
+                <button className="text-white  outline-none bg-red-600 rounded-lg   h-8 w-8" onClick={() => handleDelete(data)}>
+                    <DeleteIcon />
+                </button>
             </div>
         );
 
@@ -243,9 +271,9 @@ export default function Content() {
 
 
 
-    const rows1 = dataCate.map((data, index) => {
-        return (createData(data))
-    })
+        const rows1 = dataCate.map((data, index) => {
+            return (createData(data))
+        })
 
 
     let Id;
@@ -277,7 +305,7 @@ export default function Content() {
 
         } catch (error) {
             console.log('Fail to fetch product list: ', error)
-        }
+        }   
     }
     async function featchProductList() {
         try {
@@ -333,7 +361,7 @@ export default function Content() {
     const [error, setError] = useState(undefined)
     const [message, setMess] = useState(false)
 
-    async function handleUpdateOrCreate() {
+    async function handleUpdateOrCreate(data) {
 
         if (selectedValue.id != undefined) {
             const res = await fetch(`http://www.cinemasystem.somee.com/api/Room/${selectedValue?.id}`, {
@@ -342,7 +370,7 @@ export default function Content() {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem("token")}`,
                 },
-                body: JSON.stringify(body)
+                body: JSON.stringify(data)
             }).then(res => res.json())
                 .then(result => {
 
@@ -367,7 +395,7 @@ export default function Content() {
                 .catch((error) => {
                     throw ('Invalid Token')
                 })
-            return body
+
 
         } else {
             const res = await fetch(`http://www.cinemasystem.somee.com/api/Room`, {
@@ -376,7 +404,7 @@ export default function Content() {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem("token")}`,
                 },
-                body: JSON.stringify(body)
+                body: JSON.stringify(data)
             }).then(res => res.json())
                 .then(result => {
 
@@ -401,7 +429,7 @@ export default function Content() {
                 .catch((error) => {
                     throw ('Invalid Token')
                 })
-            return body
+
         }
 
     }
@@ -449,7 +477,7 @@ export default function Content() {
         id: item.id,
         label: item.name
     }))
-    CinemaOptions.unshift({id:null,label:"All"})
+    CinemaOptions.unshift({ id: null, label: "All" })
     return (
         <section className=" ml-0 xl:ml-64  px-5 pt-10  ">
             <Snackbar open={alert} autoHideDuration={4000} onClose={handleCloseAlert} className="float-left w-screen">
@@ -467,23 +495,12 @@ export default function Content() {
                 <div className='float-left ml-5 gap-5 my-6  grid grid-cols-6'>
                     <div className='col-span-1 outline-none hover:outline-none'>
                         <button className='bg-blue-600 text-white rounded-md ml-5 mt-2 py-2 px-4' onClick={handleClickOpen}>
-                             add Room
+                            add Room
                         </button>
 
 
                     </div>
-                    <div className='col-span-2 w-full'>
-                        <Autocomplete
-
-                            disableClearable
-                            id="combo-box-demo"
-                            options={CinemaOptions}
-                            sx={{ width: 200 }}
-                            renderInput={(params) => <TextField {...params} label="Cinema" />}
-                            onChange={(event, value) => setCategoryId(value)}
-                        />
-
-                    </div>
+                            
 
                 </div>
                 <BootstrapDialog
@@ -491,62 +508,67 @@ export default function Content() {
                     aria-labelledby="customized-dialog-title"
                     open={open}
                 >
+                    <form onSubmit={formik.handleSubmit}>
+                        <BootstrapDialogTitle id="" onClose={handleClose}>
+                            Room Details
+                        </BootstrapDialogTitle>
+                        <DialogContent dividers >
+                            {id != undefined ? <div className='max-w-5xl my-5 mx-auto'>
+                                <TextField className='w-96 my-5' value={formik.values.id} disabled label="Id" variant="outlined" />
+                            </div> : null}
 
-                    <BootstrapDialogTitle id="" onClose={handleClose}>
-                        Room Details
-                    </BootstrapDialogTitle>
-                    <DialogContent dividers >
-                        {error && <div className='text-red-600 ml-11 mb-5 text-xl'>{error} </div>}
+                            <div className='max-w-5xl my-5 mx-auto'>
+                                {formik.errors.title
+                                    ? (<Box><div className="text-red-600 mb-2 font-bold">{formik.errors.title}</div>
+                                    </Box>)
+                                    : null}
+                                <TextField error={formik.errors.title ? "error" : null} onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur} value={formik.values.title}
+                                    id="title" className='w-96 my-5' label="Title" variant="outlined" />
+                            </div>
+                            <div className='max-w-5xl my-5 mx-auto'>
+                                <Box sx={{ minWidth: 120 }}>
+                                    {formik.errors.cinemaId
+                                        ? (<Box><div className="text-red-600 mb-2 font-bold">{formik.errors.cinemaId}</div>
+                                        </Box>)
+                                        : null}
+                                    <FormControl fullWidth>
+                                        <InputLabel id="demo-simple-select-label">Cinema</InputLabel>
+                                        <Select
 
+                                            id="cinemaId"
+                                            defaultValue={formik.values.cinemaId}
+                                            label="Cinema"
+                                            onChange={e => formik.setFieldValue("cinemaId", e.target.value)}
+                                        >
 
-                        {Id}
+                                            {data1.map((cate, index) => {
+                                                if (cate.active == true) {
+                                                    return (
+                                                        <MenuItem value={cate.id}>{cate.name}</MenuItem>
+                                                    )
+                                                }
 
+                                            })}
 
-                        <div className='max-w-5xl my-5 mx-auto'>
-                            <TextField className='w-96 my-5' onChange={e => setTitle(e.target.value)} defaultValue={selectedValue.title} autoComplete='off' id="outlined-basic" label="Title" variant="outlined" />
-                        </div>
-
-                        <div className='max-w-5xl my-5 mx-auto'>
-                            <Box sx={{ minWidth: 120 }}>
-                                <FormControl fullWidth>
-                                    <InputLabel id="demo-simple-select-label">Cinema</InputLabel>
-                                    <Select
-                                        labelId="demo-simple-select-label"
-                                        id="demo-simple-select"
-                                        defaultValue={categoryId}
-                                        label="Supplier"
-                                        onChange={e => setCategoryId(e.target.value)}
-                                    >
-
-                                        {data1.map((cate, index) => {
-                                            return (
-                                                <MenuItem key={index} value={cate.id}>{cate.name}</MenuItem>
-                                            )
-                                        })}
-
-                                    </Select>
-                                </FormControl>
-                            </Box>
-                        </div>
-
-                        <div className='max-w-5xl my-5 mx-auto'>
-
-                        </div>
-                        <div className='max-w-5xl my-5 mx-auto'>
-                            <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Description</label>
-                            <textarea id="message" onChange={e => setDescription(e.target.value)} defaultValue={selectedValue.description} rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Your message..."></textarea>
-                        </div>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleUpdateOrCreate}>
-                            Save
-                        </Button>
-                    </DialogActions>
+                                        </Select>
+                                    </FormControl>
+                                </Box>
+                            </div>
+                            <div className='max-w-5xl my-5 mx-auto'>
+                                {formik.errors.description ? <div className="text-red-600 mb-2 font-bold">{formik.errors.description}</div> : null}
+                                <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Description</label>
+                                <textarea onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur} value={formik.values.description} id="description" rows="4" className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Your message..."></textarea>
+                            </div>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button type='submit'>
+                                Save
+                            </Button>
+                        </DialogActions>
+                    </form>
                 </BootstrapDialog>
-
-
-
-
                 <div className='pr-5 my-6  float-right'>
 
                     <Search parentCallback={callbackSearch} />

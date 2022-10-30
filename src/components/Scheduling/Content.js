@@ -33,7 +33,19 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 
 import Autocomplete from '@mui/material/Autocomplete';
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
 
+    if (month.length < 2)
+        month = '0' + month;
+    if (day.length < 2)
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+}
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -97,29 +109,28 @@ export default function Content() {
     const [search, setSearch] = useState("");
     const [id, setId] = useState("");
     const [productId, setProductId] = useState("");
-
     const [deliveryBoy, setDeliveryBoy] = React.useState('');
     const [deliveryTripId, setDeliveryTripId] = React.useState('');
     const [slotId, setSlotId] = React.useState('');
     const [packageId, setPackageId] = React.useState('');
     const [packageOrderId, setPackageOrderId] = React.useState('');
-    const [packageName, setpackageName] = React.useState('');
-    const [userName, setUserName] = React.useState('');
     const [productName, setProductName] = React.useState("");
     const [productImg, setProductImg] = React.useState("");
-    const [statusOrder, setStatusOrder] = React.useState('');
     const [dataRoom, setDataRoom] = useState([]);
     const [dataScheduling, setDataScheduling] = useState([]);
-    const [dataPackageorder, setDataPackageorder] = useState([]);
-    const [dataPackage, setDataPackage] = useState([]);
     const [dataCinema, setDataCinema] = useState([]);
-    const [dataAcc, setDataAcc] = useState([]);
     const [dataFilm, setDataFilm] = useState([]);
     const [dataFilmDetail, setDataFilmDetail] = useState([]);
     const [dataProduct, setDataProduct] = useState([]);
+    const [dataAcc, setDataAcc] = useState([]);
     const [message, setMess] = useState(false);
     const [status, setStatus] = useState("success");
     const [alert, setAlert] = useState(false);
+    const [Room, setRoom] = useState("");
+    const [Cinema, setCinema] = useState("");
+    const [Film, setFilm] = useState("");
+    const [StartDate, setStartDate] = useState("");
+    const [Enđate, setEnđate] = useState("");
     async function handleUpdateStatus(data) {
         try {
 
@@ -198,7 +209,7 @@ export default function Content() {
         dataRoom.map(item => {
             if (data.roomId == item.id) {
 
-                return Room = item.title 
+                return Room = item.title
 
             }
         })
@@ -258,7 +269,11 @@ export default function Content() {
         { id: 2, name: "Noon", location: "161 Xa Lộ Hà Nội, P. Thảo Điền, Q.2, TP. Hồ Chí Minh" },
         { id: 3, name: "Afternoon", location: "1311 Ông Cao Thắng, P.Tân Kì, Q.10, TP. Hồ Chí Minh" },
 
-    ]
+    ] 
+     var today = new Date();
+
+    const [value, setValue] = React.useState(today);
+    const [startValue, setStartValue] = React.useState(today);
 
     useEffect(() => {
         featchSchedulingList();
@@ -268,13 +283,24 @@ export default function Content() {
         featchFilmList();
 
         setPage(0);
-    }, [search]);
+    }, [search, Room, Film, value, startValue]);
 
     async function featchSchedulingList() {
         try {
+            let roomid;
+            if (Room.id == undefined) {
+                roomid = 0;
+            } else {
+                roomid = Room.id
+            }
+            let filmid;
+            if (Film.id == undefined) {
+                filmid = 0;
+            } else {
+                filmid = Film.id
+            }
 
-
-            const requestURL = `http://www.cinemasystem.somee.com/api/Scheduling`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Scheduling?Startdate=${formatDate(startValue)}&EndDate=${formatDate(value)}&RoomId=${roomid}&FilmId=${filmid}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -391,10 +417,7 @@ export default function Content() {
             console.log('Fail to fetch product list: ', error)
         }
     }
-    var today = new Date();
 
-    const [value, setValue] = React.useState(dayjs(today));
-    const [startValue, setStartValue] = React.useState(dayjs(today.setDate(today.getDate() - 30)));
     const handleChange = (newValue) => {
         setValue(newValue);
     };
@@ -435,6 +458,9 @@ export default function Content() {
         id: item.id,
         label: item.title
     }))
+    RoomOptions.unshift({ id: null, label: "All" })
+    CinemaOptions.unshift({ id: null, label: "All" })
+    filmOptions.unshift({ id: null, label: "All" })
     return (
         <section className=" ml-0 xl:ml-64  px-5 pt-10  ">
             <Snackbar open={alert} autoHideDuration={4000} onClose={handleCloseAlert} className="float-left w-screen">
@@ -452,33 +478,25 @@ export default function Content() {
                     <div className='col-span-1 outline-none hover:outline-none'>
 
                         <Autocomplete
-                            disablePortal
+                            disableClearable
                             id="combo-box-demo"
                             options={RoomOptions}
                             sx={{ width: 250 }}
                             renderInput={(params) => <TextField {...params} label="Room" />}
+                            onChange={(event, value) => setRoom(value)}
                         />
 
 
                     </div>
-                    <div className='col-span-2'>
-                        <Autocomplete
-                            disablePortal
-                            id="combo-box-demo"
-                            options={CinemaOptions}
-                            sx={{ width: 250 }}
-                            renderInput={(params) => <TextField {...params} label="Cinema" />}
-                        />
 
-
-                    </div>
                     <div className='col-span-1'>
                         <Autocomplete
-                            disablePortal
+                            disableClearable
                             id="combo-box-demo"
                             options={filmOptions}
                             sx={{ width: 300 }}
                             renderInput={(params) => <TextField {...params} label="Film" />}
+                            onChange={(event, value) => setFilm(value)}
                         />
 
                     </div>

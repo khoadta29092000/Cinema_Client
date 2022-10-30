@@ -104,7 +104,7 @@ export default function Content() {
         let View = (<button className="text-white  outline-none bg-blue-600 rounded-lg   h-8 w-8">
 
             <Link to={{
-                pathname: "/PackageOrderManagement/Details",
+                pathname: "/Bill/Details",
                 state: {
                     name: data.id
                 }

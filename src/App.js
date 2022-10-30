@@ -1,4 +1,4 @@
-import { Switch, Route, Redirect } from 'react-router-dom';
+    import { Switch, Route, Redirect } from 'react-router-dom';
 import Landing from 'pages/Landing';
 import Profile from 'pages/Profile';
 import Login from 'pages/Login';
@@ -29,12 +29,13 @@ import 'assets/styles/tailwind.css';
 import Scheduling from 'pages/Scheduling';
 import CouponManagement from 'pages/CouponManagement';
 import ProfileDashboard from 'pages/ProfileDashboard';
-import PackageDetails from 'pages/PackageDetails';
+import BillDetails from 'pages/BillDetails';
 import detail from 'pages/detail';
 import Room from 'pages/Room';
 
 import Test from 'components/Test';
-import service from 'pages/service';
+import Service from 'pages/Service';
+import CinemaDetails from 'pages/CinemaDetails';
 
 
 
@@ -44,7 +45,7 @@ function App() {
     return (
         <Switch>
             <Route exact path="/" component={Landing} />
-            <Route exact path="/service" component={service} />
+            <Route exact path="/Service" component={Service} />
             <Route exact path="/Test" component={Test} />
             <Route exact path="/AboutUs" component={Aboutus} />
             <Route exact path="/Room/:id" component={Room} />
@@ -64,7 +65,8 @@ function App() {
             <Route exact path="/CinemaManagement" component={CinemaManagement} />
             <Route exact path="/Scheduling" component={Scheduling} />
             <Route exact path="/Bill" component={Bill} />
-            <Route exact path="/PackageOrderManagement/Details" component={PackageDetails} />
+            <Route exact path="/Bill/Details" component={BillDetails} />
+            <Route exact path="/Cinema/Details" component={CinemaDetails} />
             <Route exact path="/ServicesManagement" component={ServicesManagement} />
             <Route exact path="/CouponManagement" component={CouponManagement} />
             <Route exact path="/FilmsManagement" component={FilmsManagement} />

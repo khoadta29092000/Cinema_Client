@@ -22,11 +22,11 @@ module.exports = {
               },
             backgroundImage: () => ({
                 'login-background':
-                    "linear-gradient(rgba(0,0,0, 0.75), rgba(0,0,0, 0.75)), url('https://imgproxy4.tinhte.vn/1j2lLcwj3mf_RI8_Ope-M1kAV_W2p0Z6Q4UIPSOTwHE/w:600/plain/https://images2.imgbox.com/d6/ab/3h5rYDCb_o.jpg')",
+                    "linear-gradient(rgba(0,0,0, 0.75), rgba(0,0,0, 0.75)), url('https://top10vietnam.vn/wp-content/uploads/2020/07/rap-chieu-phim-galaxy-cinema-1.jpg')",
                 'slide1-background':
-                    'linear-gradient(rgba(0,0,0, 0.75), rgba(0,0,0, 0.75)), url(http://movieapi.cyberlearn.vn/hinhanh/cuoc-chien-sinh-tu.png)',
+                    'linear-gradient(rgba(0,0,0, 0.75), rgba(0,0,0, 0.75)), url(https://top10vietnam.vn/wp-content/uploads/2020/07/rap-chieu-phim-galaxy-cinema-1.jpg)',
                 'slide2-background':
-                    'linear-gradient(rgba(0,0,0, 0.75), rgba(0,0,0, 0.75)), url(http://movieapi.cyberlearn.vn/hinhanh/lat-mat-48h.png)',
+                    'linear-gradient(rgba(0,0,0, 0.75), rgba(0,0,0, 0.75)), url(https://langgo.edu.vn/public/files/upload/default/images/ielts/ielts-speaking-part-1-chu-de-film-movie-va-mau-tra-loi-band-9.jpg)',
                 'slide3-background':
                     'linear-gradient(rgba(0,0,0, 0.75), rgba(0,0,0, 0.75)), url(https://movieapi.cyberlearn.vn/hinhanh/game-of-throne_gp01.jpg)',
                 'profile-background':
