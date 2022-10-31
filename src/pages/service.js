@@ -5,7 +5,7 @@ import Content from 'components/Service/Content';
 
 
 
-export default function service() {
+export default function Service() {
 
     return (
         <>
