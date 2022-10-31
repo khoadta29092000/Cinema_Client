@@ -33,10 +33,13 @@ import { storage } from 'firebase';
 import { v4 } from "uuid";
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-import PublicOffIcon from '@mui/icons-material/PublicOff';
-import PublicIcon from '@mui/icons-material/Public';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import dayjs from 'dayjs';
 import { useFormik } from 'formik';
 import * as Yup from "yup";
+import Autocomplete from '@mui/material/Autocomplete';
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -174,10 +177,68 @@ export default function Content() {
     const [img, setImg] = useState("");
     const [price, setPrice] = useState("");
     const [data, setData] = useState([]);
+    const [dataFilm, setDataFilm] = useState([]);
     const [dataService, setDataServiceInCinema] = useState([]);
     const [search, setSearch] = useState("");
     const [status, setStatus] = useState("success");
     const [alert, setAlert] = useState(false);
+    const formik = useFormik({
+        initialValues: {
+            filmId: "",
+            startime: '',
+            endtime: '',
+        },
+        validationSchema: Yup.object().shape({
+            filmId: Yup.string().required('Required'),
+            startime: Yup.date(),
+            endtime: Yup.date().min(Yup.ref('startime'),
+                "end date can't be before start date"
+            ),
+
+        }), onSubmit: values => {
+
+            let DataBody
+            DataBody = {
+                filmId: values.filmId,
+                cinemaId: state?.name,
+                startime: values.startime,
+                endtime: values.endtime,
+
+            }
+            hanleCreateFilm(DataBody);
+        },
+    });
+    async function hanleCreateFilm(data) {
+        const res = await fetch(`http://cinemasystem.somee.com/api/FilmInCinema`, {
+            method: `POST`,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify(data)
+        }).then(res => res.json())
+            .then(result => {
+
+                if (result) {
+                    if (result?.statusCode == 200) {
+                        setMess("Add Successfullly")
+                        setAlert(true)
+                        setStatus("success")
+                        handleClose();
+                        featchFilmInCinemaList();
+                        featchServiceInCinemaList();
+                    }
+
+                } else {
+                    alert("Add UnSuccessfullly")
+                }
+                return res
+
+            })
+            .catch((error) => {
+                throw ('Invalid Token')
+            })
+    }
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -249,6 +310,7 @@ export default function Content() {
     useEffect(() => {
         featchFilmInCinemaList();
         featchServiceInCinemaList();
+        featchFilmList();
         setPage(0);
     }, [search]);
     const handleChangePage = (event, newPage) => {
@@ -271,6 +333,31 @@ export default function Content() {
         Id = (<div className='max-w-5xl my-5 mx-auto'>
             <TextField className='w-96 my-5' defaultValue={id} disabled id="outlined-basic" label="Id" variant="outlined" />
         </div>)
+    }
+    async function featchFilmList() {
+        try {
+
+
+            const requestURL = `http://cinemasystem.somee.com/api/Film`;
+
+            const response = await fetch(requestURL, {
+                method: `GET`,
+                headers: {
+                    'Content-Type': 'application/json',
+
+                },
+            });
+            const responseJSON = await response.json();
+
+            const data = responseJSON;
+
+            setDataFilm(responseJSON.data)
+
+            console.log("aa fetch", responseJSON.data)
+
+        } catch (error) {
+            console.log('Fail to fetch product list: ', error)
+        }
     }
     async function featchFilmInCinemaList() {
         try {
@@ -334,8 +421,24 @@ export default function Content() {
     };
     const callbackSearch = (childData) => {
         setSearch(childData)
-
     };
+    const FilmNoInCinema = dataFilm.filter(item => {
+        data.map(item1 => {
+            if(item.id != item1.id){
+                return item
+            }
+        })
+    })
+
+    const RoomOptions = dataFilm.map((item, index) => ({
+        id: item.id,
+        label: item.title
+    }))
+   
+    
+   
+ 
+    console.log("ala" , dataFilm)
     return (
         <section className=" ml-0 xl:ml-64  px-5 pt-10  ">
             <Box sx={{ width: '100%' }}>
@@ -370,10 +473,67 @@ export default function Content() {
                             >
                                 <form >
                                     <BootstrapDialogTitle id="" onClose={handleClose}>
-                                        Film Detail
+                                        Film
                                     </BootstrapDialogTitle>
                                     <DialogContent dividers >
+                                        <div className='max-w-5xl my-5 mx-auto'>
+                                            {formik.errors.idFilm
+                                                ? (<Box><div className="text-red-600 mb-2 font-bold">{formik.errors.idFilm}</div>
+                                                </Box>)
+                                                : null}
+                                            <Autocomplete
+                                                disableClearable
+                                                onChange={formik.handleChange}
+                                                onBlur={formik.handleBlur} value={formik.values.idFilm}
+                                                id="idFilm"
+                                                options={RoomOptions}
+                                                
+                                                renderInput={(params) => <TextField {...params} label="Film" />}
+                                              
+                                            />
 
+
+                                        </div>
+                                        <div className='max-w-5xl my-5 mx-auto'>
+                                            {formik.errors.starttime ? (
+                                                <div className="text-red-600 mb-2 font-bold">{formik.errors.starttime}</div>
+
+                                            ) : null}
+
+                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                <DesktopDatePicker
+
+                                                    className='w-96 my-5'
+                                                    label="Start Date"
+                                                    inputFormat="MM/DD/YYYY"
+                                                    id="starttime"
+                                                    value={formik.values.starttime}
+                                                    onChange={value => formik.setFieldValue("starttime", value)}
+                                                    onBlur={formik.handleBlur}
+                                                    renderInput={(params) => <TextField {...params} />}
+                                                />
+                                            </LocalizationProvider>
+                                        </div>
+                                        <div className='max-w-5xl my-5 mx-auto'>
+                                            {formik.errors.endtime ? (
+                                                <div className="text-red-600 mb-2 font-bold">{formik.errors.endtime}</div>
+
+                                            ) : null}
+
+                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                <DesktopDatePicker
+
+                                                    className='w-96 my-5'
+                                                    label="End Date"
+                                                    inputFormat="MM/DD/YYYY"
+                                                    id="endtime"
+                                                    value={formik.values.endtime}
+                                                    onChange={value => formik.setFieldValue("endtime", value)}
+                                                    onBlur={formik.handleBlur}
+                                                    renderInput={(params) => <TextField {...params} />}
+                                                />
+                                            </LocalizationProvider>
+                                        </div>
 
                                     </DialogContent>
                                     <DialogActions>

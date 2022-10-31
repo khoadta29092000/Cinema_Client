@@ -68,7 +68,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.subcriptionmilk.somee.com/api/Categories/Getallcategories?search=`;
+            const requestURL = "";
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -93,7 +93,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.subcriptionmilk.somee.com/api/DeliveryMen`;
+            const requestURL = ``;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -118,7 +118,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.subcriptionmilk.somee.com/api/Accounts`;
+            const requestURL = ``;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -141,7 +141,7 @@ export default function Content() {
     }
     async function featchStationList() {
         try {
-            const requestURL = `http://www.subcriptionmilk.somee.com/api/Stations/Getallstations`;
+            const requestURL = ``;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -165,7 +165,7 @@ export default function Content() {
 
     async function featchDeliveryTripList() {
         try {
-            const requestURL = `http://www.subcriptionmilk.somee.com/api/DeliveryTrips/Getalldeliverytrip`;
+            const requestURL = ``;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -189,7 +189,7 @@ export default function Content() {
 
     async function featchOrderList() {
         try {
-            const requestURL = `http://www.subcriptionmilk.somee.com/api/Orders/Getallorder?search=${InDay}`;
+            const requestURL = ``;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -213,7 +213,7 @@ export default function Content() {
 
     async function featchPackageOrderList() {
         try {
-            const requestURL = `http://www.subcriptionmilk.somee.com/api/PackageOrders/Getallpackageorder`;
+            const requestURL = ``;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -237,7 +237,7 @@ export default function Content() {
 
     async function featchPackageList() {
         try {
-            const requestURL = `http://www.subcriptionmilk.somee.com/api/Packages/Getallpackages`;
+            const requestURL = ``;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -261,7 +261,7 @@ export default function Content() {
 
     async function featchOrderDetailList() {
         try {
-            const requestURL = `http://www.subcriptionmilk.somee.com/api/OrderDetails`;
+            const requestURL = ``;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -291,7 +291,7 @@ export default function Content() {
 
     async function featchProductList() {
         try {
-            const requestURL = `http://www.subcriptionmilk.somee.com/api/Products/Getallproduct`;
+            const requestURL = ``;
 
             const response = await fetch(requestURL, {
                 method: `GET`,

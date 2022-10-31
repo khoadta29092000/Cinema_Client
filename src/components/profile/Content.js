@@ -32,21 +32,21 @@ export default function Content() {
     const validPhone = new RegExp(/(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/);
     const validNum = new RegExp("^[0-9]*$");
     let body;
-    profileList.map(item => {
-        
-        return body = {
-            id: item.id,
-            email: item.email,
-            password: password,
-            fullname: fullname,
-            phone: phone,
-            gender: gender,
-            address: address,
-            stationId: null,
-            avatar: item.avatar,
-            isAdmin: true,
-        };
-    })
+
+
+    body = {
+        id: profileList.id,
+        email: profileList.email,
+        password: password,
+        fullname: fullname,
+        phone: phone,
+        gender: gender,
+        address: address,
+        stationId: null,
+        avatar: profileList.avatar,
+        isAdmin: true,
+    };
+
 
     useEffect(() => {
         featchStationList();
@@ -54,7 +54,7 @@ export default function Content() {
     }, []);
     async function handleUpdateOrCreate() {
         console.log("da bam")
-        if (!validName.test(fullname)  || !validName.test(address)) {
+        if (!validName.test(fullname) || !validName.test(address)) {
             setNameError(true)
             setDesErr(false)
             setNum(false)
@@ -72,7 +72,7 @@ export default function Content() {
             setNameError(false)
             setDesErr(false)
 
-            const res = await fetch(`http://www.subcriptionmilk2.somee.com/api/Accounts/update`, {
+            const res = await fetch(`http://www.cinemasystem.somee.com/api/Accounts`, {
                 method: `PUT`,
                 headers: {
                     'Content-Type': 'application/json',
@@ -102,9 +102,18 @@ export default function Content() {
 
         }
     }
+    function parseJwt(token) {
+        if (!token) { return; }
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace('-', '+').replace('_', '/');
+        return JSON.parse(window.atob(base64));
+    }
+    let id2 = parseJwt(localStorage.getItem('token'))
+    let prop = 'Id'
+    let proprole = 'role'
     async function featchProfile() {
         try {
-            const requestURL = `http://www.subcriptionmilk2.somee.com/api/Accounts/getbyid?id=${localStorage.getItem('id-token')}`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Account/${id2[prop]}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -128,7 +137,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.subcriptionmilk2.somee.com/api/Stations/Getallstations`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Stations/Getallstations`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -152,54 +161,50 @@ export default function Content() {
     return (
         <section className=" ml-0 xl:ml-64 mb-0 pt-10  ">
 
-            {profileList.map(item => {
-                
-                return (<div className=" ml-8 ">
-                    {nameError && <div className='text-red-600 ml-11 mb-5 text-xl'>Text 4 - 30 character </div>}
-                    {NumError && <div className='text-red-600 ml-11 mb-5 text-xl'>Id not Number</div>}
-                    {phoneErrorr && <div className='text-red-600 ml-11 mb-5 text-xl'>phone must be valid</div>}
-                    <h2 className="font-bold text-2xl mb-2 "> Profile</h2>
-                    <div className='max-w-5xl hidden my-5 mx-auto'>
-                        <TextField className='w-96 my-5' defaultValue={item.avatar} id="outlined-basic" label="Full Name" variant="outlined" />
-                    </div>
-                    <div className='max-w-5xl hidden my-5 mx-auto'>
-                        <TextField className='w-96 my-5' onChange={e => setId(e.target.value)} defaultValue={item.id} id="outlined-basic" label="Full Name" variant="outlined" />
-                    </div>
-                    <div className='max-w-5xl my-5 mx-auto'>
-                        <TextField className='w-96 my-5' onChange={e => setFullname(e.target.value)} defaultValue={item.fullname} id="outlined-basic" label="Full Name" variant="outlined" />
-                    </div>
-                    <div className='max-w-5xl my-5 mx-auto'>
-                        <TextField className='w-96 my-5' onChange={e => setEmail(e.target.value)} disabled defaultValue={item.email} autoComplete='off' id="outlined-basic" label="Email" variant="outlined" />
-                    </div>
-                    <div className='max-w-5xl hidden my-5 mx-auto'>
-                        <TextField className='w-96 my-5' autoComplete='off' defaultValue={item.password} id="outlined-basic" label="Password" variant="outlined" />
-                    </div>
-                    <div className='max-w-5xl my-5 mx-auto'>
-                        <TextField className='w-96 my-5' onChange={e => setPhone(e.target.value)} defaultValue={item.phone} id="outlined-basic" label="Phone" variant="outlined" />
-                    </div>
-                    <div className='max-w-5xl my-5 mx-auto'>
-                        <TextField className='w-96 my-5' onChange={e => setAddress(e.target.value)} defaultValue={item.address} id="outlined-basic" label="Address" variant="outlined" />
-                    </div>
-                    <div className='max-w-5xl my-5 mx-auto'>
-                        <Box className='w-96' sx={{ minWidth: 120 }}>
-                            <FormControl fullWidth>
-                                <InputLabel id="demo-simple-select-label">Gender</InputLabel>
-                                <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    defaultValue={item.gender}
-                                    label="Gender"
-                                    onChange={e => setGender(e.target.value)}
-                                >
-                                    <MenuItem value={true}>Male</MenuItem>
-                                    <MenuItem value={false}>Female</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Box>
-                    </div>
-                   
-                </div>)
-            })}
+            <div className=" ml-8 ">
+
+                <h2 className="font-bold text-2xl mb-2 "> Profile</h2>
+                <div className='max-w-5xl hidden my-5 mx-auto'>
+                    <TextField className='w-96 my-5' defaultValue={profileList.avatar} id="outlined-basic" label="Full Name" variant="outlined" />
+                </div>
+                <div className='max-w-5xl hidden my-5 mx-auto'>
+                    <TextField className='w-96 my-5' onChange={e => setId(e.target.value)} defaultValue={profileList.id} id="outlined-basic" label="Full Name" variant="outlined" />
+                </div>
+                <div className='max-w-5xl my-5 mx-auto'>
+                    <TextField className='w-96 my-5' onChange={e => setFullname(e.target.value)} defaultValue={profileList.fullname} id="outlined-basic" label="Full Name" variant="outlined" />
+                </div>
+                <div className='max-w-5xl my-5 mx-auto'>
+                    <TextField className='w-96 my-5' onChange={e => setEmail(e.target.value)} disabled defaultValue={profileList.email} autoComplete='off' id="outlined-basic" label="Email" variant="outlined" />
+                </div>
+                <div className='max-w-5xl hidden my-5 mx-auto'>
+                    <TextField className='w-96 my-5' autoComplete='off' defaultValue={profileList.password} id="outlined-basic" label="Password" variant="outlined" />
+                </div>
+                <div className='max-w-5xl my-5 mx-auto'>
+                    <TextField className='w-96 my-5' onChange={e => setPhone(e.target.value)} defaultValue={profileList.phone} id="outlined-basic" label="Phone" variant="outlined" />
+                </div>
+                <div className='max-w-5xl my-5 mx-auto'>
+                    <TextField className='w-96 my-5' onChange={e => setAddress(e.target.value)} defaultValue={profileList.address} id="outlined-basic" label="Address" variant="outlined" />
+                </div>
+                <div className='max-w-5xl my-5 mx-auto'>
+                    <Box className='w-96' sx={{ minWidth: 120 }}>
+                        <FormControl fullWidth>
+                            <InputLabel id="demo-simple-select-label">Gender</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                defaultValue={profileList.gender}
+                                label="Gender"
+                                onChange={e => setGender(e.target.value)}
+                            >
+                                <MenuItem value={true}>Male</MenuItem>
+                                <MenuItem value={false}>Female</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Box>
+                </div>
+
+            </div>
+
 
 
 

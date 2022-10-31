@@ -14,16 +14,26 @@ import HttpsIcon from '@mui/icons-material/Https';
 import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
 export default function DefaultNavbarProfile() {
     const [profileList, setProfileList] = useState([]);
-    
+
     useEffect(() => {
         featchProfile();
 
     }, []);
+
+    function parseJwt(token) {
+        if (!token) { return; }
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace('-', '+').replace('_', '/');
+        return JSON.parse(window.atob(base64));
+    }
+    let id2 = parseJwt(localStorage.getItem('token'))
+    let prop = 'Id'
+    let proprole = 'role'
     async function featchProfile() {
         try {
 
 
-            const requestURL = `http://www.subcriptionmilk.somee.com/api/Accounts/getbyid?id=${localStorage.getItem('id-token')}`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Account/${id2[prop]}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -55,14 +65,14 @@ export default function DefaultNavbarProfile() {
 
                 <ul className="space-y-8">
                     <div className="w-40 h-52 mx-auto">
-                        {profileList.map(item => {
-                            return(
-                                <img
-                                src={item.avatar}    
-                            />
-                            )
-                        })}
                      
+                          
+                                <img
+                                    src={profileList.avatar}
+                                />
+                            
+
+
                     </div>
 
                     <li>
@@ -77,9 +87,9 @@ export default function DefaultNavbarProfile() {
                             <span className="flex-1 ml-3 text-black  whitespace-nowrap">Profile</span>
                         </NavLink>
                     </li>
-                   
-   
-                    
+
+
+
                 </ul>
 
             </div>

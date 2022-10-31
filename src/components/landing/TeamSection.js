@@ -109,7 +109,7 @@ export default function TeamSection() {
         cinemaid = cinemaId
       }
 
-      const requestURL = `http://cinemasystem.somee.com/api/FilmInCinema/AllFilmInCinema?CinemaId=${cinemaid}`;
+      const requestURL = `http://cinemasystem.somee.com/api/FilmInCinema/AllFilmInCinemaToday/${cinemaid}`;
 
       const response = await fetch(requestURL, {
         method: `GET`,
@@ -122,7 +122,7 @@ export default function TeamSection() {
 
       const data = responseJSON;
 
-      setDataFilmInCinema(responseJSON.data)
+      setDataFilmInCinema(responseJSON)
 
       console.log("aa fetch", responseJSON.data)
 
@@ -209,40 +209,44 @@ export default function TeamSection() {
             >
               {dataCinema.map((item, index) => {
                 return (
-                  <Tab onClick={e => setCinemaId(item.id)} key={item.id} className="h-32" label={<div  className='flex'   >
-                    <img src={item.image} className="w-28 h-28 rounded-md" />
-
-                  </div>} {...a11yProps(1)} />
+                  <Tab onClick={e => setCinemaId(item.id)} key={item.id} className="h-32" label={
+                    <div style={{ width: '300px', display: 'flex' }}>
+                      <img src={item.image} className="w-28 h-28 " />
+                      <div className="text-left ml-2">
+                        {item.name}
+                        <p className="text-gray-400 ">{item.address}</p>
+                      </div>
+                    </div>
+                  } {...a11yProps(1)} />
                 )
               })}
-
-
             </Tabs>
             {dataCinema.map((itemCinema, index) => {
               return (
-                <TabPanel className={dataFilmInCinema != "  " ? "overflow-y-scroll" : ""} key={itemCinema.id} value={value} index={(index - 1) + 1}>
+                <TabPanel className={dataFilmInCinema != "" ? "overflow-y-scroll" : ""} key={itemCinema.id} value={value} index={(index - 1) + 1}>
                   {dataFilmInCinema.map(itemFilm => {
                     return (
-                      <div key={itemFilm.id} className='mb-5' style={{ width: '1000px', display: 'flex' }} >
-                        <img width={200} height={250} src={itemFilm.image} /> <br />
+                      <div key={itemFilm.film.id} className='mb-5' style={{ width: '700px', display: 'flex' }} >
+                        <img width={200} height={250} src={itemFilm.film.image} /> <br />
                         <div className="text-left ml-2 my-5 mt-2 mx-4  ">
-                          <h3 className="text-3xl mb-2 text-green-700-300"> {itemFilm.title} </h3>
+                          <h3 className="text-3xl mb-2 text-green-700-300"> {itemFilm.film.title} </h3>
                           <div className="grid grid-cols-6 gap-5">
                             {dataScheduling.map(itemScheduling => {
-                              if(itemScheduling.filmId == itemFilm.id){
-                              return (
-                                <NavLink  to={{
-                                  pathname: "/Service",
-                                  state: {
+                              if (itemScheduling.filmId == itemFilm.film.id) {
+                                return (
+                                  <NavLink to={{
+                                    pathname: "/Service",
+                                    state: {
                                       name: itemFilm,
-                                      scheduling : itemScheduling,
-                                  }                       
-                              }} >
-                                  <button className='border-2 p-2 text-xs pointer-events-auto  hover:border-yellow-600'>{itemScheduling.startTime}
+                                      scheduling: itemScheduling,
+                                    }
+                                  }} >
+                                    <button className='border-2 p-2 text-xs pointer-events-auto  hover:border-yellow-600'>{itemScheduling.startTime}
 
-                                                                                      </button>
-                                </NavLink>
-                              )}
+                                    </button>
+                                  </NavLink>
+                                )
+                              }
                             })}
                           </div>
                         </div>

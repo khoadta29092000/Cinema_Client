@@ -12,6 +12,7 @@ import { useLocation } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import { data } from 'autoprefixer';
 import { Dataset, NightShelter } from '@mui/icons-material';
+import { Fragment } from 'react';
 
 export default function Content() {
     const [search, setSearch] = useState("");
@@ -19,9 +20,12 @@ export default function Content() {
     const [Product, setProduct] = useState([]);
     const [dataFilm, setFilm] = useState([]);
     const [dataScheduling, setScheduling] = useState([]);
+    const [dataService, setDataService] = useState([]);
     const [dataCoupon, setDataCoupon] = useState([]);
     const [dataBill, setDataBill] = useState([]);
     const [dataTicked, setDataTicked] = useState([]);
+    const [dataServiceInBill, setDataServiceInBill] = useState([]);
+    const [dataServiceInCinema, setDataServiceInCinema] = useState([]);
     const [dataRoom, setDataRoom] = useState([]);
     const [dataCinema, setDataCinema] = useState([]);
     const [dataSeat, setDataSeat] = useState([]);
@@ -51,6 +55,9 @@ export default function Content() {
         featchcouponList();
         featchTickedList();
         featchSeatList();
+        featchDataServiceInBillList();
+        featchDataServiceInCinemaList();
+        featchDataServiceList();
     }, [search]);
     async function featchCinemaList() {
         try {
@@ -268,6 +275,75 @@ export default function Content() {
             console.log('Fail to fetch product list: ', error)
         }
     }
+    async function featchDataServiceInBillList() {
+        try {
+            const requestURL = `http://cinemasystem.somee.com/api/ServiceInBill?BillId=${state?.name}`;
+
+            const response = await fetch(requestURL, {
+                method: `GET`,
+                headers: {
+                    'Content-Type': 'application/json',
+
+                },
+            });
+            const responseJSON = await response.json();
+
+            const data = responseJSON;
+
+            setDataServiceInBill(responseJSON.data)
+
+
+
+        } catch (error) {
+            console.log('Fail to fetch product list: ', error)
+        }
+    }
+    async function featchDataServiceInCinemaList() {
+        try {
+            const requestURL = `http://cinemasystem.somee.com/api/ServiceInCinema?cinemaId=${state?.name}`;
+
+            const response = await fetch(requestURL, {
+                method: `GET`,
+                headers: {
+                    'Content-Type': 'application/json',
+
+                },
+            });
+            const responseJSON = await response.json();
+
+            const data = responseJSON;
+
+            setDataServiceInCinema(responseJSON.data)
+
+
+
+        } catch (error) {
+            console.log('Fail to fetch product list: ', error)
+        }
+    }
+    async function featchDataServiceList() {
+        try {
+            const requestURL = `http://cinemasystem.somee.com/api/Service`;
+
+            const response = await fetch(requestURL, {
+                method: `GET`,
+                headers: {
+                    'Content-Type': 'application/json',
+
+                },
+            });
+            const responseJSON = await response.json();
+
+            const data = responseJSON;
+
+            setDataService(responseJSON.data)
+
+
+
+        } catch (error) {
+            console.log('Fail to fetch product list: ', error)
+        }
+    }
 
     function DetailExists(productId) {
         return dataOrderDetail.some(function (el) {
@@ -286,7 +362,7 @@ export default function Content() {
             setProduct(data)
         }
     }
-    console.log("product in order", Product)
+    console.log("product in order", dataService)
     const filterListOrder = dataOrder.filter(data => {
         if (data?.pacakeOrderId == state?.name) {
             return data
@@ -377,13 +453,13 @@ export default function Content() {
                         <Typography gutterBottom variant="h4" component="div">
                             Service In Bill:
                         </Typography>
-                        {dataTicked.map((item, index) => {
+                        {dataServiceInBill.map((item, index) => {
                             return (
                                 <div >
                                     <Card key={item.id} className=" cursor-pointer mb-5 text-white" sx={{ height: 150 }} >
                                         <CardContent className='text-black ' >
                                             <Typography gutterBottom variant="h5" component="div">
-                                                Order Id: {item.id}
+                                                Service: 
                                             </Typography>
                                             <Typography variant="body2" color="">
 
@@ -392,7 +468,7 @@ export default function Content() {
 
                                             </Typography>
                                             <Typography variant="body2" color="">
-                                                Status: {item.status}
+                                                Quantity: {item.quantity}
                                             </Typography>
                                         </CardContent>
 

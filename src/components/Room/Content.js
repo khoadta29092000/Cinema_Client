@@ -17,6 +17,7 @@ import { NavLink } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import style from './Checkout.module.css'
 import { Dataset } from '@mui/icons-material';
+import { data } from 'autoprefixer';
 const columns = [
   { id: 'Image', label: "Combo", minWidth: 300 },
   {
@@ -40,12 +41,19 @@ const columns = [
 
 export default function Content() {
   let location = useLocation();
-  const [Total, setTotal] = useState("");
+  const [SeatList, setSeatList] = useState([]);
+  const [Total, setTotal] = useState(0);
+  const [status, setStatus] = useState(false);
+  const [TotalGhe, setTotalGhe] = useState(0);
   const [dataCate, setDataCate] = useState([]);
   const [dataRoom, setDataRoom] = useState([]);
   const [dataCinema, setDataCinema] = useState([]);
   const [dataSeat, setDataSeat] = useState([]);
+  const [dataTicked, setDataTicked] = useState([]);
+  const [filtered, setFiltered] = useState(location.state.ServiceArray);
+  const [ArraySeat, SetArraySeat] = useState([]);
   const [count, setCount] = useState(0);
+
   const IncNum = () => {
     setCount(count + 1);
   };
@@ -88,10 +96,26 @@ export default function Content() {
     return { Image, Quantity, Price, Total };
   }
   useEffect(() => {
+    setTotal(location.state.total)
     featchCategoryList();
     featchCinemaList();
     featchRoomList();
     featchSeatList();
+    featchTickedList();
+
+    const arratTMP = [...SeatList];
+    let index;
+    dataTicked.map(item => {
+      index = arratTMP.findIndex(id => id.id == item.seatId)
+      if (index >= 0) {
+        arratTMP[index].Status = "Checked";
+        setSeatList(arratTMP)
+      }
+
+    }
+    )
+    setStatus(true);
+
   }, []);
   const rows1 = dataCate.map((data, index) => {
     return (createData(data))
@@ -140,7 +164,12 @@ export default function Content() {
 
       setDataSeat(responseJSON.data)
 
-      console.log("aa fetch", responseJSON.data)
+      setSeatList(responseJSON.data.map(obj => { return ({ ...obj, Status: "Empty" }) }))
+
+
+
+
+
 
     } catch (error) {
       console.log('Fail to fetch product list: ', error)
@@ -193,7 +222,68 @@ export default function Content() {
       console.log('Fail to fetch product list: ', error)
     }
   }
-  console.log("location", location.state.name.id)
+  async function featchTickedList() {
+    try {
+      const requestURL = `http://cinemasystem.somee.com/api/Ticked?SchedulingId=${location.state.scheduling.id}`;
+
+      const response = await fetch(requestURL, {
+        method: `GET`,
+        headers: {
+          'Content-Type': 'application/json',
+
+        },
+      });
+      const responseJSON = await response.json();
+
+      const data = responseJSON;
+
+      setDataTicked(responseJSON.data)
+
+
+
+
+    } catch (error) {
+      console.log('Fail to fetch 12 list: ', error)
+    }
+  }
+  console.log("location", location.state)
+  function ChooseSeat(data) {
+    const arratTMP = [...SeatList];
+    const index = arratTMP.findIndex(id => id.id == data.id);
+    if (arratTMP[index].Status == "Empty") {
+      setTotalGhe(TotalGhe + 80)
+      setTotal(Total + 80)
+
+    } if (arratTMP[index].Status == "Choose") {
+      setTotalGhe(Total - 80)
+      setTotal(Total - 80)
+
+    }
+    arratTMP[index].Status = arratTMP[index].Status == "Empty" ? "Choose" : arratTMP[index].Status == "Choose" ? "Empty" : "Checked"
+    console.log("ner", arratTMP, index)
+    setSeatList(arratTMP)
+  }
+
+
+
+
+
+  const ChooseDeleteSeat = (data) => {
+    SetArraySeat(current =>
+      current.filter(employee => {
+        // 👇️ remove object that has id equal to 2
+        return employee.id !== data.id;
+      }),
+    );
+  }
+
+  const ids = ArraySeat.map(o => o.id)
+  const filteredSeat = ArraySeat.filter(({ id }, index) => !ids.includes(id, index + 1))
+
+
+  console.log("ner2", ArraySeat, filteredSeat, SeatList, dataTicked)
+
+
   return (
     <section className="relative pt-32 py-16 h-screen w-full ">
       <div className="max-w-7xl mx-auto p-10 text-center items-center " >
@@ -217,32 +307,146 @@ export default function Content() {
                 <div>
 
                   <div className='flex gap-2 my-5'>
-                    {dataSeat.map(item => {
-                      console.log(item.title.charAt(0) == "A", item.roomId == location.state.scheduling.roomId)
+                    {console.log("ner3", SeatList)}
+                    {SeatList.map(item => {
+
                       if (item.roomId == location.state.scheduling.roomId && item.title.charAt(0) == "A") {
                         return (
-                          <button className='h-8 w-8 bg-gray-500  '>{item.title}</button>
+
+                          <button key={item.id} id={item.id} onClick={() => ChooseSeat(item)}
+                            style={{
+
+                              backgroundColor: item.Status === "Choose" ? "green" : item.Status === "Empty" ? "gray" : "red"
+                            }} className='w-8 h-8 ' > {item.title}</button>
+
                         )
+
                       }
                     })}
                   </div>
                   <div className='flex gap-2 my-5'>
-                    {dataSeat.map(item => {
-                      console.log(item.title.charAt(0) == "B", item.roomId == location.state.scheduling.roomId)
+
+                    {SeatList.map(item => {
+
                       if (item.roomId == location.state.scheduling.roomId && item.title.charAt(0) == "B") {
                         return (
-                          <a>{item.title}</a>
+
+                          <button key={item.id} id={item.id} onClick={() => ChooseSeat(item)}
+                            style={{
+
+                              backgroundColor: item.Status === "Choose" ? "green" : item.Status === "Empty" ? "gray" : "red"
+                            }} className='w-8 h-8 ' > {item.title}</button>
+
                         )
+
                       }
                     })}
                   </div>
                   <div className='flex gap-2 my-5'>
-                    {dataSeat.map(item => {
-                      console.log(item.title.charAt(0) == "C", item.roomId == location.state.scheduling.roomId)
+
+                    {SeatList.map(item => {
+
                       if (item.roomId == location.state.scheduling.roomId && item.title.charAt(0) == "C") {
                         return (
-                          <a>{item.title}</a>
+
+                          <button key={item.id} id={item.id} onClick={() => ChooseSeat(item)}
+                            style={{
+
+                              backgroundColor: item.Status === "Choose" ? "green" : item.Status === "Empty" ? "gray" : "red"
+                            }} className='w-8 h-8 ' > {item.title}</button>
+
                         )
+
+                      }
+                    })}
+                  </div>
+                  <div className='flex gap-2 my-5'>
+
+                    {SeatList.map(item => {
+
+                      if (item.roomId == location.state.scheduling.roomId && item.title.charAt(0) == "D") {
+                        return (
+
+                          <button key={item.id} id={item.id} onClick={() => ChooseSeat(item)}
+                            style={{
+
+                              backgroundColor: item.Status === "Choose" ? "green" : item.Status === "Empty" ? "gray" : "red"
+                            }} className='w-8 h-8 ' > {item.title}</button>
+
+                        )
+
+                      }
+                    })}
+                  </div>
+                  <div className='flex gap-2 my-5'>
+
+                    {SeatList.map(item => {
+
+                      if (item.roomId == location.state.scheduling.roomId && item.title.charAt(0) == "E") {
+                        return (
+
+                          <button key={item.id} id={item.id} onClick={() => ChooseSeat(item)}
+                            style={{
+
+                              backgroundColor: item.Status === "Choose" ? "green" : item.Status === "Empty" ? "gray" : "red"
+                            }} className='w-8 h-8 ' > {item.title}</button>
+
+                        )
+
+                      }
+                    })}
+                  </div>
+                  <div className='flex gap-2 my-5'>
+
+                    {SeatList.map(item => {
+
+                      if (item.roomId == location.state.scheduling.roomId && item.title.charAt(0) == "F") {
+                        return (
+
+                          <button key={item.id} id={item.id} onClick={() => ChooseSeat(item)}
+                            style={{
+
+                              backgroundColor: item.Status === "Choose" ? "green" : item.Status === "Empty" ? "gray" : "red"
+                            }} className='w-8 h-8 ' > {item.title}</button>
+
+                        )
+
+                      }
+                    })}
+                  </div>
+                  <div className='flex gap-2 my-5'>
+
+                    {SeatList.map(item => {
+
+                      if (item.roomId == location.state.scheduling.roomId && item.title.charAt(0) == "H") {
+                        return (
+
+                          <button key={item.id} id={item.id} onClick={() => ChooseSeat(item)}
+                            style={{
+
+                              backgroundColor: item.Status === "Choose" ? "green" : item.Status === "Empty" ? "gray" : "red"
+                            }} className='w-8 h-8 ' > {item.title}</button>
+
+                        )
+
+                      }
+                    })}
+                  </div>
+                  <div className='flex gap-2 my-5'>
+
+                    {SeatList.map(item => {
+
+                      if (item.roomId == location.state.scheduling.roomId && item.title.charAt(0) == "G") {
+                        return (
+
+                          <button key={item.id} id={item.id} onClick={() => ChooseSeat(item)}
+                            style={{
+
+                              backgroundColor: item.Status === "Choose" ? "green" : item.Status === "Empty" ? "gray" : "red"
+                            }} className='w-8 h-8 ' > {item.title}</button>
+
+                        )
+
                       }
                     })}
                   </div>
@@ -268,11 +472,11 @@ export default function Content() {
             </div>
           </div>
           <div className='col-span-1 text-left  bg-gray-200'>
-            <img src={location.state.name.image} className="w-full h-64 object-cover p-5" />
-            <h2 className='font-medium ml-2 mb-2'>{location.state.name.title}</h2>
+            <img src={location.state.name.film.image} className="w-full h-64 object-cover p-5" />
+            <h2 className='font-medium ml-2 mb-2'>{location.state.name.film.title}</h2>
             <div>
-              <button className='text-white ml-2 mr-2 w-8 h-8 bg-blue-600'>C{location.state.name.rated}</button>
-              Phim giành cho đổ tuổi từ {location.state.name.rated} trở lên
+              <button className='text-white ml-2 mr-2 w-8 h-8 bg-blue-600'>C{location.state.name.film.rated}</button>
+              Phim giành cho đổ tuổi từ {location.state.name.film.rated} trở lên
             </div>
             <div className='font-medium border-b-2 ml-2 mr-4 border-gray-300 px-2 my-2 flex'> Rạp:  <p className=' ml-2 font-normal'> {dataCinema.map(item => {
               if (item.id == location.state.scheduling.cinemaId)
@@ -284,19 +488,59 @@ export default function Content() {
             <div className='font-medium border-b-2 ml-2 mr-4 border-gray-300 px-2  my-2 flex'> Suất chiếu:  <p className=' ml-2 mr-2 font-normal'> {location.state.scheduling.startTime == undefined ? "" : location.state.scheduling.startTime.slice(0, 5)}
             </p>  | Date: <p className=' ml-2 mr-2 font-normal'> {location.state.scheduling.date == undefined ? "" : location.state.scheduling.date.slice(8, 10) + "/" + location.state.scheduling.date.slice(5, 7) + "/" + location.state.scheduling.date.slice(0, 4)}
               </p> </div>
-            <div className='font-medium border-b-2 ml-2 mr-4 border-gray-300 px-2  my-2 flex'> Chọn Combo: </div>
-            <div className='font-medium border-b-2 ml-2 mr-4 border-gray-300 px-2  my-2 flex'> Chọn ghế: </div>
-            <div className='font-medium text-2xl  ml-2 mr-4  px-2  my-2 flex'> Total: <p className='ml-2 text-blue-600'>{Total} </p> </div>
-            <div className='w-full mb-10 pb-10 float-right'>
+            <div className='font-medium border-b-2 ml-2 mr-4 border-gray-300 px-2  my-2 flex'> Chọn Combo: {filtered.map(item => {
+              return (
+                <Fragment> {item.title}({item.id == 1 ? location.state.BapPhoMai : item.id == 2 ? location.state.Bap : item.id == 3 ? location.state.CocaCola : location.state.NuocSuoi}) </Fragment>
+              )
+            })}   </div>
+            <div className='font-medium border-b-2 ml-2 mr-4 border-gray-300 px-2  my-2 flex'> Chọn ghế: {SeatList.map(item => { if (item.Status == "Choose") { return (item.title) } })} </div>
+            <div className='font-medium text-2xl  ml-2 mr-4  px-2  my-2 flex'> Total: <p className='ml-2 text-blue-600'>{Total.toFixed(3).replace(/\d(?=(\d{3})+\.)/g, "$&.") + "đ"}  </p> </div>
+            <div className=' mb-10 pb-10 float-right'>
               <NavLink to={{
-                pathname: "/Room/:id",
+                pathname: "/CheckOut",
                 state: {
                   name: location.state.name,
                   scheduling: location.state.scheduling,
-                  total: Total
+                  total: Total,
+                  totalGhe: TotalGhe,
+                  Bap: location.state.Bap,
+                  BapPhoMai: location.state.BapPhoMai,
+                  CocaCola: location.state.CocaCola,
+                  NuocSuoi: location.state.NuocSuoi,
+                  TotalBap: location.state.TotalBap,
+                  TotalBapPhoMai: location.state.TotalBapPhoMai,
+                  TotalCocaCola: location.state.TotalCocaCola,
+                  TotalNuocSuoi: location.state.TotalNuocSuoi,
+                  ServiceArray: filtered,
+                  SeatList: SeatList,
                 }
               }} className="" >
                 <button className='h-12 w-24 bg-blue-600 mt-10 mx-auto float-right  mr-10'>Continue</button>
+              </NavLink>
+
+            </div>
+            <div className='ml-10'>
+              <NavLink to={{
+                pathname: "/Service",
+                state: {
+
+                  name: location.state.name,
+                  scheduling: location.state.scheduling,
+                  total: (Total - TotalGhe),
+                  totalGhe: 0,
+                  Bap: location.state.Bap,
+                  BapPhoMai: location.state.BapPhoMai,
+                  CocaCola: location.state.CocaCola,
+                  NuocSuoi: location.state.NuocSuoi,
+                  TotalBap: location.state.TotalBap,
+                  TotalBapPhoMai: location.state.TotalBapPhoMai,
+                  TotalCocaCola: location.state.TotalCocaCola,
+                  TotalNuocSuoi: location.state.TotalNuocSuoi,
+                  ServiceArray: filtered,
+                  SeatList: [],
+                }
+              }} className="" >
+                <button className='h-12 w-24 bg-blue-600 mt-10 mx-auto float-left  ml-10'>Back</button>
               </NavLink>
 
             </div>
@@ -306,6 +550,6 @@ export default function Content() {
 
       </div>
 
-    </section>
+    </section >
   );
 }

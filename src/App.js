@@ -36,6 +36,7 @@ import Room from 'pages/Room';
 import Test from 'components/Test';
 import Service from 'pages/Service';
 import CinemaDetails from 'pages/CinemaDetails';
+import CheckOut from 'pages/CheckOut';
 
 
 
@@ -48,7 +49,8 @@ function App() {
             <Route exact path="/Service" component={Service} />
             <Route exact path="/Test" component={Test} />
             <Route exact path="/AboutUs" component={Aboutus} />
-            <Route exact path="/Room/:id" component={Room} />
+            <Route exact path="/Room" component={Room} />
+            <Route exact path="/CheckOut" component={CheckOut} />
             <Route exact path="/detail" component={detail} />
             <Route exact path="/ServiceAreas" component={ServiceAreas} />
             <Route exact path="/profile" component={Profile} />
