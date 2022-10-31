@@ -289,14 +289,14 @@ export default function DefaultNavbar() {
                                     }
                                     ripple="light"
                                 >
-                                    <Link to="/Product">
+                                    <Link to="/FilmNowShowing">
                                         <DropdownItem color="lightBlue">
-                                            Product
+                                           Now Showing
                                         </DropdownItem>
-                                    </Link>
-                                    <Link to="/Package">
+                                    </Link >
+                                    <Link to="/FilmComingSoon">
                                         <DropdownItem color="lightBlue">
-                                            Package
+                                          Coming Soon
                                         </DropdownItem>
                                     </Link>
 
