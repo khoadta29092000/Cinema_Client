@@ -34,14 +34,15 @@ import detail from 'pages/detail';
 import Room from 'pages/Room';
 
 import Test from 'components/Test';
-import Service from 'pages/Service';
+
 import CinemaDetails from 'pages/CinemaDetails';
-<<<<<<< HEAD
+
 import CheckOut from 'pages/CheckOut';
-=======
+
 import FilmComingSoon from 'pages/FilmComingSoon';
 import FilmNowShowing from 'pages/FilmNowShowing';
->>>>>>> b8c4950ba8115eba5763365c6bfa27832ccc701e
+import Service from 'pages/Service';
+
 
 
 

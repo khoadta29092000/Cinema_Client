@@ -209,7 +209,7 @@ export default function TeamSection() {
             >
               {dataCinema.map((item, index) => {
                 return (
-<<<<<<< HEAD
+
                   <Tab onClick={e => setCinemaId(item.id)} key={item.id} className="h-32" label={
                     <div style={{ width: '300px', display: 'flex' }}>
                       <img src={item.image} className="w-28 h-28 " />
@@ -219,27 +219,16 @@ export default function TeamSection() {
                       </div>
                     </div>
                   } {...a11yProps(1)} />
-=======
-                  <Tab  onClick={e => setCinemaId(item.id)} key={item.id} className="h-32" label={ 
-                    <div style={{ width: '300px', display: 'flex' }}>
-                      <img src={item.image} className="w-28 h-28 " />
-                      <div className="text-left ml-2">
-                                  {item.name}
-                                <p className="text-gray-400 ">{item.address}</p>
-                                </div>
-                    </div>
-                 } {...a11yProps(1)} />
->>>>>>> b8c4950ba8115eba5763365c6bfa27832ccc701e
+
+
                 )
               })}
             </Tabs>
             {dataCinema.map((itemCinema, index) => {
               return (
-<<<<<<< HEAD
+
                 <TabPanel className={dataFilmInCinema != "" ? "overflow-y-scroll" : ""} key={itemCinema.id} value={value} index={(index - 1) + 1}>
-=======
-                <TabPanel className={dataFilmInCinema != " " ? "overflow-y-scroll" : ""} key={itemCinema.id} value={value} index={(index - 1) + 1}>
->>>>>>> b8c4950ba8115eba5763365c6bfa27832ccc701e
+
                   {dataFilmInCinema.map(itemFilm => {
                     return (
                       <div key={itemFilm.film.id} className='mb-5' style={{ width: '700px', display: 'flex' }} >

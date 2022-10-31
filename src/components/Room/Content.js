@@ -103,6 +103,7 @@ export default function Content() {
     featchSeatList();
     featchTickedList();
 
+
     const arratTMP = [...SeatList];
     let index;
     dataTicked.map(item => {
@@ -111,12 +112,14 @@ export default function Content() {
         arratTMP[index].Status = "Checked";
         setSeatList(arratTMP)
       }
-
     }
     )
-    setStatus(true);
+
+    setStatus(true)
 
   }, []);
+
+
   const rows1 = dataCate.map((data, index) => {
     return (createData(data))
   })
@@ -454,8 +457,8 @@ export default function Content() {
                 </div>
               </div>
               <div className="mt-5 flex justify-center">
-                <table class=" divide-y divide-gray-200 w-2/3">
-                  <thead class="bg-gray-50 p-5">
+                <table className=" divide-y divide-gray-200 w-2/3">
+                  <thead className="bg-gray-50 p-5">
                     <tr>
                       <th><button className='h-4 w-4 bg-gray-500'></button>Ghế chưa đặt</th>
                       <th><button className='h-4 w-4 bg-green-500'></button>Ghế đang  đặt</th>
