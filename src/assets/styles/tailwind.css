@@ -1165,7 +1165,7 @@ video {
 	background-color: rgba(239, 68, 68, var(--tw-bg-opacity));
 }
 .bg-profile-background{
-	background-image: linear-gradient(rgba(0,0,0, 0.75), rgba(0,0,0, 0.75)), url('http://movieapi.cyberlearn.vn/hinhanh/cuoc-chien-sinh-tu.png');
+	background-image: linear-gradient(rgba(0,0,0, 0.75), rgba(0,0,0, 0.75)), url(https://images.unsplash.com/photo-1666860157040-61004ad58d3f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1632&q=80);
 }
 .bg-slide1-background{
 	background-image: linear-gradient(rgba(0,0,0, 0.75), rgba(0,0,0, 0.75)), url(https://top10vietnam.vn/wp-content/uploads/2020/07/rap-chieu-phim-galaxy-cinema-1.jpg);
@@ -1174,10 +1174,10 @@ video {
 	background-image: linear-gradient(rgba(0,0,0, 0.75), rgba(0,0,0, 0.75)), url(https://langgo.edu.vn/public/files/upload/default/images/ielts/ielts-speaking-part-1-chu-de-film-movie-va-mau-tra-loi-band-9.jpg);
 }
 .bg-slide3-background{
-	background-image: linear-gradient(rgba(0,0,0, 0.75), rgba(0,0,0, 0.75)), url(https://movieapi.cyberlearn.vn/hinhanh/game-of-throne_gp01.jpg);
+	background-image: linear-gradient(rgba(0,0,0, 0.75), rgba(0,0,0, 0.75)), url(https://images.unsplash.com/photo-1666860157040-61004ad58d3f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1632&q=80);
 }
 .bg-login-background{
-	background-image: linear-gradient(rgba(0,0,0, 0.75), rgba(0,0,0, 0.75)), url('https://top10vietnam.vn/wp-content/uploads/2020/07/rap-chieu-phim-galaxy-cinema-1.jpg');
+	background-image: linear-gradient(rgba(0,0,0, 0.75), rgba(0,0,0, 0.75)), url('https://images.unsplash.com/photo-1666860157040-61004ad58d3f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1632&q=80');
 }
 .bg-cover{
 	background-size: cover;
