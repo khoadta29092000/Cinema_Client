@@ -53,7 +53,8 @@ export default function Content() {
     const [dataRoom, setDataRoom] = useState([]);
     const [dataCinema, setDataCinema] = useState([]);
     const [count, setCount] = useState(0);
-    const [SeatList, setDataSeat] = useState([]);
+    const [SeatList, setSeatList] = useState([]);
+    const [dataSeat, setDataSeat] = useState([]);
     
     console.log("daa", location.state)
     const [ServiceArray, setServiceArray] = useState([]);
@@ -214,10 +215,34 @@ export default function Content() {
         featchCategoryList();
         featchCinemaList();
         featchRoomList();
+        featchSeatList();
     }, []);
     const rows1 = dataCate.map((data, index) => {
         return (createData(data))
     })
+    async function featchSeatList() {
+        try {
+    
+    
+          const requestURL = `http://www.cinemasystem.somee.com/api/Seat`;
+    
+          const response = await fetch(requestURL, {
+            method: `GET`,
+            headers: {
+              'Content-Type': 'application/json',
+    
+            },
+          });
+          const responseJSON = await response.json();
+    
+          const data = responseJSON;
+    
+          setDataSeat(responseJSON.data)
+    
+        } catch (error) {
+          console.log('Fail to fetch product list: ', error)
+        }
+      }
     async function featchCategoryList() {
         try {
 
@@ -388,8 +413,8 @@ export default function Content() {
                                     TotalCocaCola: TotalCocaCola,
                                     TotalNuocSuoi: TotalNuocSuoi,
                                     ServiceArray: filtered,
-                                
-                                }
+                                    DataSeat: dataSeat
+                                } 
                             }} >
                                 <button className='h-12 w-24 bg-blue-600 mt-10 mx-auto float-right  mr-10'>Continue</button>
                             </NavLink>

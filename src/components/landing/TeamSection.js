@@ -224,50 +224,52 @@ export default function TeamSection() {
                 )
               })}
             </Tabs>
+            { console.log("dataFilmInCinema", dataFilmInCinema)}
             {dataCinema.map((itemCinema, index) => {
               return (
+               
+                < TabPanel className = { dataFilmInCinema != "" ? "overflow-y-scroll" : ""
+            } key = { itemCinema.id } value = { value } index = {(index - 1) + 1}>
 
-                <TabPanel className={dataFilmInCinema != "" ? "overflow-y-scroll" : ""} key={itemCinema.id} value={value} index={(index - 1) + 1}>
-
-                  {dataFilmInCinema.map(itemFilm => {
-                    return (
-                      <div key={itemFilm.film.id} className='mb-5' style={{ width: '700px', display: 'flex' }} >
-                        <img width={200} height={250} src={itemFilm.film.image} /> <br />
-                        <div className="text-left ml-2 my-5 mt-2 mx-4  ">
-                          <h3 className="text-3xl mb-2 text-green-700-300"> {itemFilm.film.title} </h3>
-                          <div className="grid grid-cols-6 gap-5">
-                            {dataScheduling.map(itemScheduling => {
-                              if (itemScheduling.filmId == itemFilm.film.id) {
-                                return (
-                                  <NavLink to={{
-                                    pathname: "/Service",
-                                    state: {
-                                      name: itemFilm,
-                                      scheduling: itemScheduling,
-                                    }
-                                  }} >
-                                    <button className='border-2 p-2 text-xs pointer-events-auto  hover:border-yellow-600'>{itemScheduling.startTime}
-
-                                    </button>
-                                  </NavLink>
-                                )
+            {dataFilmInCinema.map(itemFilm => {
+              return (
+                <div key={itemFilm.film.id} className='mb-5' style={{ width: '700px', display: 'flex' }} >
+                  <img width={200} height={250} src={itemFilm.film.image} /> <br />
+                  <div className="text-left ml-2 my-5 mt-2 mx-4  ">
+                    <h3 className="text-3xl mb-2 text-green-700-300"> {itemFilm.film.title} </h3>
+                    <div className="grid grid-cols-6 gap-5">
+                      {dataScheduling.map(itemScheduling => {
+                        if (itemScheduling.filmId == itemFilm.film.id) {
+                          return (
+                            <NavLink to={{
+                              pathname: "/Service",
+                              state: {
+                                name: itemFilm,
+                                scheduling: itemScheduling,
                               }
-                            })}
-                          </div>
-                        </div>
-                      </div>
-                    )
-                  })}
-                </TabPanel>
+                            }} >
+                              <button className='border-2 p-2 text-xs pointer-events-auto  hover:border-yellow-600'>{itemScheduling.startTime}
+
+                              </button>
+                            </NavLink>
+                          )
+                        }
+                      })}
+                    </div>
+                  </div>
+                </div>
               )
+            })}
+          </TabPanel>
+          )
 
             })}
 
-          </Box>
-        </div>
-
-
+        </Box>
       </div>
-    </section>
+
+
+    </div>
+    </section >
   );
 }

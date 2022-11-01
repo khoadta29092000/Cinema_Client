@@ -41,7 +41,7 @@ const columns = [
 
 export default function Content() {
   let location = useLocation();
-  const [SeatList, setSeatList] = useState([]);
+  const [SeatList, setSeatList] = useState(location.state.DataSeat.map(obj => { return ({ ...obj, Status: "Empty" }) }));
   const [Total, setTotal] = useState(0);
   const [status, setStatus] = useState(false);
   const [TotalGhe, setTotalGhe] = useState(0);
@@ -102,8 +102,7 @@ export default function Content() {
     featchRoomList();
     featchSeatList();
     featchTickedList();
-
-
+  
     const arratTMP = [...SeatList];
     let index;
     dataTicked.map(item => {
@@ -114,12 +113,30 @@ export default function Content() {
       }
     }
     )
-
-    setStatus(true)
-
-  }, []);
-
-
+    console.log(' 12 list: ', dataTicked,SeatList)
+  }, [count]);
+  useEffect(() => {
+  
+  
+    const arratTMP = [...SeatList];
+    let index;
+    dataTicked.map(item => {
+      index = arratTMP.findIndex(id => id.id == item.seatId)
+      if (index >= 0) {
+        arratTMP[index].Status = "Checked";
+        setSeatList(arratTMP)
+      }
+    }
+    )
+    console.log(' 12 list: ', dataTicked,SeatList)
+  },);
+ 
+  console.log(2)
+  window.onload = function () {
+   
+    setCount(1)
+  }
+ 
   const rows1 = dataCate.map((data, index) => {
     return (createData(data))
   })
@@ -167,7 +184,7 @@ export default function Content() {
 
       setDataSeat(responseJSON.data)
 
-      setSeatList(responseJSON.data.map(obj => { return ({ ...obj, Status: "Empty" }) }))
+      
 
 
 
@@ -241,9 +258,9 @@ export default function Content() {
       const data = responseJSON;
 
       setDataTicked(responseJSON.data)
-
-
-
+     
+      
+    
 
     } catch (error) {
       console.log('Fail to fetch 12 list: ', error)
@@ -265,6 +282,7 @@ export default function Content() {
     arratTMP[index].Status = arratTMP[index].Status == "Empty" ? "Choose" : arratTMP[index].Status == "Choose" ? "Empty" : "Checked"
     console.log("ner", arratTMP, index)
     setSeatList(arratTMP)
+ 
   }
 
 
@@ -496,7 +514,7 @@ export default function Content() {
                 <Fragment> {item.title}({item.id == 1 ? location.state.BapPhoMai : item.id == 2 ? location.state.Bap : item.id == 3 ? location.state.CocaCola : location.state.NuocSuoi}) </Fragment>
               )
             })}   </div>
-            <div className='font-medium border-b-2 ml-2 mr-4 border-gray-300 px-2  my-2 flex'> Chọn ghế: {SeatList.map(item => { if (item.Status == "Choose") { return (item.title) } })} </div>
+            <div className='font-medium border-b-2 ml-2 mr-4 border-gray-300 px-2  my-2 flex'> Chọn ghế: {SeatList.map(item => { if (item.Status == "Choose") { return (item.title) + " " } })} </div>
             <div className='font-medium text-2xl  ml-2 mr-4  px-2  my-2 flex'> Total: <p className='ml-2 text-blue-600'>{Total.toFixed(3).replace(/\d(?=(\d{3})+\.)/g, "$&.") + "đ"}  </p> </div>
             <div className=' mb-10 pb-10 float-right'>
               <NavLink to={{
