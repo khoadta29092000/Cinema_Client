@@ -11,74 +11,77 @@ import Select from '@mui/material/Select';
 import Box from '@mui/material/Box';
 import { useEffect, useState } from "react";
 import TextField from '@mui/material/TextField';
-
+import { useFormik } from "formik";
+import * as Yup from "yup"
+import { data } from 'autoprefixer';
 export default function Content() {
     const [id, setId] = useState();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [fullname, setFullname] = useState("");
+    const [fullName, setfullName] = useState("");
     const [phone, setPhone] = useState("");
-    const [gender, setGender] = useState(false);
+    const [gender, setGender] = useState();
     const [address, setAddress] = useState("");
     const [stationId, setStationId] = useState("");
     const [avatar, setAvartar] = useState("");
     const [dataStation, setDataStation] = useState([]);
-    const [profileList, setProfileList] = useState([]);
-    const [NumError, setNum] = useState(false)
-    const [phoneErrorr, setDesErr] = useState(false)
-    const [nameError, setNameError] = useState(false)
-    const [message, setMess] = useState(false)
-    const validName = new RegExp(/^.{4,3000}$/);
-    const validPhone = new RegExp(/(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/);
-    const validNum = new RegExp("^[0-9]*$");
-    let body;
+    const [profileList, setProfileList] = useState();
+  
 
+    let DataBody;
+    const formik = useFormik({
+        initialValues:{
+        id: '',
+        email: '',
+        password: '',
+        fullName: '',
+        phone: '',
+        gender: '',
+        address: '',
+        avatar: '',
+        isAdmin: '',
+    },
+    validationSchema: Yup.object().shape({
+        email: Yup.string().min(3, 'Too Short!').max(50, 'Too Long!').required('Required'),
+        // confirmPassword: Yup.string().oneOf([Yup.ref('matKhau'), null], 'Passwords must match'),
+        fullName: Yup.string().min(3, "Too Short!"),
+        phone: Yup.number().typeError("Must be number!").min(10, "Too Short!").required("Required"),
+  
+      }),
+      onSubmit: values => {
+        DataBody = {
+            id: values.id,
+            fullName:values.fullName,
+            email:values.email,
+            phone:values.phone,
+            address:values.address,
+            gender:values.gender,
+            password:values.password,
+            isAdmin:true,
+            avatar: values.avatar,
 
-    body = {
-        id: profileList.id,
-        email: profileList.email,
-        password: password,
-        fullname: fullname,
-        phone: phone,
-        gender: gender,
-        address: address,
-        stationId: null,
-        avatar: profileList.avatar,
-        isAdmin: true,
-    };
-
-
+        }
+        console.log("da bam",DataBody)
+        handleUpdateOrCreate(DataBody)
+    }
+  
+    });
     useEffect(() => {
-        featchStationList();
+       
         featchProfile();
     }, []);
-    async function handleUpdateOrCreate() {
+  
+    async function handleUpdateOrCreate(data) {
         console.log("da bam")
-        if (!validName.test(fullname) || !validName.test(address)) {
-            setNameError(true)
-            setDesErr(false)
-            setNum(false)
-        } else if (!validPhone.test(phone)) {
-            setNameError(false)
-            setDesErr(true)
-            setNum(false)
-        } else if (!validNum.test(id)) {
-            setNameError(false)
-            setDesErr(false)
-            setNum(true)
-        }
-        else {
-            setNum(false)
-            setNameError(false)
-            setDesErr(false)
+  
 
-            const res = await fetch(`http://www.cinemasystem.somee.com/api/Accounts`, {
+            let res = await fetch(`http://www.cinemasystem.somee.com/api/Accounts`, {
                 method: `PUT`,
                 headers: {
                     'Content-Type': 'application/json',
-
+                
                 },
-                body: JSON.stringify(body)
+                body: JSON.stringify(data)
             }).then(res => res.json())
                 .then(result => {
 
@@ -97,11 +100,11 @@ export default function Content() {
                 .catch((error) => {
                     throw ('Invalid Token')
                 })
-            return body
+            return DataBody
 
 
         }
-    }
+    
     function parseJwt(token) {
         if (!token) { return; }
         const base64Url = token.split('.')[1];
@@ -111,7 +114,7 @@ export default function Content() {
     let id2 = parseJwt(localStorage.getItem('token'))
     let prop = 'Id'
     let proprole = 'role'
-    async function featchProfile() {
+    async function featchProfile(values) {
         try {
             const requestURL = `http://www.cinemasystem.somee.com/api/Account/${id2[prop]}`;
 
@@ -127,65 +130,73 @@ export default function Content() {
             const data = responseJSON;
 
             setProfileList(responseJSON.data)
-            console.log("aa aaaaaaaaaaaaaaa", profileList)
-
+            console.log("123", data)
+            formik.setValues(responseJSON.data)
         } catch (error) {
             console.log('Fail to fetch product list: ', error)
         }
     }
-    async function featchStationList() {
-        try {
-
-
-            const requestURL = `http://www.cinemasystem.somee.com/api/Stations/Getallstations`;
-
-            const response = await fetch(requestURL, {
-                method: `GET`,
-                headers: {
-                    'Content-Type': 'application/json',
-
-                },
-            });
-            const responseJSON = await response.json();
-
-            const data = responseJSON;
-
-            setDataStation(responseJSON.data)
-
-            console.log("aa fetch", responseJSON.data)
-
-        } catch (error) {
-            console.log('Fail to fetch product list: ', error)
-        }
-    }
+   
     return (
         <section className=" ml-0 xl:ml-64 mb-0 pt-10  ">
 
             <div className=" ml-8 ">
-
+lname
                 <h2 className="font-bold text-2xl mb-2 "> Profile</h2>
                 <div className='max-w-5xl hidden my-5 mx-auto'>
-                    <TextField className='w-96 my-5' defaultValue={profileList.avatar} id="outlined-basic" label="Full Name" variant="outlined" />
+                    <TextField className='w-96 my-5' defaultValue={data.avatar} id="outlined-basic" label="Full Name" variant="outlined" />
                 </div>
-                <div className='max-w-5xl hidden my-5 mx-auto'>
-                    <TextField className='w-96 my-5' onChange={e => setId(e.target.value)} defaultValue={profileList.id} id="outlined-basic" label="Full Name" variant="outlined" />
+                {/* <div className='max-w-5xl hidden my-5 mx-auto'>
+                    <TextField className='w-96 my-5'  onChange={formik.handleChange} 
+                      id="outlined-basic" label="Full Name" variant="outlined"  value={formik.values.fullName}  />
+                          <p className="text-red-700">{formik.errors.fullName}</p>
+                </div> */}
+                <div className='max-w-5xl my-5 mx-auto'>
+                {formik.errors.fullName
+                ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.fullName}</div>
+                )
+                : null}
+              <TextField error={formik.errors.fullName ? "error" : null} onChange={formik.handleChange}
+                onBlur={formik.handleBlur} value={formik.values.fullName}
+                id="fullName" className='w-96 my-5' label="Full Name" variant="outlined" />
+                    
                 </div>
                 <div className='max-w-5xl my-5 mx-auto'>
-                    <TextField className='w-96 my-5' onChange={e => setFullname(e.target.value)} defaultValue={profileList.fullname} id="outlined-basic" label="Full Name" variant="outlined" />
+               
+              {formik.errors.email
+                ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.email}</div>
+                )
+                : null}
+              <TextField error={formik.errors.email ? "error" : null} onChange={formik.handleChange}
+                onBlur={formik.handleBlur} value={formik.values.email}
+                id="email" className='w-96 my-5' label="Email" variant="outlined" />
                 </div>
-                <div className='max-w-5xl my-5 mx-auto'>
-                    <TextField className='w-96 my-5' onChange={e => setEmail(e.target.value)} disabled defaultValue={profileList.email} autoComplete='off' id="outlined-basic" label="Email" variant="outlined" />
-                </div>
-                <div className='max-w-5xl hidden my-5 mx-auto'>
+                {/* <div className='max-w-5xl hidden my-5 mx-auto'>
                     <TextField className='w-96 my-5' autoComplete='off' defaultValue={profileList.password} id="outlined-basic" label="Password" variant="outlined" />
-                </div>
+                </div> */}
                 <div className='max-w-5xl my-5 mx-auto'>
-                    <TextField className='w-96 my-5' onChange={e => setPhone(e.target.value)} defaultValue={profileList.phone} id="outlined-basic" label="Phone" variant="outlined" />
+                  {formik.errors.phone
+                ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.phone}</div>
+                )
+                : null}
+              <TextField error={formik.errors.phone ? "error" : null} onChange={formik.handleChange}
+                onBlur={formik.handleBlur} value={formik.values.phone}
+                id="phone" className='w-96 my-5' label="Phone" variant="outlined" />
                 </div>
+                
                 <div className='max-w-5xl my-5 mx-auto'>
+                  {formik.errors.gender
+                ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.gender}</div>
+                )
+                : null}
+              <TextField error={formik.errors.gender ? "error" : null} onChange={formik.handleChange}
+                onBlur={formik.handleBlur} value={formik.values.gender}
+                id="gender" className='w-96 my-5' label="gender" variant="outlined" />
+                </div>
+                {/* <div className='max-w-5xl my-5 mx-auto'>
                     <TextField className='w-96 my-5' onChange={e => setAddress(e.target.value)} defaultValue={profileList.address} id="outlined-basic" label="Address" variant="outlined" />
-                </div>
-                <div className='max-w-5xl my-5 mx-auto'>
+                </div> */}
+                {/* <div className='max-w-5xl my-5 mx-auto'>
                     <Box className='w-96' sx={{ minWidth: 120 }}>
                         <FormControl fullWidth>
                             <InputLabel id="demo-simple-select-label">Gender</InputLabel>
@@ -201,7 +212,7 @@ export default function Content() {
                             </Select>
                         </FormControl>
                     </Box>
-                </div>
+                </div> */}
 
             </div>
 

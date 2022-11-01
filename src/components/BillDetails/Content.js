@@ -374,8 +374,8 @@ export default function Content() {
                 <div className="col-span-1 grid sm:grid-rows-2   gap-5 ">
 
                     <Card className=" font-semibold py-4  pl-5" >
-                        <Typography gutterBottom variant="h4" component="div">
-                            Bill Detail:
+                        <Typography gutterBottom variant="h4" component="div" className="text-center">
+                            Bill Detail
                         </Typography>
                         <div>Bill Id: <i className='font-normal'>{dataBill.id}</i></div>
                         <div>Employee: {dataAcc.map(pack => {
@@ -423,12 +423,12 @@ export default function Content() {
                 </div>
                 <div className='h-screen   overflow-y-scroll'>
                     <Card className="  py-4  px-5" >
-                        <Typography gutterBottom variant="h4" component="div">
-                            Seat In Bill:
+                        <Typography gutterBottom variant="h4" component="div" className="text-center">
+                            Seat In Bill
                         </Typography>
                         {dataTicked.map((item, index) => {
                             return (
-                                <Card key={index} className=" cursor-pointer mb-5 text-white" sx={{ height: 150 }}        >
+                                <Card key={index} className=" cursor-pointer mb-5 text-white" sx={{ height: 112 }}        >
                                     <CardContent className='text-black ' >
                                         <Typography gutterBottom variant="h5" component="div">
                                             Seat: {dataSeat.map(item1 => {
@@ -450,13 +450,13 @@ export default function Content() {
                 <div className='h-screen   overflow-y-scroll'>
                     <Card className='py-4  px-5' >
 
-                        <Typography gutterBottom variant="h4" component="div">
-                            Service In Bill:
+                        <Typography gutterBottom variant="h4" component="div" className="text-center">
+                            Service In Bill
                         </Typography>
                         {dataServiceInBill.map((item, index) => {
                             return (
                                 <div >
-                                    <Card key={item.id} className=" cursor-pointer mb-5 text-white" sx={{ height: 150 }} >
+                                    <Card key={item.id} className=" cursor-pointer mb-5 text-white" sx={{ height: 112 }} >
                                         <CardContent className='text-black ' >
                                             <Typography gutterBottom variant="h5" component="div">
                                                 Service: 
