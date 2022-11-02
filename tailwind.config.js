@@ -14,6 +14,7 @@ module.exports = {
               },
               height: {
                 '500': '500px',
+                '300': '300px',
               },
             colors: {
                 'lightblue2': '#005B88',

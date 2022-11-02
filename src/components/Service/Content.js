@@ -62,10 +62,7 @@ export default function Content() {
     const IncNum = (data) => {
 
         console.log(ServiceArray)
-        if (data.id == 1) {
-     
-                
-         
+        if (data.id == 1) {    
             setBapPhoMai(BapPhoMai + 1);
             setTotalBapPhoMai(data.price * (BapPhoMai + 1));
             setTotal( totalGhe + (data.price * (BapPhoMai + 1)) + TotalBap + TotalCocaCola + TotalNuocSuoi)
@@ -221,16 +218,12 @@ export default function Content() {
         return (createData(data))
     })
     async function featchSeatList() {
-        try {
-    
-    
+        try {   
           const requestURL = `http://www.cinemasystem.somee.com/api/Seat`;
-    
           const response = await fetch(requestURL, {
             method: `GET`,
             headers: {
               'Content-Type': 'application/json',
-    
             },
           });
           const responseJSON = await response.json();
@@ -291,7 +284,8 @@ export default function Content() {
             console.log('Fail to fetch product list: ', error)
         }
     }
-
+    
+   
     async function featchRoomList() {
         try {
             const requestURL = `http://www.cinemasystem.somee.com/api/Room`;

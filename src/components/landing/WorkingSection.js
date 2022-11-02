@@ -133,7 +133,7 @@ export default function WorkingSection() {
                                     <Link to={{
                                         pathname: "/detail",
                                         state: {
-                                            name: product
+                                            name: product.filmId
                                         }
                                        
                                     }}  key={index} className=" relative mx-auto " sx={{ minWidth: 100 }} >

@@ -30,7 +30,7 @@ import Scheduling from 'pages/Scheduling';
 import CouponManagement from 'pages/CouponManagement';
 import ProfileDashboard from 'pages/ProfileDashboard';
 import BillDetails from 'pages/BillDetails';
-import detail from 'pages/detail';
+import detail from 'pages/Detail';
 import Room from 'pages/Room';
 
 import Test from 'components/Test';
@@ -42,6 +42,7 @@ import CheckOut from 'pages/CheckOut';
 import FilmComingSoon from 'pages/FilmComingSoon';
 import FilmNowShowing from 'pages/FilmNowShowing';
 import Service from 'pages/Service';
+import SchedulingDetails from 'pages/SchedulingDetails';
 
 
 
@@ -72,6 +73,7 @@ function App() {
             <Route exact path="/RoomsManagement" component={RoomsManagement} />
             <Route exact path="/CinemaManagement" component={CinemaManagement} />
             <Route exact path="/Scheduling" component={Scheduling} />
+            <Route exact path="/Scheduling/Details" component={SchedulingDetails} />
             <Route exact path="/Bill" component={Bill} />
             <Route exact path="/Bill/Details" component={BillDetails} />
             <Route exact path="/Cinema/Details" component={CinemaDetails} />

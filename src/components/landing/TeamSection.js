@@ -6,6 +6,17 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { NavLink } from 'react-router-dom';
+import { TodayOutlined } from '@mui/icons-material';
+
+function formatTime(date) {
+  var hours = date.getHours();
+  var minutes = date.getMinutes();
+
+  hours = hours < 10 ? '0' + hours : hours;
+  minutes = minutes < 10 ? '0' + minutes : minutes;
+  var strTime = hours + ':' + minutes + ':' + "00";
+  return strTime;
+}
 
 function formatDate(date) {
   var d = new Date(date),
@@ -178,17 +189,15 @@ export default function TeamSection() {
 
       setDataNowFilm(responseJSON.data)
 
-      console.log("aa fetch", responseJSON.data)
-
+     
     } catch (error) {
       console.log('Fail to fetch product list: ', error)
     }
   }
   function getUniqueListBy(arr, key) {
     return [...new Map(arr.map(item => [item[key], item])).values()]
-  }
+  } 
 
-  console.log(dataCinema)
 
   return (
     <section className="pb-20 ">
@@ -224,52 +233,54 @@ export default function TeamSection() {
                 )
               })}
             </Tabs>
-            { console.log("dataFilmInCinema", dataFilmInCinema)}
+     
             {dataCinema.map((itemCinema, index) => {
               return (
-               
-                < TabPanel className = { dataFilmInCinema != "" ? "overflow-y-scroll" : ""
-            } key = { itemCinema.id } value = { value } index = {(index - 1) + 1}>
 
-            {dataFilmInCinema.map(itemFilm => {
-              return (
-                <div key={itemFilm.film.id} className='mb-5' style={{ width: '700px', display: 'flex' }} >
-                  <img width={200} height={250} src={itemFilm.film.image} /> <br />
-                  <div className="text-left ml-2 my-5 mt-2 mx-4  ">
-                    <h3 className="text-3xl mb-2 text-green-700-300"> {itemFilm.film.title} </h3>
-                    <div className="grid grid-cols-6 gap-5">
-                      {dataScheduling.map(itemScheduling => {
-                        if (itemScheduling.filmId == itemFilm.film.id) {
-                          return (
-                            <NavLink to={{
-                              pathname: "/Service",
-                              state: {
-                                name: itemFilm,
-                                scheduling: itemScheduling,
+                < TabPanel className={dataFilmInCinema != "" ? "overflow-y-scroll" : ""
+                } key={itemCinema.id} value={value} index={(index - 1) + 1}>
+
+                  {dataFilmInCinema.map(itemFilm => {
+
+                    return (
+                      <div key={itemFilm.film.id} className='mb-5' style={{ width: '700px', display: 'flex' }} >
+                        <img width={200} height={250} src={itemFilm.film.image} /> <br />
+                        <div className="text-left ml-2 my-5 mt-2 mx-4  ">
+                          <h3 className="text-3xl mb-2 text-green-700-300"> {itemFilm.film.title} </h3>
+                          <div className="grid grid-cols-6 gap-5">
+                            {dataScheduling.map(itemScheduling => {
+                              
+                              if (itemScheduling.filmId == itemFilm.film.id && formatTime(today) <= itemScheduling.startTime == true) {
+                                return (
+                                  <NavLink to={{
+                                    pathname: "/Service",
+                                    state: {
+                                      name: itemFilm,
+                                      scheduling: itemScheduling,
+                                    }
+                                  }} >
+                                    <button className='border-2 p-2 text-xs pointer-events-auto  hover:border-yellow-600'>{itemScheduling.startTime}
+
+                                    </button>
+                                  </NavLink>
+                                )
                               }
-                            }} >
-                              <button className='border-2 p-2 text-xs pointer-events-auto  hover:border-yellow-600'>{itemScheduling.startTime}
-
-                              </button>
-                            </NavLink>
-                          )
-                        }
-                      })}
-                    </div>
-                  </div>
-                </div>
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </TabPanel>
               )
-            })}
-          </TabPanel>
-          )
 
             })}
 
-        </Box>
+          </Box>
+        </div>
+
+
       </div>
-
-
-    </div>
     </section >
   );
 }

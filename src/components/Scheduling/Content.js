@@ -16,7 +16,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 
 import PropTypes from 'prop-types';
-
+import { Link } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -131,6 +131,7 @@ export default function Content() {
     const [Film, setFilm] = useState("");
     const [StartDate, setStartDate] = useState("");
     const [Enđate, setEnđate] = useState("");
+    const [dataSeat, setDataSeat] = useState([]);
     async function handleUpdateStatus(data) {
         try {
 
@@ -186,7 +187,25 @@ export default function Content() {
         setSelectedValue(data);
     };
 
-
+async function featchSeatList() {
+        try {   
+          const requestURL = `http://www.cinemasystem.somee.com/api/Seat`;
+          const response = await fetch(requestURL, {
+            method: `GET`,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          const responseJSON = await response.json();
+    
+          const data = responseJSON;
+    
+          setDataSeat(responseJSON.data)
+    
+        } catch (error) {
+          console.log('Fail to fetch product list: ', error)
+        }
+      }
 
     const handleClose = () => {
         setOpen(false);
@@ -234,8 +253,16 @@ export default function Content() {
             {data.active == true ? <PublicIcon /> : <PublicOffIcon />}
         </button>);
 
-        let Action = (<button className="text-white  outline-none bg-blue-600 rounded-lg  cursor-pointer   h-8 w-8" onClick={() => handleClickOpen(data)}>
-            <RemoveRedEyeIcon />
+        let Action = (<button className="text-white  outline-none bg-blue-600 rounded-lg   h-8 w-8">
+
+            <Link to={{
+                pathname: "/Scheduling/Details",
+                state: {
+                    name: data.filmId,
+                    scheduling: data,
+                    DataSeat: dataSeat
+                } 
+            }}> <RemoveRedEyeIcon /></Link>
         </button>);
 
 
@@ -269,8 +296,8 @@ export default function Content() {
         { id: 2, name: "Noon", location: "161 Xa Lộ Hà Nội, P. Thảo Điền, Q.2, TP. Hồ Chí Minh" },
         { id: 3, name: "Afternoon", location: "1311 Ông Cao Thắng, P.Tân Kì, Q.10, TP. Hồ Chí Minh" },
 
-    ] 
-     var today = new Date();
+    ]
+    var today = new Date();
 
     const [value, setValue] = React.useState(today);
     const [startValue, setStartValue] = React.useState(today);
@@ -281,10 +308,28 @@ export default function Content() {
         featchCinemaList();
         featchRoomList();
         featchFilmList();
-
+        featchSeatList();
         setPage(0);
     }, [search, Room, Film, value, startValue]);
-
+    async function featchSeatList() {
+        try {   
+          const requestURL = `http://www.cinemasystem.somee.com/api/Seat`;
+          const response = await fetch(requestURL, {
+            method: `GET`,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          const responseJSON = await response.json();
+    
+          const data = responseJSON;
+    
+          setDataSeat(responseJSON.data)
+    
+        } catch (error) {
+          console.log('Fail to fetch product list: ', error)
+        }
+      }
     async function featchSchedulingList() {
         try {
             let roomid;

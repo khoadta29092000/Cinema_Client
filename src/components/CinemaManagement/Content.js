@@ -165,9 +165,9 @@ export default function Content() {
         },
     });
     const handleClickOpen = (data) => {
-        if (data != undefined) {
-            formik.setValues(data);
-        }
+            if (data != undefined) {
+                formik.setValues(data);
+            }
         setOpen(true);
         setSelectedValue(data);
         setSelectedImage(data.img);
@@ -567,7 +567,7 @@ export default function Content() {
                                     disableClearable
                                     id="combo-box-demo"
                                     options={CoupomOptions}
-                                    renderInput={(params) => <TextField {...params} label="Coupon" />}
+                                    renderInput={(params) => <TextField {...params} label="Location" />}
                                     onChange={(event, value) => formik.setFieldValue("locationId", value.id)}
                                 />
 

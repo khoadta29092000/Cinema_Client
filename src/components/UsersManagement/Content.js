@@ -161,7 +161,6 @@ export default function Content() {
       fullName: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required(),
       address: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required(),
       phone: Yup.string().matches(phoneRegExp, 'Phone number is not valid').required(),
-      cinemaId: Yup.number().typeError("Must be number!").required(),
       roleId: Yup.number().typeError("Must be number!").max(100, "Old not > 100").required(),
       description: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required(),
       // avatar: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required(),
@@ -565,14 +564,43 @@ export default function Content() {
 
 
 
+  let CinemaComponent;
+  if (formik.values.roleId == 2) {
+    CinemaComponent =  (
+      <div className='max-w-5xl my-5 mx-auto'>
 
+        <Box sx={{ minWidth: 120 }}>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Cinema</InputLabel>
+            <Select
+
+              labelId="demo-simple-select-label"
+              id="cinemaId"
+              defaultValue={formik.values.cinemaId}
+              label="Cinema"
+              onChange={value1 => formik.setFieldValue("cinemaId", value1.target.value)}
+            >
+              {dataStation.map((cate, index) => {
+                return (
+
+                  <MenuItem key={index} value={cate.id}>{cate.name}</MenuItem>
+                )
+              })}
+            </Select>
+          </FormControl>
+        </Box>
+      </div>
+    )
+
+
+  }
 
 
   const AccOptions = dataRole.map((item, index) => ({
     id: item.id,
     label: item.name
   }))
-  AccOptions.unshift({id:null,label:"All"})
+  AccOptions.unshift({ id: null, label: "All" })
   return (
     <section className=" ml-0 xl:ml-64  px-5 pt-10  ">
       <Snackbar open={alert} autoHideDuration={3000} onClose={handleCloseAlert} className="float-left w-screen">
@@ -738,7 +766,7 @@ export default function Content() {
                     id="roleId"
                     defaultValue={formik.values.roleId}
                     label="Role"
-                    onChange={e => setStationId(e.target.value)}
+                    onChange={e => formik.setFieldValue("roleId", e.target.value)}
                   >
                     {dataRole.map((cate, index) => {
                       return (
@@ -750,6 +778,7 @@ export default function Content() {
                 </FormControl>
               </Box>
             </div>
+            {CinemaComponent}
             <div className='max-w-5xl my-5 mx-auto'>
               {formik.errors.date ? (
                 <div className="text-red-600 mb-2 font-bold">{formik.errors.date}</div>

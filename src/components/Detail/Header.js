@@ -11,12 +11,12 @@ export default function Header() {
             <div className="container max-w-8xl relative mx-auto">
                 <div className="items-center  flex flex-wrap">
                     <div className="w-full  px-4 ml-auto mr-auto text-center">
-                    <h2 className=" lg:text-8xl text-4xl font-bold text-white">Cinema  </h2>
+                    <h2 className=" lg:text-8xl text-4xl font-bold text-white">Film Details</h2>
                         <div className='text-center mt-5   w-full ' onClick={handleClick}>
                             <i><Link className='text-white  hover:text-gray-300' color="white" to="/">
                                 Home /
                             </Link></i>
-                            <i className='text-white ml-2' color="white">Cinema</i>
+                            <i className='text-white ml-2' color="white">Film Details</i>
                         </div>
                     </div>
                 </div>
