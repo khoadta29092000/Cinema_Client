@@ -1,6 +1,6 @@
 import DefaultNavbar from 'components/DefaultNavbar';
 import DefaultFooter from 'components/DefaultFooter';
-import Header from 'components/Profile/Header';
+import Header from 'components/profile/Header';
 import Content from 'components/History/Content';
 import DefaultNavbarProfile from 'components/DefaultNavbarProfile';
 

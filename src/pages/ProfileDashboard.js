@@ -6,7 +6,7 @@ import LeadText from '@material-tailwind/react/LeadText';
 import ProfilePicture from 'assets/img/team-2-800x800.jpg';
 import DefaultNavbar from 'components/DefaultNavbar';
 import DefaultFooter from 'components/DefaultFooter';
-import Header from 'components/Profile/Header';
+import Header from 'components/profile/Header';
 
 import DefaultNavbarAdmin from 'components/DefaultNavbarAdmin';
 import Content from 'components/ProfileDashboard/Content';

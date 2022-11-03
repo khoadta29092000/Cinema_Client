@@ -8,221 +8,161 @@ import EmailIcon from '@mui/icons-material/Email';
 export default function DefaultFooter() {
     return (
         <>
-            <footer className="relative bg-gray-100 pt-8 pb-6">
-                <div className="container max-w-7xl mx-auto px-4">
-                    <div className="flex flex-wrap text-center lg:text-left pt-6">
-                        <div className="w-full lg:w-6/12 px-4">
-                            <H5 color="gray">DDKV</H5>
-                            <div className="-mt-4">
-                                <LeadText color="blueGray">
-                                  nơi trải nghiệm những bộ phim hay nhất
-                                </LeadText>
-                            </div> 
-                            <div className="-">
-                                <EmailIcon /> DDKV@gmail.com
-                            </div>
-                            <div className="flex gap-2 mt-6 md:justify-start md:mb-0 mb-8 justify-center">
-                                <a
-                                    href="https://www.facebook.com/profile.php?id=100035188563522"
-                                    className="grid place-items-center bg-white text-blue-600 shadow-md font-normal h-10 w-10 items-center justify-center align-center rounded-full outline-none focus:outline-none"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    <Icon
-                                        family="font-awesome"
-                                        name="fab fa-facebook-square"
-                                    />
-                                </a>
-                                <a
-                                    href="https://www.twitter.com/creativetim"
-                                    className="grid place-items-center bg-white text-blue-400 shadow-md font-normal h-10 w-10 items-center justify-center align-center rounded-full outline-none focus:outline-none"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    <Icon
-                                        family="font-awesome"
-                                        name="fab fa-twitter"
-                                    />
-                                </a>
-                                <a
-                                    href="https://www.instagram.com/creativetimofficial/"
-                                    className="grid place-items-center bg-white text-indigo-500 shadow-md font-normal h-10 w-10 items-center justify-center align-center rounded-full outline-none focus:outline-none"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    <Icon
-                                        family="font-awesome"
-                                        name="fab fa-instagram"
-                                    />
-                                </a>
-                                <a
-                                    href="https://www.dribbble.com/creativetim"
-                                    className="grid place-items-center bg-white text-pink-400 shadow-md font-normal h-10 w-10 items-center justify-center align-center rounded-full outline-none focus:outline-none"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    <Icon
-                                        family="font-awesome"
-                                        name="fab fa-dribbble"
-                                    />
-                                </a>
-                                <a
-                                    href="https://www.youtube.com/watch?v=LZN4I3K8SC0"
-                                    className="grid place-items-center bg-white text-red-600 shadow-md font-normal h-10 w-10 items-center justify-center align-center rounded-full outline-none focus:outline-none"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    <Icon
-                                        family="font-awesome"
-                                        name="fab fa-youtube"
-                                    />
-                                </a>
-                                <a
-                                    href="https://github.com/tiensidien"
-                                    className="grid place-items-center bg-white text-gray-900 shadow-md font-normal h-10 w-10 items-center justify-center align-center rounded-full outline-none focus:outline-none"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    <Icon
-                                        family="font-awesome"
-                                        name="fab fa-github"
-                                    />
-                                </a>
-                            </div>
-                        </div>
-                        <div className="w-full lg:w-6/12 px-4">
-                            <div className="flex flex-wrap items-top">
-                                <div className="w-full lg:w-4/12 px-4 ml-auto md:mb-0 mb-8">
-                                    <span className="block uppercase text-gray-900 text-sm font-serif font-medium mb-2">
-                                        Menu Links
-                                    </span>
-                                    <ul className="list-unstyled">
-                                        <li>
-                                            <a
-                                                href="https://www.creative-tim.com/presentation?ref=mtk"
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                className="text-gray-700 hover:text-gray-900 block pb-2 text-sm"
-                                            >
-                                                Home
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a
-                                                href="https://www.creative-tim.com/presentation?ref=mtk"
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                className="text-gray-700 hover:text-gray-900 block pb-2 text-sm"
-                                            >
-                                                About Us
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a
-                                                className="text-gray-700 hover:text-gray-900 block pb-2 text-sm"
-                                                target="_blank"
-                                                href=" https://www.creative-tim.com/blog?ref=mtk"
-                                            >
-                                                Products
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a
-                                                className="text-gray-700 hover:text-gray-900 block pb-2 text-sm"
-                                                target="_blank"
-                                                href=" https://www.creative-tim.com/blog?ref=mtk"
-                                            >
-                                                Package
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a
-                                                className="text-gray-700 hover:text-gray-900 block pb-2 text-sm"
-                                                target="_blank"
-                                                href=" https://www.creative-tim.com/blog?ref=mtk"
-                                            >
-                                                Blog
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a
-                                                href="https://www.github.com/creativetimofficial?ref=mtk"
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                className="text-gray-700 hover:text-gray-900 block pb-2 text-sm"
-                                            >
-                                                Contract Us
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a
-                                                href=" https://www.creative-tim.com/templates/free?ref=mtk"
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                className="text-gray-700 hover:text-gray-900 block pb-2 text-sm"
-                                            >
-                                                FAQs
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div className="w-full lg:w-4/12 px-4">
-                                    <span className="block uppercase text-gray-900 text-sm font-serif font-medium mb-2">
-                                        MY ACCOUNT
-                                    </span>
-                                    <ul className="list-unstyled">
-                                        <li>
-                                            <a
-                                                href="https://github.com/creativetimofficial/material-tailwind/blob/main/LICENSE.md?ref=mtk"
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                className="text-gray-700 hover:text-gray-900 block pb-2 text-sm"
-                                            >
-                                                 Subscription 
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a
-                                                href="https://github.com/creativetimofficial/material-tailwind/blob/main/CONTRIBUTING.md?ref=mtk"
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                className="text-gray-700 hover:text-gray-900 block pb-2 text-sm"
-                                            >
-                                                CheckOut
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a
-                                                href="https://github.com/creativetimofficial/material-tailwind/blob/main/CODE_OF_CONDUCT.md?ref=mtk"
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                className="text-gray-700 hover:text-gray-900 block pb-2 text-sm"
-                                            >
-                                               Profile
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr className="my-6 border-gray-300" />
-                    <div className="flex flex-wrap items-center md:justify-between justify-center">
-                        <div className="w-full md:w-4/12 px-4 mx-auto text-center">
-                            <div className="text-sm text-gray-700 font-medium py-1">
-                                Copyright © {new Date().getFullYear()} DDKV by{' '}
-                                <a
-                                    href="https://www.creative-tim.com?ref=mtk"
-                                    className="text-gray-700 hover:text-gray-900 transition-all"
-                                >
-                                    Creative by DDKV-Team
-                                </a>
-                                .
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </footer>
+       <footer
+  aria-label="Site Footer"
+  class="bg-gray-900 text-white lg:grid lg:grid-cols-5"
+>
+<div class=" px-4 py-16 sm:px-6 hidden   lg:px-8 ml-7 lg:col-span-2 lg:block ">
+    {/* <img className="h-full"  src="https://top10vietnam.vn/wp-content/uploads/2020/07/rap-chieu-phim-galaxy-cinema-1.jpg"></img> */}
+    <div className="mt-7 ml-2" >
+        <p class="font-medium">
+          <span class="text-xs uppercase tracking-widest"> Chăm sóc khách hàng  </span>
+
+          <a class="block text-xl hover:opacity-75 sm:text-xl" href="">
+          Hotline: 0123456789
+          </a>
+        </p>
+
+        <ul class="mt-8 space-y-2 text-sm">
+          <li>Giờ làm việc: 8:00 - 22:00</li>
+          <li> (Tất cả các ngày bao gồm cả Lễ Tết)</li>
+        </ul>
+        <h3 className="mt-8"> Kết nối với chúng tôi</h3>
+        <div class="mt-8 flex gap-3">
+          <a
+            class="rounded-full border border-white/25 p-2 hover:opacity-75"
+            href=""
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span class="sr-only"> Facebook </span>
+
+            <svg
+              class="h-4 w-4"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </a>
+
+          <a
+            class="rounded-full border border-white/25 p-2 hover:opacity-75"
+            href=""
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span class="sr-only"> Instagram </span>
+
+            <svg
+              class="h-4 w-4"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </a>
+
+          <a
+            class="rounded-full border border-white/25 p-2 hover:opacity-75"
+            href=""
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span class="sr-only"> Twitter </span>
+
+            <svg
+              class="h-4 w-4"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"
+              />
+            </svg>
+          </a>
+
+       
+
+          
+        </div>
+      </div>
+  
+  </div>
+
+  <div class="px-4 py-16 sm:px-6 lg:col-span-3 lg:px-8 ml-2">
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 ">
+      <div >
+        <p class="font-medium">
+          <span class="text-xs uppercase tracking-widest"> Điều khoản sữ dụng  </span>  
+        </p>
+
+        <nav
+            aria-label="Footer Nav"
+            class="mt-4 flex flex-col space-y-2 text-sm text-gray-300"
+          >
+            <a class="hover:opacity-75" href="">  Điều khoản chung </a>
+            <a class="hover:opacity-75" href=""> Điều khoản giao dịch </a>
+            <a class="hover:opacity-75" href=""> Chính sách thanh toán  </a>
+          
+          </nav>
+   
+       
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
+          <p class="font-medium">Giới thiệu</p>
+
+          <nav
+            aria-label="Footer Nav"
+            class="mt-4 flex flex-col space-y-2 text-sm text-gray-300"
+          >
+            <a class="hover:opacity-75" href="/AboutUs">  về chúng tôi </a>
+            <a class="hover:opacity-75" href=""> dịch vụ </a>
+            <a class="hover:opacity-75" href=""> Rạp chiếu  </a>
+          
+          </nav>
+        </div>
+
+        <div>
+          <p class="font-medium">Góc điện ảnh </p>
+
+          <nav class="mt-4 flex flex-col space-y-2 text-sm text-gray-300">
+            <a class="hover:opacity-75" href="/FilmNowShowing"> Phim đang chiếu  </a>
+            <a class="hover:opacity-75" href="/FilmComingSoon"> Phim sắp chiếu  </a>
+            <a class="hover:opacity-75" href=""> Bình luận phim </a>
+         
+          </nav>
+        </div>
+      </div>
+      
+    </div>
+   
+  
+  </div>
+  <div class=" border-t border-gray-800 ">
+      <div
+       
+      >
+        <p class="text-center">Copyright © 2022  by Creative by DDKV-Team.</p>
+      </div>
+
+    </div>
+</footer>
+
+
         </>
     );
 }
