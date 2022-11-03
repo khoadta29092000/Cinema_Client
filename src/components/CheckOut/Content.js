@@ -12,7 +12,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import { useEffect, useState } from "react";
 import * as React from 'react';
 import { Fragment } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import service from 'pages/Service';
 import InputLabel from '@mui/material/InputLabel';
@@ -54,9 +54,9 @@ export default function Content() {
     let id2 = parseJwt(localStorage.getItem('token'))
     let prop = 'Id'
     let proprole = 'role'
-
+    const history = useHistory();
     const [email, setEmail] = useState("");
-
+    const [error, setError] = useState("");
     const [coupon, setCoupon] = useState("");
     const [fullname, setFullname] = useState("");
     const [phone, setPhone] = useState("");
@@ -243,7 +243,11 @@ export default function Content() {
 
                 if (result) {
                     if (result?.statusCode == 200) {
+                        history.push("/Successfully")
 
+                    }
+                    if (result?.statusCode == 409) {
+                        setError(result?.message)
 
                     }
 
@@ -272,6 +276,7 @@ export default function Content() {
                         <Paper className='text-center '>
                             <div className='font-semibold text-left text-4xl ml-2 mt-2'>Payment Information</div>
                             <div className='pt-10'>
+                                {error != "" ? <div className='text-red-600 mb-4 text-2xl'>{error}</div> : null}
                                 <Box className='' sx={{ minWidth: 384 }}>
                                     <FormControl className='' sx={{ minWidth: 384 }}>
                                         <InputLabel id="demo-simple-select-label">Payment</InputLabel>
@@ -308,11 +313,11 @@ export default function Content() {
                         </Paper>
                     </div>
                     <div className='col-span-1 text-left  bg-gray-200'>
-                        <img src={location.state.name.film.image} className="w-full h-64 object-cover p-5" />
-                        <h2 className='font-medium ml-2 mb-2'>{location.state.name.film.title}</h2>
+                        <img src={location.state.name.image} className="w-full h-64 object-cover p-5" />
+                        <h2 className='font-medium ml-2 mb-2'>{location.state.name.title}</h2>
                         <div>
-                            <button className='text-white ml-2 mr-2 w-8 h-8 bg-blue-600'>C{location.state.name.film.rated}</button>
-                            Phim giành cho đổ tuổi từ {location.state.name.film.rated} trở lên
+                            <button className='text-white ml-2 mr-2 w-8 h-8 bg-blue-600'>C{location.state.name.rated}</button>
+                            Phim giành cho đổ tuổi từ {location.state.name.rated} trở lên
                         </div>
                         <div className='font-medium border-b-2 ml-2 mr-4 border-gray-200 px-2 my-2 flex'> Rạp:  <p className=' ml-2 font-normal'> {dataCinema.map(item => {
                             if (item.id == location.state.scheduling.cinemaId)

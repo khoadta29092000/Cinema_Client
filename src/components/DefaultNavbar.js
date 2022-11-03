@@ -38,10 +38,10 @@ export default function DefaultNavbar() {
     const [profileList, setProfileList] = useState("");
     const anchorRef = useRef(null);
     useEffect(() => {
-        if( localStorage.getItem("token") != null){
+        if (localStorage.getItem("token") != null) {
             featchProfile();
         }
-        
+
 
     }, [name]);
     function parseJwt(token) {
@@ -52,7 +52,7 @@ export default function DefaultNavbar() {
     }
     let id2 = parseJwt(localStorage.getItem('token'))
     let prop = 'Id'
-    let proprole = 'role' 
+    let proprole = 'role'
     console.log("ngu ", id2)
     async function featchProfile() {
         try {
@@ -72,10 +72,10 @@ export default function DefaultNavbar() {
             const data = responseJSON;
 
             setProfileList(responseJSON.data)
-            console.log("ko", responseJSON.data)
+            console.log("ko", responseJSON.data.avatar)
 
         } catch (error) {
-            console.log('Fail to fetch product list: ', error)
+            console.log('Fail to fetch product list1: ', error)
         }
     }
 
@@ -120,24 +120,24 @@ export default function DefaultNavbar() {
     if (localStorage.getItem(`token`)) {
         img = (
             <div>
-                
-                        <Button1
-                            ref={anchorRef}
-                            id="composition-button"
-                            aria-controls={open ? 'composition-menu' : undefined}
-                            aria-expanded={open ? 'true' : undefined}
-                            aria-haspopup="true"
-                            onClick={handleToggle}
-                            color="transparent"
-                            className=" text-white ml-2"
-                            ripple="dark"
-                        >
-                            <Stack direction="row" spacing={2}>
-                                <Avatar alt="Cindy Baker" src={profileList.avatar} />
-                            </Stack>
-                            <Typography color="White" className='pl-2'>{profileList.fullName}</Typography>
-                        </Button1>
-                
+
+                <Button1
+                    ref={anchorRef}
+                    id="composition-button"
+                    aria-controls={open ? 'composition-menu' : undefined}
+                    aria-expanded={open ? 'true' : undefined}
+                    aria-haspopup="true"
+                    onClick={handleToggle}
+                    color="transparent"
+                    className=" text-white ml-2"
+                    ripple="dark"
+                >
+                    <Stack direction="row" spacing={2}>
+                        <Avatar alt="Cindy Baker" src={profileList.avatar} />
+                    </Stack>
+                    <Typography color="White" className='pl-2'>{profileList.fullName}</Typography>
+                </Button1>
+
                 <Popper
                     open={open}
                     anchorEl={anchorRef.current}
@@ -169,12 +169,20 @@ export default function DefaultNavbar() {
                                             </Link>
                                         </MenuItem>
                                         <MenuItem >
-                                            <Link to="/profile">
+                                            <Link to="/ProfileDashboard/profile">
                                                 Profile
                                             </Link>
                                         </MenuItem>
-                                       
-                                       
+                                        <MenuItem >
+                                            <Link to="/ProfileDashboard/ChangePassword">
+                                                Change Password
+                                            </Link>
+                                        </MenuItem>
+                                        <MenuItem >
+                                            <Link to="/ProfileDashboard/History">
+                                                History
+                                            </Link>
+                                        </MenuItem>
                                         <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
                                     </MenuList>
                                 </ClickAwayListener>
@@ -217,7 +225,7 @@ export default function DefaultNavbar() {
         )
     }
     if (localStorage.getItem("token") != null) {
-        if(id2[proprole]){
+        if (id2[proprole]) {
             adminDashboard = (
                 <Link to="/Admindashboard">
                     <NavLink
@@ -225,7 +233,7 @@ export default function DefaultNavbar() {
                         ripple="light"
                     >
                         <DashboardIcon
-    
+
                             size="xl"
                         />
                         &nbsp;Admin Dashboard
@@ -233,7 +241,7 @@ export default function DefaultNavbar() {
                 </Link>
             )
         }
-       
+
     }
 
     return (
@@ -270,7 +278,7 @@ export default function DefaultNavbar() {
                                     <Icon name="apps" size="2xl" />
                                     &nbsp;About Us
                                 </NavLink></Link>
-                             <div className="text-white">
+                            <div className="text-white">
                                 <Dropdown
                                     color="transparent"
                                     size="sm"
@@ -291,17 +299,17 @@ export default function DefaultNavbar() {
                                 >
                                     <Link to="/FilmNowShowing">
                                         <DropdownItem color="lightBlue">
-                                           Now Showing
+                                            Now Showing
                                         </DropdownItem>
                                     </Link >
                                     <Link to="/FilmComingSoon">
                                         <DropdownItem color="lightBlue">
-                                          Coming Soon
+                                            Coming Soon
                                         </DropdownItem>
                                     </Link>
 
                                 </Dropdown>
-                            </div> 
+                            </div>
 
                             <Link to="/ServiceAreas">
                                 <NavLink
@@ -311,65 +319,13 @@ export default function DefaultNavbar() {
                                     ripple="light"
                                 >
                                     <LocationOnIcon />
-                                    <div className="">Areas</div>
+                                    <div className="">Cinema</div>
                                 </NavLink>
                             </Link>
-                             <div className="text-white mr-5">
-                                <Dropdown
-                                    color="transparent"
-                                    size="sm"
-                                    buttonType="link"
-                                    buttonText={
-                                        <div className="py-2.5 font-medium flex items-center">
-                                            <span className="ml-2">
-                                                More
-                                            </span>
-                                        </div>
-                                    }
-                                    ripple="light"
-                                >
 
-                                    <Link to="/ContractUs">
-                                        <DropdownItem color="lightBlue">
-                                            Contract Us
-                                        </DropdownItem>
-                                    </Link>
-                                    <Link to="/FAQs">
-                                        <DropdownItem color="lightBlue">
-                                            FAQs
-                                        </DropdownItem>
-                                    </Link>
-                                </Dropdown>
-                            </div>  
-                            <Dropdown
-                                color="transparent"
-                                size="sm"
-                                buttonType="link"
-                                buttonText={
-                                    <div className="py-2.5 font-medium flex items-center">
 
-                                        <SearchIcon className='text-white cursor-pointer  mb-5 lg:mb-0 mb ' />
-                                    </div>
-                                }
-                                ripple="light"
-                            >
-                                <Paper
-                                    component="form"
-                                    sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
-                                >
-                                    <InputBase
-                                        sx={{ ml: 1, flex: 1 }}
-                                        placeholder="Search Products"
-                                        inputProps={{ 'aria-label': 'Search Product' }}
-                                    />
-                                    <IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
-                                        <SearchIcon />
-                                    </IconButton>
-
-                                </Paper>
-                            </Dropdown>
                             {buttonSignIn}
-                            { buttonSingUp}
+
                             {img}
 
 

@@ -65,7 +65,7 @@ export default function WorkingSection() {
         try {
 
 
-            const requestURL = `http://cinemasystem.somee.com/api/FilmInCinema/AllFilmInCinemaToday/2`;
+            const requestURL = `http://cinemasystem.somee.com/api/FilmInCinema/AllFilmInCinemaToday`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -78,7 +78,7 @@ export default function WorkingSection() {
 
             const data = responseJSON;
 
-            setDataNowFilm(responseJSON)
+            setDataNowFilm(responseJSON.data)
 
             console.log("aa fetch", responseJSON.data)
 
@@ -103,7 +103,7 @@ export default function WorkingSection() {
                     </Box>
                     <TabPanel value={value} index={0}>
                         <div className='mt-5 w-full h-full  grid grid-cols-1 lg:grid-cols-3 sm:grid-cols-2 2xl:grid-cols-3 gap-2'>
-                            {dataNowFilm.slice(0, 6).map((product, index) => {
+                            {dataNowFilm.map((product, index) => {
                                 return (
                                     <Link to={{
                                         pathname: "/detail",
@@ -116,7 +116,7 @@ export default function WorkingSection() {
                                         <div className="relative w-96 h-56 text-white overflow-hidden cursor-pointer transition-all duration-700 card">
                                             <CardMedia
                                                 component="img"
-                                                image={product?.film?.image}
+                                                image={product?.image}
                                                 className="absolute inset-0 h-72   flex justify-center items-center bg-white transition-all duration-500 delay-200 z-20 hover:opacity-0"
                                             />
                                             <CardMedia
@@ -128,7 +128,7 @@ export default function WorkingSection() {
 
                                         <CardContent>
                                             <h2 className="-mt-2 float-left font-semibold text-base" >
-                                                {product?.film?.title}
+                                                {product?.title}
                                             </h2>
 
                                         </CardContent>

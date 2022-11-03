@@ -1,10 +1,10 @@
 import DefaultNavbar from 'components/DefaultNavbar';
 import DefaultFooter from 'components/DefaultFooter';
 import Header from 'components/Profile/Header';
-import Content from 'components/Profile/Content';
+import Content from 'components/History/Content';
 import DefaultNavbarProfile from 'components/DefaultNavbarProfile';
 
-export default function Profile() {
+export default function History() {
     return (
         <>
               <div className="absolute w-full z-20">
@@ -19,7 +19,7 @@ export default function Profile() {
                                 <div className="  absolute w-64  z-20 ">
                                     <DefaultNavbarProfile />
                                 </div>
-                                <main className="ml-0 mb-0  h-screen ">
+                                <main className="ml-0 mb-0 h-screen col-span-2   ">
                                 
                                     <div className=' z-10 mb-20 '>
                                         <Content />

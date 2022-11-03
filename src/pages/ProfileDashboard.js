@@ -6,7 +6,7 @@ import LeadText from '@material-tailwind/react/LeadText';
 import ProfilePicture from 'assets/img/team-2-800x800.jpg';
 import DefaultNavbar from 'components/DefaultNavbar';
 import DefaultFooter from 'components/DefaultFooter';
-import Header from 'components/profile/Header';
+import Header from 'components/Profile/Header';
 
 import DefaultNavbarAdmin from 'components/DefaultNavbarAdmin';
 import Content from 'components/ProfileDashboard/Content';
@@ -27,7 +27,7 @@ export default function ProfileDashboard() {
                                 <div className="  absolute w-64  z-20 ">
                                     <DefaultNavbarProfile />
                                 </div>
-                                <main className="ml-0 mb-0  h-screen ">
+                                <main className="ml-0 mb-0 col-span-2 h-screen ">
                                 
                                     <div className=' z-10 mb-20 '>
                                         <Content />

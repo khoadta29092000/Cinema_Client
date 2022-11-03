@@ -566,7 +566,7 @@ export default function Content() {
 
   let CinemaComponent;
   if (formik.values.roleId == 2) {
-    CinemaComponent =  (
+    CinemaComponent = (
       <div className='max-w-5xl my-5 mx-auto'>
 
         <Box sx={{ minWidth: 120 }}>
@@ -646,166 +646,168 @@ export default function Content() {
           aria-labelledby="customized-dialog-title"
           open={open}
         >
-          <BootstrapDialogTitle onClose={handleClose}>
-            Customer Detail
-          </BootstrapDialogTitle>
-          <DialogContent dividers >
-            {id != undefined ? <div className='max-w-5xl my-5 mx-auto'>
-              <TextField className='w-96 my-5' value={formik.values.id} disabled label="Id" variant="outlined" />
-            </div> : null}
-            {formik.errors.image
-              ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.image}</div>
-              )
-              : null}
-            <div className='max-w-5xl my-5 mx-auto'>
-              <Button
-                variant="contained"
+          <form onSubmit={formik.handleSubmit}>
+            <BootstrapDialogTitle onClose={handleClose}>
+              Customer Detail
+            </BootstrapDialogTitle>
+            <DialogContent dividers >
+              {id != undefined ? <div className='max-w-5xl my-5 mx-auto'>
+                <TextField className='w-96 my-5' value={formik.values.id} disabled label="Id" variant="outlined" />
+              </div> : null}
+              {formik.errors.image
+                ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.image}</div>
+                )
+                : null}
+              <div className='max-w-5xl my-5 mx-auto'>
+                <Button
+                  variant="contained"
+                  component="label"
+                  className='bg-blue-600 text-white rounded-md ml-5 my-6 py-2 px-4'
+                >
+                  Upload Image
+                  <input
+                    type="file"
+                    hidden
+                    onChange={(event) => {
+                      setSelectedImage(event.target.files[0]);
+                      SetClick(true);
+                      formik.setFieldValue("avatar", event.target.files[0]);
+                    }}
+                  />
+                </Button>
+
+              </div>
+              <div className='max-w-5xl my-5 mx-auto'>
+                {selectedImage == undefined ? <div></div> : <img alt="" className='mx-auto h-48 w-48 my-5' src={click == false ? selectedValue.avatar : window.URL.createObjectURL(selectedImage)} />}
+              </div>
+              <Button variant="contained"
                 component="label"
-                className='bg-blue-600 text-white rounded-md ml-5 my-6 py-2 px-4'
-              >
-                Upload Image
-                <input
-                  type="file"
-                  hidden
-                  onChange={(event) => {
-                    setSelectedImage(event.target.files[0]);
-                    SetClick(true);
-                    formik.setFieldValue("avatar", event.target.files[0]);
-                  }}
-                />
+
+                onClick={handleUpload} className='bg-blue-600 text-white rounded-md ml-5 my-6 py-2 px-4' >
+                Save Img
+              </Button>
+              <div className='max-w-5xl  my-5 mx-auto'>
+                {formik.errors.email
+                  ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.email}</div>
+                  )
+                  : null}
+                <TextField error={formik.errors.email ? "error" : null} onChange={formik.handleChange}
+                  onBlur={formik.handleBlur} value={formik.values.email}
+                  id="email" className='w-96 my-5' label="Email" variant="outlined" />
+              </div>
+              <div className='max-w-5xl  my-5 mx-auto'>
+                {formik.errors.password
+                  ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.password}</div>
+                  )
+                  : null}
+                <TextField type="password" error={formik.errors.password ? "error" : null} onChange={formik.handleChange}
+                  onBlur={formik.handleBlur} value={formik.values.password}
+                  id="password" className='w-96 my-5' label="Password" variant="outlined" />
+              </div>
+              <div className='max-w-5xl  my-5 mx-auto'>
+                {formik.errors.fullName
+                  ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.fullName}</div>
+                  )
+                  : null}
+                <TextField error={formik.errors.fullName ? "error" : null} onChange={formik.handleChange}
+                  onBlur={formik.handleBlur} value={formik.values.fullName}
+                  id="fullName" className='w-96 my-5' label="Full Name" variant="outlined" />
+              </div>
+              <div className='max-w-5xl  my-5 mx-auto'>
+                {formik.errors.phone
+                  ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.phone}</div>
+                  )
+                  : null}
+                <TextField error={formik.errors.phone ? "error" : null} onChange={formik.handleChange}
+                  onBlur={formik.handleBlur} value={formik.values.phone}
+                  id="phone" className='w-96 my-5' label="Phone" variant="outlined" />
+              </div>
+              <div className='max-w-5xl  my-5 mx-auto'>
+                {formik.errors.address
+                  ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.address}</div>
+                  )
+                  : null}
+                <TextField error={formik.errors.address ? "error" : null} onChange={formik.handleChange}
+                  onBlur={formik.handleBlur} value={formik.values.address}
+                  id="address" className='w-96 my-5' label="Address" variant="outlined" />
+              </div>
+              <div className='max-w-5xl my-5 mx-auto'>
+                {formik.errors.gender
+                  ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.gender}</div>
+                  )
+                  : null}
+                <Box sx={{ minWidth: 120 }}>
+                  <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">Gender</InputLabel>
+                    <Select
+
+                      labelId="demo-simple-select-label"
+                      id="gender"
+                      defaultValue={formik.values.gender}
+                      label="Gender"
+                      onChange={e => formik.setFieldValue("gender", e.target.value)}
+                    >
+                      <MenuItem value={true}>Male</MenuItem>
+                      <MenuItem value={false}>Female</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
+              </div>
+              <div className='max-w-5xl my-5 mx-auto'>
+                {formik.errors.roleId
+                  ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.roleId}</div>
+                  )
+                  : null}
+                <Box sx={{ minWidth: 120 }}>
+                  <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">Role</InputLabel>
+                    <Select
+
+                      labelId="demo-simple-select-label"
+                      id="roleId"
+                      defaultValue={formik.values.roleId}
+                      label="Role"
+                      onChange={e => formik.setFieldValue("roleId", e.target.value)}
+                    >
+                      {dataRole.map((cate, index) => {
+                        return (
+
+                          <MenuItem key={index} value={cate.id}>{cate.name}</MenuItem>
+                        )
+                      })}
+                    </Select>
+                  </FormControl>
+                </Box>
+              </div>
+              {CinemaComponent}
+              <div className='max-w-5xl my-5 mx-auto'>
+                {formik.errors.date ? (
+                  <div className="text-red-600 mb-2 font-bold">{formik.errors.date}</div>
+
+                ) : null}
+
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DesktopDatePicker
+
+                    className='w-96 my-5'
+                    label="End Date"
+                    inputFormat="MM/DD/YYYY"
+                    id="date"
+                    value={formik.values.date}
+                    onChange={value => formik.setFieldValue("date", value)}
+                    onBlur={formik.handleBlur}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </LocalizationProvider>
+              </div>
+            </DialogContent>
+            <DialogActions>
+              <Button type='submit' >
+                Save
               </Button>
 
-            </div>
-            <div className='max-w-5xl my-5 mx-auto'>
-              {selectedImage == undefined ? <div></div> : <img alt="" className='mx-auto h-48 w-48 my-5' src={click == false ? selectedValue.avatar : window.URL.createObjectURL(selectedImage)} />}
-            </div>
-            <Button variant="contained"
-              component="label"
-
-              onClick={handleUpload} className='bg-blue-600 text-white rounded-md ml-5 my-6 py-2 px-4' >
-              Save Img
-            </Button>
-            <div className='max-w-5xl  my-5 mx-auto'>
-              {formik.errors.email
-                ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.email}</div>
-                )
-                : null}
-              <TextField error={formik.errors.email ? "error" : null} onChange={formik.handleChange}
-                onBlur={formik.handleBlur} value={formik.values.email}
-                id="email" className='w-96 my-5' label="Email" variant="outlined" />
-            </div>
-            <div className='max-w-5xl  my-5 mx-auto'>
-              {formik.errors.password
-                ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.password}</div>
-                )
-                : null}
-              <TextField type="password" error={formik.errors.password ? "error" : null} onChange={formik.handleChange}
-                onBlur={formik.handleBlur} value={formik.values.password}
-                id="password" className='w-96 my-5' label="Password" variant="outlined" />
-            </div>
-            <div className='max-w-5xl  my-5 mx-auto'>
-              {formik.errors.fullName
-                ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.fullName}</div>
-                )
-                : null}
-              <TextField error={formik.errors.fullName ? "error" : null} onChange={formik.handleChange}
-                onBlur={formik.handleBlur} value={formik.values.fullName}
-                id="fullName" className='w-96 my-5' label="Full Name" variant="outlined" />
-            </div>
-            <div className='max-w-5xl  my-5 mx-auto'>
-              {formik.errors.phone
-                ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.phone}</div>
-                )
-                : null}
-              <TextField error={formik.errors.phone ? "error" : null} onChange={formik.handleChange}
-                onBlur={formik.handleBlur} value={formik.values.phone}
-                id="phone" className='w-96 my-5' label="Phone" variant="outlined" />
-            </div>
-            <div className='max-w-5xl  my-5 mx-auto'>
-              {formik.errors.address
-                ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.address}</div>
-                )
-                : null}
-              <TextField error={formik.errors.address ? "error" : null} onChange={formik.handleChange}
-                onBlur={formik.handleBlur} value={formik.values.address}
-                id="address" className='w-96 my-5' label="Address" variant="outlined" />
-            </div>
-            <div className='max-w-5xl my-5 mx-auto'>
-              {formik.errors.gender
-                ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.gender}</div>
-                )
-                : null}
-              <Box sx={{ minWidth: 120 }}>
-                <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">Gender</InputLabel>
-                  <Select
-
-                    labelId="demo-simple-select-label"
-                    id="gender"
-                    defaultValue={formik.values.gender}
-                    label="Gender"
-                    onChange={e => formik.setFieldValue("gender", e.target.value)}
-                  >
-                    <MenuItem value={true}>Male</MenuItem>
-                    <MenuItem value={false}>Female</MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
-            </div>
-            <div className='max-w-5xl my-5 mx-auto'>
-              {formik.errors.roleId
-                ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.roleId}</div>
-                )
-                : null}
-              <Box sx={{ minWidth: 120 }}>
-                <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">Role</InputLabel>
-                  <Select
-
-                    labelId="demo-simple-select-label"
-                    id="roleId"
-                    defaultValue={formik.values.roleId}
-                    label="Role"
-                    onChange={e => formik.setFieldValue("roleId", e.target.value)}
-                  >
-                    {dataRole.map((cate, index) => {
-                      return (
-
-                        <MenuItem key={index} value={cate.id}>{cate.name}</MenuItem>
-                      )
-                    })}
-                  </Select>
-                </FormControl>
-              </Box>
-            </div>
-            {CinemaComponent}
-            <div className='max-w-5xl my-5 mx-auto'>
-              {formik.errors.date ? (
-                <div className="text-red-600 mb-2 font-bold">{formik.errors.date}</div>
-
-              ) : null}
-
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DesktopDatePicker
-
-                  className='w-96 my-5'
-                  label="End Date"
-                  inputFormat="MM/DD/YYYY"
-                  id="date"
-                  value={formik.values.date}
-                  onChange={value => formik.setFieldValue("date", value)}
-                  onBlur={formik.handleBlur}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </LocalizationProvider>
-            </div>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleUpdateOrCreate}>
-
-              Save
-            </Button>
-          </DialogActions>
+            </DialogActions>
+          </form>
         </BootstrapDialog>
 
         <TableContainer sx={{}}>
@@ -856,6 +858,6 @@ export default function Content() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
-    </section>
+    </section >
   );
 }

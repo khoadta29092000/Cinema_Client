@@ -1,10 +1,10 @@
 import DefaultNavbar from 'components/DefaultNavbar';
 import DefaultFooter from 'components/DefaultFooter';
 import Header from 'components/Profile/Header';
-import Content from 'components/Profile/Content';
+import Content from 'components/ChangePassword/Content';
 import DefaultNavbarProfile from 'components/DefaultNavbarProfile';
 
-export default function Profile() {
+export default function ChangePassword() {
     return (
         <>
               <div className="absolute w-full z-20">

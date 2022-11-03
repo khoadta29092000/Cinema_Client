@@ -12,6 +12,8 @@ import Image from '@material-tailwind/react/Image';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import HttpsIcon from '@mui/icons-material/Https';
 import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
+import PasswordIcon from '@mui/icons-material/Password';
+import HistoryIcon from '@mui/icons-material/History';
 export default function DefaultNavbarProfile() {
     const [profileList, setProfileList] = useState([]);
 
@@ -65,29 +67,40 @@ export default function DefaultNavbarProfile() {
 
                 <ul className="space-y-8">
                     <div className="w-40 h-52 mx-auto">
-                     
-                          
-                                <img
-                                    src={profileList.avatar}
-                                />
-                            
+
+
+                        <img
+                            src={profileList.avatar}
+                        />
+
 
 
                     </div>
 
                     <li>
                         <NavLink activeStyle={{ backgroundColor: 'rgb(243 244 246)', color: 'black' }} to="/profiledashboard" className="flex hover:text-black items-center p-2 text-base font-normal  rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <DashboardIcon className="w-6 h-6 text-black transition -mt-2 duration-75 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" />
+                            <DashboardIcon className="w-12 h-12 text-black transition -mt-2 duration-75 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white" fill="currentColor" viewBox="0 0 22 22" />
                             <span className="ml-3 text-black ">Dashboard</span>
                         </NavLink>
                     </li>
                     <li>
-                        <NavLink activeStyle={{ backgroundColor: 'rgb(243 244 246)', color: 'black' }} to="/profile" className="flex items-center hover:text-black p-2 text-base font-normal  rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <AccountBoxIcon className="w-6 h-6 text-black transition -mt-2 duration-75 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" />
+                        <NavLink activeStyle={{ backgroundColor: 'rgb(243 244 246)', color: 'black' }} to="/profiledashboard/profile" className="flex items-center hover:text-black p-2 text-base font-normal  rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <AccountBoxIcon className="w-12 h-12 text-black transition -mt-2 duration-75 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white" fill="currentColor" viewBox="0 0 22 22" />
                             <span className="flex-1 ml-3 text-black  whitespace-nowrap">Profile</span>
                         </NavLink>
                     </li>
-
+                    <li>
+                        <NavLink activeStyle={{ backgroundColor: 'rgb(243 244 246)', color: 'black' }} to="/profiledashboard/ChangePassword" className="flex items-center hover:text-black p-2 text-base font-normal  rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <PasswordIcon className="w-12 h-12 text-black transition -mt-2 duration-75 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white" fill="currentColor" viewBox="0 0 25 20" />
+                            <span className="flex-1 ml-3 text-black  whitespace-nowrap">Change Password</span>
+                        </NavLink>
+                    </li>
+                    <li>
+                        <NavLink activeStyle={{ backgroundColor: 'rgb(243 244 246)', color: 'black' }} to="/profiledashboard/History" className="flex items-center hover:text-black p-2 text-base font-normal  rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <HistoryIcon className="w-12 h-12 text-black transition -mt-2 duration-75 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white" fill="currentColor" viewBox="0 0 22 22" />
+                            <span className="flex-1 ml-3 text-black  whitespace-nowrap">History</span>
+                        </NavLink>
+                    </li>
 
 
                 </ul>

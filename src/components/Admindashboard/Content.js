@@ -14,7 +14,25 @@ import AllInboxIcon from '@mui/icons-material/AllInbox';
 import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import GroupIcon from '@mui/icons-material/Group';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import MovieIcon from '@mui/icons-material/Movie';
+import FastfoodIcon from '@mui/icons-material/Fastfood';
+import CameraIndoorIcon from '@mui/icons-material/CameraIndoor';
+import DiscountIcon from '@mui/icons-material/Discount';
+import * as React from 'react';
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
 
+    if (month.length < 2)
+        month = '0' + month;
+    if (day.length < 2)
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+}
 
 export default function Content() {
     const [dataDeliveryTrip, setDataDeliveryTrip] = useState([]);
@@ -64,11 +82,13 @@ export default function Content() {
     var InDay = today.getFullYear() + '-' +
         ((today.getMonth() + 1).length < 2 ? (today.getMonth() + 1) : '0' + (today.getMonth() + 1))
         + '-' + (today.getDate().length < 2 ? '0' + today.getDate() : today.getDate());
+    const [value, setValue] = React.useState(today);
+    const [startValue, setStartValue] = React.useState(today);
     async function featchCategoryList() {
         try {
 
 
-            const requestURL = "";
+            const requestURL = "http://cinemasystem.somee.com/api/Film";
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -118,7 +138,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = ``;
+            const requestURL = `http://cinemasystem.somee.com/api/Account`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -141,7 +161,7 @@ export default function Content() {
     }
     async function featchStationList() {
         try {
-            const requestURL = ``;
+            const requestURL = `http://cinemasystem.somee.com/api/Coupon`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -189,7 +209,7 @@ export default function Content() {
 
     async function featchOrderList() {
         try {
-            const requestURL = ``;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Scheduling?Startdate=${formatDate(startValue)}&EndDate=${formatDate(value)}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -213,7 +233,7 @@ export default function Content() {
 
     async function featchPackageOrderList() {
         try {
-            const requestURL = ``;
+            const requestURL = `http://cinemasystem.somee.com/api/Bill`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -237,7 +257,7 @@ export default function Content() {
 
     async function featchPackageList() {
         try {
-            const requestURL = ``;
+            const requestURL = `http://cinemasystem.somee.com/api/Cinema`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -282,16 +302,11 @@ export default function Content() {
             console.log('Fail to fetch product list: ', error)
         }
     }
-    const filterListCus = dataAcc.filter(data => {
-        if (data?.isAdmin == false) {
-            return data
-        }
-    })
 
 
     async function featchProductList() {
         try {
-            const requestURL = ``;
+            const requestURL = `http://cinemasystem.somee.com/api/Service`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -312,18 +327,23 @@ export default function Content() {
             console.log('Fail to fetch product list: ', error)
         }
     }
-    useEffect(() => {
-        //featchProductList();
 
-    }, []);
-    async function featchProductList() {
-        try {
-            setDataProduct(data);
+    const filterListCus = dataAcc.filter(data => {
+        if (data?.roleId == 2) {
             return data
-        } catch (error) {
-            console.log('Fail to fetch product list: ', error)
         }
-    }
+    })
+    const filterListAd = dataAcc.filter(data => {
+        if (data?.roleId == 1) {
+            return data
+        }
+    })
+    const filterListEmployee = dataAcc.filter(data => {
+        if (data?.roleId == 3) {
+            return data
+        }
+    })
+
     return (
         <section className=" ml-0 xl:ml-64 mb-0 pt-10  ">
             <div className="mt-16 ml-8 ">
@@ -331,16 +351,16 @@ export default function Content() {
 
                 <div className='grid mr-5 grid-cols-1  sm:grid-cols-2  gap-4'>
                     <Card className="" >
-                        <Link to="/OrderInDay">
+                        <Link to="/Scheduling">
                             <button className="text-white bg-blue-600 rounded-lg mt-5 ml-5  h-12 w-12">
-                                <CalendarMonthIcon />
+                                <AccessTimeIcon />
                             </button>
                         </Link>
 
 
                         <CardContent className="mt-0">
                             <Typography gutterBottom variant="h8" className='font-bold text-sm' component="div">
-                                Ticked In Day
+                                Scheduling In Day
                             </Typography>
                             <Typography gutterBottom variant="h16" className=' font-semibold text-xl' component="div">
                                 {dataOrder.length}
@@ -348,7 +368,7 @@ export default function Content() {
                         </CardContent>
                     </Card>
                     <Card className="" >
-                        <Link to="/PackageOrderManagement">
+                        <Link to="/Bill">
                             <button className="text-white bg-blue-600 rounded-lg mt-5 ml-5  h-12 w-12">
                                 <CalendarMonthIcon />
                             </button>
@@ -374,9 +394,9 @@ export default function Content() {
                 <div className='grid mr-5 grid-cols-1 lg:grid-cols-3 sm:grid-cols-2 2xl:grid-cols-4 gap-4'>
 
                     <Card className="" >
-                        <Link to="/CategoriesManagement">
+                        <Link to="/FilmsManagement">
                             <button className="text-white bg-blue-600 rounded-lg mt-5 ml-5  h-12 w-12">
-                                <CategoryIcon />
+                                <MovieIcon />
                             </button>
                         </Link>
 
@@ -390,10 +410,10 @@ export default function Content() {
                         </CardContent>
                     </Card>
                     <Card className="" >
-                        <Link to="/ProductsManagement">
+                        <Link to="/ServicesManagement">
 
                             <button className="text-white bg-blue-600 rounded-lg mt-5 ml-5  h-12 w-12">
-                                <ShoppingCartIcon />
+                                <FastfoodIcon />
                             </button>
                         </Link>
 
@@ -407,9 +427,9 @@ export default function Content() {
                         </CardContent>
                     </Card>
                     <Card className="" >
-                        <Link to="/PackageManagement">
+                        <Link to="/CinemaManagement">
                             <button className="text-white bg-blue-600 rounded-lg mt-5 ml-5  h-12 w-12">
-                                <AllInboxIcon />
+                                <CameraIndoorIcon />
                             </button>
                         </Link>
 
@@ -423,9 +443,9 @@ export default function Content() {
                         </CardContent>
                     </Card>
                     <Card className="" >
-                        <Link to="/AreasManagement">
+                        <Link to="/CouponManagement">
                             <button className="text-white bg-blue-600 rounded-lg mt-5 ml-5  h-12 w-12">
-                                <LocationOnIcon />
+                                <DiscountIcon />
                             </button>
                         </Link>
 
@@ -474,7 +494,7 @@ export default function Content() {
                                 Empoylee
                             </Typography>
                             <Typography gutterBottom variant="h16" className=' font-semibold text-xl' component="div">
-                                {dataDeliveryMan.length}
+                                {filterListEmployee.length}
                             </Typography>
                         </CardContent>
 
@@ -492,7 +512,7 @@ export default function Content() {
                                 Admin
                             </Typography>
                             <Typography gutterBottom variant="h16" className=' font-semibold text-xl' component="div">
-                                {dataDeliveryMan.length}
+                                {filterListAd.length}
                             </Typography>
                         </CardContent>
 

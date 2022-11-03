@@ -43,6 +43,9 @@ import FilmComingSoon from 'pages/FilmComingSoon';
 import FilmNowShowing from 'pages/FilmNowShowing';
 import Service from 'pages/Service';
 import SchedulingDetails from 'pages/SchedulingDetails';
+import ChangePassword from 'pages/ChangePassword';
+import History from 'pages/History';
+import Succesfully from 'pages/Succesfully';
 
 
 
@@ -58,9 +61,12 @@ function App() {
             <Route exact path="/AboutUs" component={Aboutus} />
             <Route exact path="/Room" component={Room} />
             <Route exact path="/CheckOut" component={CheckOut} />
+            <Route exact path="/Succesfully" component={Succesfully} />
             <Route exact path="/detail" component={detail} />
             <Route exact path="/ServiceAreas" component={ServiceAreas} />
-            <Route exact path="/profile" component={Profile} />
+            <Route exact path="/ProfileDashboard/profile" component={Profile} />
+            <Route exact path="/ProfileDashboard/ChangePassword" component={ChangePassword} />
+            <Route exact path="/ProfileDashboard/History" component={History} />
             <Route exact path="/ProfileDashboard" component={ProfileDashboard} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/register" component={Register} />

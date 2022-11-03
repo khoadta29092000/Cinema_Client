@@ -18,6 +18,11 @@ import { useLocation } from 'react-router-dom';
 import style from './Checkout.module.css'
 import { Dataset } from '@mui/icons-material';
 import { data } from 'autoprefixer';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 const columns = [
   { id: 'Image', label: "Combo", minWidth: 300 },
   {
@@ -53,7 +58,7 @@ export default function Content() {
   const [filtered, setFiltered] = useState(location.state.ServiceArray);
   const [ArraySeat, SetArraySeat] = useState([]);
   const [count, setCount] = useState(0);
-
+  const [alert, setAlert] = useState(false);
   const IncNum = () => {
     setCount(count + 1);
   };
@@ -95,6 +100,13 @@ export default function Content() {
 
     return { Image, Quantity, Price, Total };
   }
+  const handleCloseAlert = (event, reason) => {
+    if (reason === "clickaway") {
+        return;
+    }
+
+    setAlert(false);
+};
   useEffect(() => {
     setTotal(location.state.total)
     featchCategoryList();
@@ -102,7 +114,7 @@ export default function Content() {
     featchRoomList();
     featchSeatList();
     featchTickedList();
-  
+
     const arratTMP = [...SeatList];
     let index;
     dataTicked.map(item => {
@@ -113,11 +125,11 @@ export default function Content() {
       }
     }
     )
-    console.log(' 12 list: ', dataTicked,SeatList)
+    console.log(' 12 list: ', dataTicked, SeatList)
   }, [count]);
   useEffect(() => {
-  
-  
+
+
     const arratTMP = [...SeatList];
     let index;
     dataTicked.map(item => {
@@ -128,15 +140,15 @@ export default function Content() {
       }
     }
     )
-    console.log(' 12 list: ', dataTicked,SeatList)
+    console.log(' 12 list: ', dataTicked, SeatList)
   },);
- 
+
   console.log(2)
   window.onload = function () {
-   
+
     setCount(1)
   }
- 
+
   const rows1 = dataCate.map((data, index) => {
     return (createData(data))
   })
@@ -184,7 +196,7 @@ export default function Content() {
 
       setDataSeat(responseJSON.data)
 
-      
+
 
 
 
@@ -258,9 +270,9 @@ export default function Content() {
       const data = responseJSON;
 
       setDataTicked(responseJSON.data)
-     
-      
-    
+
+
+
 
     } catch (error) {
       console.log('Fail to fetch 12 list: ', error)
@@ -282,7 +294,7 @@ export default function Content() {
     arratTMP[index].Status = arratTMP[index].Status == "Empty" ? "Choose" : arratTMP[index].Status == "Choose" ? "Empty" : "Checked"
     console.log("ner", arratTMP, index)
     setSeatList(arratTMP)
- 
+
   }
 
 
@@ -301,12 +313,20 @@ export default function Content() {
   const ids = ArraySeat.map(o => o.id)
   const filteredSeat = ArraySeat.filter(({ id }, index) => !ids.includes(id, index + 1))
 
+  const checkSeat = SeatList.filter(item => {
+    return item.Status === "Choose"
+  })
 
-  console.log("ner2", ArraySeat, filteredSeat, SeatList, dataTicked)
+  console.log("ner2", ArraySeat, filteredSeat, SeatList, dataTicked, checkSeat.length)
 
 
   return (
     <section className="relative pt-32 py-16 h-screen w-full ">
+      <Snackbar open={alert} autoHideDuration={4000} onClose={handleCloseAlert} className="">
+        <Alert onClose={handleCloseAlert} severity="error" >
+          You not choose Seat
+        </Alert>
+      </Snackbar>
       <div className="max-w-7xl mx-auto p-10 text-center items-center " >
         <div className='h-500 grid  grid-cols-3 gap-4'>
           <div className='col-span-2'>
@@ -493,11 +513,11 @@ export default function Content() {
             </div>
           </div>
           <div className='col-span-1 text-left  bg-gray-200'>
-            <img src={location.state.name.film.image} className="w-full h-64 object-cover p-5" />
-            <h2 className='font-medium ml-2 mb-2'>{location.state.name.film.title}</h2>
+            <img src={location.state.name.image} className="w-full h-64 object-cover p-5" />
+            <h2 className='font-medium ml-2 mb-2'>{location.state.name.title}</h2>
             <div>
-              <button className='text-white ml-2 mr-2 w-8 h-8 bg-blue-600'>C{location.state.name.film.rated}</button>
-              Phim giành cho đổ tuổi từ {location.state.name.film.rated} trở lên
+              <button className='text-white ml-2 mr-2 w-8 h-8 bg-blue-600'>C{location.state.name.rated}</button>
+              Phim giành cho đổ tuổi từ {location.state.name.rated} trở lên
             </div>
             <div className='font-medium border-b-2 ml-2 mr-4 border-gray-300 px-2 my-2 flex'> Rạp:  <p className=' ml-2 font-normal'> {dataCinema.map(item => {
               if (item.id == location.state.scheduling.cinemaId)
@@ -517,27 +537,34 @@ export default function Content() {
             <div className='font-medium border-b-2 ml-2 mr-4 border-gray-300 px-2  my-2 flex'> Chọn ghế: {SeatList.map(item => { if (item.Status == "Choose") { return (item.title) + " " } })} </div>
             <div className='font-medium text-2xl  ml-2 mr-4  px-2  my-2 flex'> Total: <p className='ml-2 text-blue-600'>{Total.toFixed(3).replace(/\d(?=(\d{3})+\.)/g, "$&.") + "đ"}  </p> </div>
             <div className=' mb-10 pb-10 float-right'>
-              <NavLink to={{
-                pathname: "/CheckOut",
-                state: {
-                  name: location.state.name,
-                  scheduling: location.state.scheduling,
-                  total: Total,
-                  totalGhe: TotalGhe,
-                  Bap: location.state.Bap,
-                  BapPhoMai: location.state.BapPhoMai,
-                  CocaCola: location.state.CocaCola,
-                  NuocSuoi: location.state.NuocSuoi,
-                  TotalBap: location.state.TotalBap,
-                  TotalBapPhoMai: location.state.TotalBapPhoMai,
-                  TotalCocaCola: location.state.TotalCocaCola,
-                  TotalNuocSuoi: location.state.TotalNuocSuoi,
-                  ServiceArray: filtered,
-                  SeatList: SeatList,
-                }
-              }} className="" >
-                <button className='h-12 w-24 bg-blue-600 mt-10 mx-auto float-right  mr-10'>Continue</button>
-              </NavLink>
+              {checkSeat.length != 0 ?
+                <NavLink to={{
+                  pathname: "/CheckOut",
+                  state: {
+                    name: location.state.name,
+                    scheduling: location.state.scheduling,
+                    total: Total,
+                    totalGhe: TotalGhe,
+                    Bap: location.state.Bap,
+                    BapPhoMai: location.state.BapPhoMai,
+                    CocaCola: location.state.CocaCola,
+                    NuocSuoi: location.state.NuocSuoi,
+                    TotalBap: location.state.TotalBap,
+                    TotalBapPhoMai: location.state.TotalBapPhoMai,
+                    TotalCocaCola: location.state.TotalCocaCola,
+                    TotalNuocSuoi: location.state.TotalNuocSuoi,
+                    ServiceArray: filtered,
+                    SeatList: SeatList,
+                  }
+                }} className="" >
+                  <button className='h-12 w-24 bg-blue-600 mt-10 mx-auto float-right  mr-10'>Continue</button>
+                </NavLink>
+                :
+
+                <button onClick={() => setAlert(true)} className='h-12 w-24 bg-blue-600 mt-10 mx-auto float-right  mr-10'>Continue</button>
+
+              }
+
 
             </div>
             <div className='ml-10'>

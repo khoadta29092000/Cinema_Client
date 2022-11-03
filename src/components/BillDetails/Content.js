@@ -277,7 +277,7 @@ export default function Content() {
     }
     async function featchDataServiceInBillList() {
         try {
-            const requestURL = `http://cinemasystem.somee.com/api/ServiceInBill?BillId=${state?.name}`;
+            const requestURL = `http://cinemasystem.somee.com/api/ServiceInBill/ServiceInBill`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -374,8 +374,8 @@ export default function Content() {
                 <div className="col-span-1 grid sm:grid-rows-2   gap-5 ">
 
                     <Card className=" font-semibold py-4  pl-5" >
-                        <Typography gutterBottom variant="h4" component="div">
-                            Bill Detail:
+                        <Typography gutterBottom variant="h4" component="div" className="text-center">
+                            Bill Detail
                         </Typography>
                         <div>Bill Id: <i className='font-normal'>{dataBill.id}</i></div>
                         <div>Employee: {dataAcc.map(pack => {
@@ -383,6 +383,7 @@ export default function Content() {
                                 return <i className='font-normal'>{pack.email}</i>
                             }
                         })}</div>
+                       
                         <div>Scheduling: {dataScheduling.map(pack => {
                             if (dataBill.schedulingId == pack.id) {
                                 return <i className='font-normal'>{pack.startTime} - {pack.endTime} </i>
@@ -423,12 +424,12 @@ export default function Content() {
                 </div>
                 <div className='h-screen   overflow-y-scroll'>
                     <Card className="  py-4  px-5" >
-                        <Typography gutterBottom variant="h4" component="div">
-                            Seat In Bill:
+                        <Typography gutterBottom variant="h4" component="div" className="text-center">
+                            Seat In Bill
                         </Typography>
                         {dataTicked.map((item, index) => {
                             return (
-                                <Card key={index} className=" cursor-pointer mb-5 text-white" sx={{ height: 150 }}        >
+                                <Card key={index} className=" cursor-pointer mb-5 text-white" sx={{ height: 112 }}        >
                                     <CardContent className='text-black ' >
                                         <Typography gutterBottom variant="h5" component="div">
                                             Seat: {dataSeat.map(item1 => {
@@ -450,16 +451,18 @@ export default function Content() {
                 <div className='h-screen   overflow-y-scroll'>
                     <Card className='py-4  px-5' >
 
-                        <Typography gutterBottom variant="h4" component="div">
-                            Service In Bill:
+                        <Typography gutterBottom variant="h4" component="div" className="text-center">
+                            Service In Bill
                         </Typography>
                         {dataServiceInBill.map((item, index) => {
-                            return (
+                           if(dataBill.id == item.billId)
+                           return (
+                                
                                 <div >
-                                    <Card key={item.id} className=" cursor-pointer mb-5 text-white" sx={{ height: 150 }} >
+                                    <Card key={item.id} className=" cursor-pointer mb-5 text-white" sx={{ height: 112 }} >
                                         <CardContent className='text-black ' >
                                             <Typography gutterBottom variant="h5" component="div">
-                                                Service: 
+                                                Service: {item.serviceName}
                                             </Typography>
                                             <Typography variant="body2" color="">
 

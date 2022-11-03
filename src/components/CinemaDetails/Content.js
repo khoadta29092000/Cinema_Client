@@ -178,6 +178,8 @@ export default function Content() {
     const [price, setPrice] = useState("");
     const [data, setData] = useState([]);
     const [dataFilm, setDataFilm] = useState([]);
+    const [dataFilmNotInCinema, setDataFilmNotInCinema] = useState([]);
+    const [dataServiceNotInCinema, setDataServiceNotInCinema] = useState([]);
     const [dataService, setDataServiceInCinema] = useState([]);
     const [search, setSearch] = useState("");
     const [status, setStatus] = useState("success");
@@ -208,8 +210,62 @@ export default function Content() {
             hanleCreateFilm(DataBody);
         },
     });
+    const formik1 = useFormik({
+        initialValues: {
+            serviceId: "",
+            quantity: '',
+
+        },
+        validationSchema: Yup.object().shape({
+            filmId: Yup.string().required('Required'),
+            quantity: Yup.number().typeError("Must be number!").max(100, "Quantity not > 100").required(),
+
+        }), onSubmit: values => {
+
+            let DataBody1
+            DataBody1 = {
+                serviceId: values.filmId,
+                cinemaId: state?.name,
+                quantity: values.quantity,
+
+
+            }
+            hanleCreateService(DataBody1);
+        },
+    });
     async function hanleCreateFilm(data) {
         const res = await fetch(`http://cinemasystem.somee.com/api/FilmInCinema`, {
+            method: `POST`,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify(data)
+        }).then(res => res.json())
+            .then(result => {
+
+                if (result) {
+                    if (result?.statusCode == 200) {
+                        setMess("Add Successfullly")
+                        setAlert(true)
+                        setStatus("success")
+                        handleClose();
+                        featchFilmInCinemaList();
+                        featchServiceInCinemaList();
+                    }
+
+                } else {
+                    alert("Add UnSuccessfullly")
+                }
+                return res
+
+            })
+            .catch((error) => {
+                throw ('Invalid Token')
+            })
+    }
+    async function hanleCreateService(data) {
+        const res = await fetch(`http://cinemasystem.somee.com/api/ServiceInCinema`, {
             method: `POST`,
             headers: {
                 'Content-Type': 'application/json',
@@ -311,6 +367,8 @@ export default function Content() {
         featchFilmInCinemaList();
         featchServiceInCinemaList();
         featchFilmList();
+        featchFilmNotInCinemaList();
+        featchServiceNotInCinemaList();
         setPage(0);
     }, [search]);
     const handleChangePage = (event, newPage) => {
@@ -352,6 +410,56 @@ export default function Content() {
             const data = responseJSON;
 
             setDataFilm(responseJSON.data)
+
+            console.log("aa fetch", responseJSON.data)
+
+        } catch (error) {
+            console.log('Fail to fetch product list: ', error)
+        }
+    }
+    async function featchFilmNotInCinemaList() {
+        try {
+
+
+            const requestURL = `http://cinemasystem.somee.com/api/FilmInCinema/AllFilmNotInCinema/${state?.name}`;
+
+            const response = await fetch(requestURL, {
+                method: `GET`,
+                headers: {
+                    'Content-Type': 'application/json',
+
+                },
+            });
+            const responseJSON = await response.json();
+
+            const data = responseJSON;
+
+            setDataFilmNotInCinema(responseJSON.data)
+
+            console.log("aa fetch", responseJSON.data)
+
+        } catch (error) {
+            console.log('Fail to fetch product list: ', error)
+        }
+    }
+    async function featchServiceNotInCinemaList() {
+        try {
+
+
+            const requestURL = `http://cinemasystem.somee.com/api/ServiceInCinema/AllServiceNotInCinema/${state?.name}`;
+
+            const response = await fetch(requestURL, {
+                method: `GET`,
+                headers: {
+                    'Content-Type': 'application/json',
+
+                },
+            });
+            const responseJSON = await response.json();
+
+            const data = responseJSON;
+
+            setDataServiceNotInCinema(responseJSON.data)
 
             console.log("aa fetch", responseJSON.data)
 
@@ -424,21 +532,24 @@ export default function Content() {
     };
     const FilmNoInCinema = dataFilm.filter(item => {
         data.map(item1 => {
-            if(item.id != item1.id){
+            if (item.id != item1.id) {
                 return item
             }
         })
     })
 
-    const RoomOptions = dataFilm.map((item, index) => ({
+    const RoomOptions = dataFilmNotInCinema.map((item, index) => ({
         id: item.id,
         label: item.title
     }))
-   
-    
-   
- 
-    console.log("ala" , dataFilm)
+
+    const Room1Options = dataServiceNotInCinema.map((item, index) => ({
+        id: item.id,
+        label: item.title
+    }))
+
+
+    console.log("ala", dataFilm)
     return (
         <section className=" ml-0 xl:ml-64  px-5 pt-10  ">
             <Box sx={{ width: '100%' }}>
@@ -446,7 +557,7 @@ export default function Content() {
                     <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                         <Tab onClick={() => setPage(0)} label="Film In Cinema" {...a11yProps(0)} />
                         <Tab onClick={() => setPage(0)} label="Service In Cinema" {...a11yProps(1)} />
-                        <Tab onClick={() => setPage(0)} label="Seat In Cinema" {...a11yProps(2)} />
+
                     </Tabs>
                 </Box>
                 <TabPanel value={value} index={0}>
@@ -471,7 +582,7 @@ export default function Content() {
                                 open={open}
                                 className="max-h-full"
                             >
-                                <form >
+                                <form onSubmit={formik.handleSubmit}>
                                     <BootstrapDialogTitle id="" onClose={handleClose}>
                                         Film
                                     </BootstrapDialogTitle>
@@ -487,9 +598,9 @@ export default function Content() {
                                                 onBlur={formik.handleBlur} value={formik.values.idFilm}
                                                 id="idFilm"
                                                 options={RoomOptions}
-                                                
+
                                                 renderInput={(params) => <TextField {...params} label="Film" />}
-                                              
+
                                             />
 
 
@@ -617,13 +728,38 @@ export default function Content() {
                                 open={open}
                                 className="max-h-full"
                             >
-                                <form >
+                                <form onSubmit={formik1.handleSubmit}>
                                     <BootstrapDialogTitle id="" onClose={handleClose}>
                                         Service Detail
                                     </BootstrapDialogTitle>
                                     <DialogContent dividers >
+                                        <div className='max-w-5xl my-5 mx-auto'>
+                                            {formik1.errors.serviceId
+                                                ? (<Box><div className="text-red-600 mb-2 font-bold">{formik1.errors.serviceId}</div>
+                                                </Box>)
+                                                : null}
+                                            <Autocomplete
+                                                disableClearable
+                                                onChange={formik1.handleChange}
+                                                onBlur={formik1.handleBlur} value={formik1.values.serviceId}
+                                                id="serviceId"
+                                                options={Room1Options}
+
+                                                renderInput={(params) => <TextField {...params} label="Service" />}
+
+                                            />
 
 
+                                        </div>
+                                        <div className='max-w-5xl  my-5 mx-auto'>
+                                            {formik1.errors.quantity
+                                                ? (<div className="text-red-600 mb-2 font-bold">{formik1.errors.quantity}</div>
+                                                )
+                                                : null}
+                                            <TextField error={formik1.errors.quantity ? "error" : null} onChange={formik1.handleChange}
+                                                onBlur={formik1.handleBlur} value={formik1.values.quantity}
+                                                id="quantity" className='w-96 my-5' label="Quantity" variant="outlined" />
+                                        </div>
                                     </DialogContent>
                                     <DialogActions>
                                         <Button type='submit'>
@@ -684,9 +820,7 @@ export default function Content() {
                         </Paper>
                     </section>
                 </TabPanel>
-                <TabPanel value={value} index={2}>
-                    Item Three
-                </TabPanel>
+               
             </Box>
         </section>
     );
