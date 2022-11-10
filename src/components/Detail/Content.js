@@ -8,15 +8,33 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { NavLink } from 'react-router-dom';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
+import ReactPlayer from 'react-player/youtube'
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 700,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
+
+
 function formatTime(date) {
     var hours = date.getHours();
     var minutes = date.getMinutes();
-  
+
     hours = hours < 10 ? '0' + hours : hours;
     minutes = minutes < 10 ? '0' + minutes : minutes;
     var strTime = hours + ':' + minutes + ':' + "00";
     return strTime;
-  }
+}
 function formatDate(date) {
     var d = new Date(date),
         month = '' + (d.getMonth() + 1),
@@ -31,6 +49,7 @@ function formatDate(date) {
     return [year, month, day].join('-');
 }
 export default function Content() {
+    window.scrollTo(0, 0);
     const [dataFilmInCinema, setDataFilmInCinema] = useState("");
     let location = useLocation();
     const [dataAcc, setDataAcc] = useState([]);
@@ -40,7 +59,7 @@ export default function Content() {
         featchFilmDetails();
         featchAccList();
         featchSchedulingList();
-    }, []);
+    }, [Account]);
     console.log("11", location.state, dataFilmInCinema)
     async function featchAccList() {
         try {
@@ -126,17 +145,32 @@ export default function Content() {
     AccOptions.unshift({ id: 0, label: "All" })
     const handleChange = (newValue) => {
         setValue(newValue);
-        
-    };
 
+    };
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
     return (
         <section className="pb-28  mb-28">
+            <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style}>
+                    <Typography id="modal-modal-title" variant="h6" component="h2">
+                        <ReactPlayer url={dataFilmInCinema.trailer} />
+                    </Typography>
+
+                </Box>
+            </Modal>
             <div className="container max-w-7xl mx-auto px-4">
 
 
                 <div className='grid grid-cols-5 '>
-                    <div className='p-5 mx-auto'>
-                        <img className='  h-80 ' src={dataFilmInCinema.image} />
+                    <div onClick={handleOpen} className=' hover:transition-all cursor-auto  hover:scale-110 p-5 mx-auto'>
+                        <img className='  h-80  cursor-pointer object-cover hover:opacity-75 w-full aspect-square group-hover:scale-110 transition duration-300 ease-in-out' src={dataFilmInCinema.image} />
                     </div>
                     <div className='p-5 col-span-2'>
                         <h2 className='font-normal text-3xl '>{dataFilmInCinema.title}</h2>
@@ -172,16 +206,7 @@ export default function Content() {
                 <h2 className='text-3xl '>Scheduling</h2>
                 <hr className='border-2 mb-10 border-blue-500 rounded-xl w-16 my-1' />
                 <div className='float-left w-full  gap-5 mt-2 mb-5   lg:flex '>
-                    <div className='col-span-1 outline-none hover:outline-none'>
-                        <Autocomplete
-                            disableClearable
-                            id="combo-box-demo"
-                            options={AccOptions}
-                            sx={{ width: 200 }}
-                            renderInput={(params) => <TextField {...params} label="Cinema" />}
-                            onChange={(event, value) => setAcccount(value)}
-                        />
-                    </div>
+
                     <div className='col-span-1 outline-none hover:outline-none'>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DesktopDatePicker
@@ -212,7 +237,7 @@ export default function Content() {
 
                                     {dataScheduling.map(itemScheduling => {
 
-                                        if ( itemScheduling.date.slice(0,10) == formatDate(value) == true &&  itemScheduling.cinemaId == item.id && itemScheduling.filmId == dataFilmInCinema.id && formatTime(today) <= itemScheduling.startTime == true) {
+                                        if (itemScheduling.date.slice(0, 10) == formatDate(value) == true && itemScheduling.cinemaId == item.id && itemScheduling.filmId == dataFilmInCinema.id && formatTime(today) <= itemScheduling.startTime == true) {
                                             return (
                                                 <NavLink to={{
                                                     pathname: "/Service",

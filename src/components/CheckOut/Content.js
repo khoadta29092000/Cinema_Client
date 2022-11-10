@@ -61,6 +61,8 @@ export default function Content() {
     const [fullname, setFullname] = useState("");
     const [phone, setPhone] = useState("");
     const [Total, setTotal] = useState(0);
+    const [Rap, setRap] = useState("");
+    const [Cinema, setCinema] = useState(0);
     const [BapPhoMai, setBapPhoMai] = useState(0);
     const [Bap, setBap] = useState(0);
     const [CocaCola, setCocaCola] = useState(0);
@@ -77,7 +79,24 @@ export default function Content() {
     const [ServiceArray, setServiceArray] = useState([]);
     const ids = ServiceArray.map(o => o.id)
     const filtered = ServiceArray.filter(({ id }, index) => !ids.includes(id, index + 1))
+    if (localStorage.getItem(`token`) == undefined) {
+        history.push("/login")
 
+    } else {
+        function parseJwt(token) {
+            if (!token) { return; }
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace('-', '+').replace('_', '/');
+            return JSON.parse(window.atob(base64));
+        }
+        let id2 = parseJwt(localStorage.getItem('token'))
+        let prop = 'Id'
+        let proprole = 'role'
+        console.log(id2, id2[proprole], proprole)
+        if (id2[proprole] != 3) {
+            history.push("/")
+        }
+    }
     let PaymentList = [{ id: 1, name: "MoMo" }, { id: 2, name: "Thanh toán trực tiếp" }]
     const [payment, setPayment] = React.useState(1);
 
@@ -86,7 +105,7 @@ export default function Content() {
     const newSeatList = location.state.SeatList.filter(item => {
         return item.Status == "Choose"
     }
-        )
+    )
     let serviceInBillObject;
     let tickedObject;
     if (location.state.ServiceArray) {
@@ -132,10 +151,7 @@ export default function Content() {
 
     async function featchProfile() {
         try {
-
-
             const requestURL = `http://www.cinemasystem.somee.com/api/Account/${id2[prop]}`;
-
             const response = await fetch(requestURL, {
                 method: `GET`,
                 headers: {
@@ -228,6 +244,7 @@ export default function Content() {
             console.log('Fail to fetch product list: ', error)
         }
     }
+
     async function hanleClickPayment() {
 
 
@@ -243,7 +260,72 @@ export default function Content() {
 
                 if (result) {
                     if (result?.statusCode == 200) {
-                        history.push("/Successfully")
+
+
+                        history.push("/Succesfully")
+
+                    }
+                    if (result?.statusCode == 409) {
+                        setError(result?.message)
+
+                    }
+
+                } else {
+                    alert("Update UnSuccessfullly")
+                }
+                return res
+
+            })
+            .catch((error) => {
+                throw ('Invalid Token')
+            })
+
+
+    }
+
+
+    async function handleSendMail() {
+        const filterCinema = dataCinema.filter(item => {
+            if (item.id == location.state.scheduling.cinemaId)
+                return (item.name);
+        });
+        const filterRoom = dataRoom.filter(item => {
+            if (item.id == location.state.scheduling.roomId)
+                return (item.title)
+        });
+        const filterTicked = SeatList.filter(item => { if (item.Status == "Choose") { return (item.title) } });
+        const filterTickedTitle = filterTicked.map(x => x.title).toString();
+        const filterServiceTitle = filtered.map(item => (item.title) + "("+ (item.id == 1 ? BapPhoMai : item.id == 2 ? Bap : item.id == 3 ? CocaCola : NuocSuoi)+")").toString();
+        const bodySendMail = {
+            to: email,
+            subject: "Order Ticked Successfully",
+            film: location.state.name.title,
+            time: location.state.name.time,
+            cinema: filterCinema[0].name,
+            room: filterRoom[0].title,
+            date: location.state.scheduling.date == undefined ? "" : location.state.scheduling.date.slice(8, 10) + "/" + location.state.scheduling.date.slice(5, 7) + "/" + location.state.scheduling.date.slice(0, 4),
+            startTime: location.state.scheduling.startTime == undefined ? "" : location.state.scheduling.startTime.slice(0, 5),
+            image: location.state.name.image,
+            service: filterServiceTitle,
+            ticked: filterTickedTitle,
+            Total : Total.toFixed(3).replace(/\d(?=(\d{3})+\.)/g, "$&.") + "đ"
+        }
+        console.log("location11",bodySendMail)
+        const res = await fetch(`https://localhost:5002/api/Bill/SendMail`, {
+            method: `POST`,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify(bodySendMail)
+        }).then(res => res.json())
+            .then(result => {
+
+                if (result) {
+                    if (result?.statusCode == 200) {
+
+
+                        history.push("/Succesfully")
 
                     }
                     if (result?.statusCode == 409) {
@@ -267,7 +349,7 @@ export default function Content() {
     const handleChange = (event) => {
         setPayment(event.target.value);
     };
-    console.log("location", filtered, ServiceArray)
+    console.log("location11", filtered, ServiceArray, Rap, Cinema)
     return (
         <section className="relative pt-32 mb-32 h-screen py-16 w-full ">
             <div className="max-w-7xl mx-auto p-10 text-center items-center " >
@@ -321,7 +403,7 @@ export default function Content() {
                         </div>
                         <div className='font-medium border-b-2 ml-2 mr-4 border-gray-200 px-2 my-2 flex'> Rạp:  <p className=' ml-2 font-normal'> {dataCinema.map(item => {
                             if (item.id == location.state.scheduling.cinemaId)
-                                return (item.name)
+                                return (item.name);
                         })} | {dataRoom.map(item => {
                             if (item.id == location.state.scheduling.roomId)
                                 return (item.title)
@@ -339,7 +421,7 @@ export default function Content() {
                         <div className='w-full float-right'>
                             <div className='  float-right'>
 
-                                <button onClick={() => hanleClickPayment()} className='h-12 w-24 bg-blue-600 mt-10 mx-auto float-right  mr-10'>Payment</button>
+                                <button onClick={() => hanleClickPayment()} className='h-12 text-white w-24 bg-blue-600 mt-10 mx-auto float-right  mr-10'>Payment</button>
 
                             </div>
                             <div className='ml-10'>
@@ -359,10 +441,10 @@ export default function Content() {
                                         TotalCocaCola: location.state.TotalCocaCola,
                                         TotalNuocSuoi: location.state.TotalNuocSuoi,
                                         ServiceArray: location.state.ServiceArray,
-                                       
+
                                     }
                                 }} className="" >
-                                    <button className='h-12 w-24 bg-blue-600 mt-10 mx-auto float-left  ml-10'>Back</button>
+                                    <button className='h-12 w-24 bg-blue-600 mt-10 mx-auto float-left text-white  ml-10'>Back</button>
                                 </NavLink>
 
                             </div>

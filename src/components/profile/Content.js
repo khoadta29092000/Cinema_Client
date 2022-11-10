@@ -38,12 +38,12 @@ export default function Content() {
             active: true,
         },
         validationSchema: Yup.object().shape({
-            email: Yup.string().email().required(),
-            fullName: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required(),
-            address: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required(),
-            phone: Yup.string().matches(phoneRegExp, 'Phone number is not valid').required(),
+            email: Yup.string().email().required("not required"),
+            fullName: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required("not required"),
+            address: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required("not required"),
+            phone: Yup.string().matches(phoneRegExp, 'Phone number is not valid').required("not required"),
             date: Yup.date().max("2010/1/1", "Birth Date <= 2010"),
-            gender: Yup.string().required(),
+            gender: Yup.string().required("not required"),
         }), onSubmit: values => {
 
             let DataBody

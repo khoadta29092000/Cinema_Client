@@ -46,6 +46,7 @@ import SchedulingDetails from 'pages/SchedulingDetails';
 import ChangePassword from 'pages/ChangePassword';
 import History from 'pages/History';
 import Succesfully from 'pages/Succesfully';
+import EmployeeDashboard from 'pages/EmployeeDashboard';
 
 
 
@@ -73,6 +74,7 @@ function App() {
             <Route exact path="/ContractUs" component={ContractUs} />
             <Route exact path="/FAQs" component={FAQs} />
             <Route exact path="/Admindashboard" component={AdminDashboard} />
+            <Route exact path="/Employeedashboard" component={EmployeeDashboard} />
             <Route exact path="/AccountsManagement" component={UsersManagement} />
             <Route exact path="/TypeManagement" component={TypeManagement} />
             <Route exact path="/SeatsManagement" component={SeatsManagement} />

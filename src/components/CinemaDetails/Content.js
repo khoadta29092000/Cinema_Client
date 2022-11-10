@@ -217,18 +217,16 @@ export default function Content() {
 
         },
         validationSchema: Yup.object().shape({
-            filmId: Yup.string().required('Required'),
+            serviceId: Yup.string().required('Required'),
             quantity: Yup.number().typeError("Must be number!").max(100, "Quantity not > 100").required(),
 
         }), onSubmit: values => {
 
             let DataBody1
             DataBody1 = {
-                serviceId: values.filmId,
+                serviceId: values.serviceId,
                 cinemaId: state?.name,
                 quantity: values.quantity,
-
-
             }
             hanleCreateService(DataBody1);
         },
@@ -315,7 +313,7 @@ export default function Content() {
 
         let Title = data.title;
         let Id = data.id;
-        let Quantity = data.quantity;
+        let Quantity = data.quantityInCinema;
         let Price = data.price.toFixed(3).replace(/\d(?=(\d{3})+\.)/g, "$&.") + "đ";
 
         let Action = (
@@ -594,7 +592,7 @@ export default function Content() {
                                                 : null}
                                             <Autocomplete
                                                 disableClearable
-                                                onChange={formik.handleChange}
+                                                onChange={(event, value) => formik.setFieldValue("filmId", value.id)}
                                                 onBlur={formik.handleBlur} value={formik.values.idFilm}
                                                 id="idFilm"
                                                 options={RoomOptions}
@@ -606,8 +604,8 @@ export default function Content() {
 
                                         </div>
                                         <div className='max-w-5xl my-5 mx-auto'>
-                                            {formik.errors.starttime ? (
-                                                <div className="text-red-600 mb-2 font-bold">{formik.errors.starttime}</div>
+                                            {formik.errors.startime ? (
+                                                <div className="text-red-600 mb-2 font-bold">{formik.errors.startime}</div>
 
                                             ) : null}
 
@@ -617,9 +615,9 @@ export default function Content() {
                                                     className='w-96 my-5'
                                                     label="Start Date"
                                                     inputFormat="MM/DD/YYYY"
-                                                    id="starttime"
-                                                    value={formik.values.starttime}
-                                                    onChange={value => formik.setFieldValue("starttime", value)}
+                                                    id="startime"
+                                                    value={formik.values.startime}
+                                                    onChange={value => formik.setFieldValue("startime", value)}
                                                     onBlur={formik.handleBlur}
                                                     renderInput={(params) => <TextField {...params} />}
                                                 />
@@ -740,7 +738,7 @@ export default function Content() {
                                                 : null}
                                             <Autocomplete
                                                 disableClearable
-                                                onChange={formik1.handleChange}
+                                                onChange={(event, value) => formik1.setFieldValue("serviceId", value.id)}
                                                 onBlur={formik1.handleBlur} value={formik1.values.serviceId}
                                                 id="serviceId"
                                                 options={Room1Options}
@@ -748,7 +746,7 @@ export default function Content() {
                                                 renderInput={(params) => <TextField {...params} label="Service" />}
 
                                             />
-
+                                            
 
                                         </div>
                                         <div className='max-w-5xl  my-5 mx-auto'>
@@ -820,7 +818,7 @@ export default function Content() {
                         </Paper>
                     </section>
                 </TabPanel>
-               
+
             </Box>
         </section>
     );

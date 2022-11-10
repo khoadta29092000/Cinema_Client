@@ -170,7 +170,7 @@ export default function Content() {
             }
         setOpen(true);
         setSelectedValue(data);
-        setSelectedImage(data.img);
+        setSelectedImage(data.image);
         setImg(data.img)
         setId(data.id)
         setTitle(data.title)
@@ -531,7 +531,7 @@ export default function Content() {
                                 </Button>
                             </div>
                             <div className='max-w-5xl my-5 mx-auto'>
-                                {selectedImage == undefined ? <div></div> : <img alt="" className='mx-auto h-24 w-24 my-5' src={click == false ? selectedValue.img : window.URL.createObjectURL(selectedImage)} />}
+                                {selectedImage == undefined ? <div></div> : <img alt="" className='mx-auto h-24 w-24 my-5' src={click == false ? selectedValue.image : window.URL.createObjectURL(selectedImage)} />}
                             </div>
                             <Button variant="contained"
                                 component="label"

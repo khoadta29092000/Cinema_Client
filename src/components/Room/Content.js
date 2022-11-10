@@ -13,7 +13,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import { useEffect, useState } from "react";
 import * as React from 'react';
 import { Fragment } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import style from './Checkout.module.css'
 import { Dataset } from '@mui/icons-material';
@@ -46,6 +46,7 @@ const columns = [
 
 export default function Content() {
   let location = useLocation();
+  let history = useHistory();
   const [SeatList, setSeatList] = useState(location.state.DataSeat.map(obj => { return ({ ...obj, Status: "Empty" }) }));
   const [Total, setTotal] = useState(0);
   const [status, setStatus] = useState(false);
@@ -59,6 +60,24 @@ export default function Content() {
   const [ArraySeat, SetArraySeat] = useState([]);
   const [count, setCount] = useState(0);
   const [alert, setAlert] = useState(false);
+  if( localStorage.getItem(`token`) == undefined ){
+    history.push("/login")
+    
+}else{
+    function parseJwt(token) {
+        if (!token) { return; }
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace('-', '+').replace('_', '/');
+        return JSON.parse(window.atob(base64));
+    }
+    let id2 = parseJwt(localStorage.getItem('token'))
+    let prop = 'Id'
+    let proprole = 'role'
+    console.log(id2,id2[proprole], proprole )
+    if(id2[proprole] != 3 ){
+        history.push("/")  
+    }
+}
   const IncNum = () => {
     setCount(count + 1);
   };

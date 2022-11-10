@@ -157,7 +157,94 @@ export default function Content() {
                     active: true
                 }
             }
-            handleUpdateOrCreate(DataBody);
+            if (click == false) { setImg(selectedImage) }
+        else {
+            const storageRef = ref(storage, `deliveryman/${selectedImage.name + v4()}`);
+            const uploadTask =  uploadBytesResumable(storageRef, selectedImage);
+              uploadTask.on("state_changed",
+                (snapshot) => {
+                    const progress =
+                        Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                    setProgresspercent(progress);
+                },
+                (error) => {
+                    alert(error);
+                },
+                () => {
+                     getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+                         setImg(downloadURL)
+                         formik.setFieldValue("image", downloadURL)
+                         if (selectedValue.id != undefined) {
+                            const res = await fetch(`http://cinemasystem.somee.com/api/Service/${selectedValue?.id}`, {
+                                method: `PUT`,
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                                },
+                                body: JSON.stringify({...DataBody, image: downloadURL})
+                            }).then(res => res.json())
+                                .then(result => {
+                
+                                    if (result) {
+                                        if (result?.statusCode == 200) {
+                                            setMess("Update Successfullly")
+                                            setAlert(true)
+                                            handleClose();
+                                            featchServiceList();
+                                        } else {
+                                            setError(result?.message)
+                                        }
+                
+                                    } else {
+                                        alert("Update UnSuccessfullly")
+                
+                                    }
+                                    return res
+                
+                                })
+                                .catch((error) => {
+                                    throw ('Invalid Token')
+                                })
+                
+                
+                        } else {
+                            const res = await fetch(`http://cinemasystem.somee.com/api/Service`, {
+                                method: `POST`,
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                                },
+                                body: JSON.stringify({...DataBody, image: downloadURL})
+                            }).then(res => res.json())
+                                .then(result => {
+                
+                                    if (result) {
+                                        if (result?.statusCode == 200) {
+                                            setMess("Add Successfullly")
+                                            setAlert(true)
+                                            handleClose();
+                                            featchServiceList();
+                                        } else {
+                                            setError(result?.message)
+                                        }
+                
+                                    } else {
+                                        alert("Add UnSuccessfullly")
+                                    }
+                                    return res
+                
+                                })
+                                .catch((error) => {
+                                    throw ('Invalid Token')
+                                })
+                
+                        }
+                    });
+                }
+            );
+        }
+       
+
         },
     });
 
@@ -308,99 +395,13 @@ export default function Content() {
     const [progresspercent, setProgresspercent] = useState(0);
 
     async function handleUpload() {
-        if (click == false) { setImg(selectedImage) }
-        else {
-            const storageRef = ref(storage, `deliveryman/${selectedImage.name + v4()}`);
-            const uploadTask = uploadBytesResumable(storageRef, selectedImage);
-            uploadTask.on("state_changed",
-                (snapshot) => {
-                    const progress =
-                        Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                    setProgresspercent(progress);
-                },
-                (error) => {
-                    alert(error);
-                },
-                () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                        setImg(downloadURL)
-                    });
-                }
-            );
-        }
+        
     }
     const [error, setError] = useState("")
     const [message, setMess] = useState("")
 
     async function handleUpdateOrCreate(data) {
-
-        console.log(data)
-        if (selectedValue.id != undefined) {
-            const res = await fetch(`http://cinemasystem.somee.com/api/Service/${selectedValue?.id}`, {
-                method: `PUT`,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
-                },
-                body: JSON.stringify(data)
-            }).then(res => res.json())
-                .then(result => {
-
-                    if (result) {
-                        if (result?.statusCode == 200) {
-                            setMess("Update Successfullly")
-                            setAlert(true)
-                            handleClose();
-                            featchServiceList();
-                        } else {
-                            setError(result?.message)
-                        }
-
-                    } else {
-                        alert("Update UnSuccessfullly")
-
-                    }
-                    return res
-
-                })
-                .catch((error) => {
-                    throw ('Invalid Token')
-                })
-
-
-        } else {
-            const res = await fetch(`http://cinemasystem.somee.com/api/Service`, {
-                method: `POST`,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
-                },
-                body: JSON.stringify(data)
-            }).then(res => res.json())
-                .then(result => {
-
-                    if (result) {
-                        if (result?.statusCode == 200) {
-                            setMess("Add Successfullly")
-                            setAlert(true)
-                            handleClose();
-                            featchServiceList();
-                        } else {
-                            setError(result?.message)
-                        }
-
-                    } else {
-                        alert("Add UnSuccessfullly")
-                    }
-                    return res
-
-                })
-                .catch((error) => {
-                    throw ('Invalid Token')
-                })
-
-        }
-
+       
     }
     async function handleDelete(data) {
 
@@ -496,7 +497,7 @@ export default function Content() {
 
                             </div>
                             <div className='max-w-5xl my-5 mx-auto'>
-                                {selectedImage == undefined ? <div></div> : <img alt="" className='mx-auto h-24 w-24 my-5' error src={click == false ? selectedValue.img : window.URL.createObjectURL(selectedImage)} />}
+                                {selectedImage == undefined ? <div></div> : <img alt="" className='mx-auto h-24 w-24 my-5' error src={click == false ? selectedValue.image : window.URL.createObjectURL(selectedImage)} />}
                             </div>
                             <Button variant="contained"
                                 component="label"

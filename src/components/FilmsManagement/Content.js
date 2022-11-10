@@ -31,6 +31,8 @@ import PublicOffIcon from '@mui/icons-material/PublicOff';
 import PublicIcon from '@mui/icons-material/Public';
 import { useFormik } from 'formik';
 import * as Yup from "yup";
+import Autocomplete from '@mui/material/Autocomplete';
+import Select from "react-select"
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -114,6 +116,8 @@ export default function Content() {
     const [img, setImg] = useState("");
     const [price, setPrice] = useState("");
     const [data, setData] = useState([]);
+    const [dataType, setDataType] = useState([]);
+    const [dataTypeId, setDataTypeId] = useState([]);
     const [search, setSearch] = useState("");
     const [status, setStatus] = useState("success");
     const [alert, setAlert] = useState(false);
@@ -128,7 +132,7 @@ export default function Content() {
             rated: "",
             trailer: "",
             description: "",
-            image: ""
+
         },
         validationSchema: Yup.object().shape({
             title: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required(),
@@ -139,9 +143,9 @@ export default function Content() {
             rated: Yup.number().typeError("Must be number!").max(100, "Old not > 100").required(),
             trailer: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required(),
             description: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required(),
-            image: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required(),
-        }), onSubmit: values => {
 
+        }), onSubmit: values => {
+            let result = dataTypeId.map(a => a.value);
             let DataBody
             if (values.id == "") {
                 DataBody = {
@@ -154,8 +158,9 @@ export default function Content() {
                     rated: values.rated,
                     trailer: values.trailer,
                     description: values.description,
-                    image: values.image,
-                    active: true
+                    image: img,
+                    active: true,
+                    typeInFilm: result,
                 }
             } else {
                 DataBody = {
@@ -168,11 +173,94 @@ export default function Content() {
                     rated: values.rated,
                     trailer: values.trailer,
                     description: values.description,
-                    image: values.image,
-                    active: true
+                    image: img,
+                    active: true,
+                    typeInFilm: result,
                 }
             }
-            handleUpdateOrCreate(DataBody);
+            if (click == false) { setImg(selectedImage) }
+            else {
+                const storageRef = ref(storage, `Package/${selectedImage.name + v4()}`);
+                const uploadTask = uploadBytesResumable(storageRef, selectedImage);
+                uploadTask.on("state_changed",
+                    (snapshot) => {
+                        const progress =
+                            Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                        setProgresspercent(progress);
+                    },
+                    (error) => {
+                        alert(error);
+                    },
+                    () => {
+                        getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+                            setImg(downloadURL)
+                            if (selectedValue.id != undefined) {
+                                const res = await fetch(`http://www.cinemasystem.somee.com/api/Film/${selectedValue.id}`, {
+                                    method: `PUT`,
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                                    },
+                                    body: JSON.stringify({ ...DataBody, image: downloadURL })
+                                }).then(res => res.json())
+                                    .then(result => {
+
+                                        if (result) {
+                                            if (result?.statusCode == 200) {
+                                                setMess("Update Successfullly")
+                                                setAlert(true)
+                                                setStatus("success")
+                                                handleClose();
+                                                featchCinemaList();
+                                            }
+
+                                        } else {
+                                            alert("Update UnSuccessfullly")
+                                        }
+                                        return res
+
+                                    })
+                                    .catch((error) => {
+                                        throw ('Invalid Token')
+                                    })
+
+
+                            } else {
+                                const res = await fetch(`http://www.cinemasystem.somee.com/api/Film`, {
+                                    method: `POST`,
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                                    },
+                                    body: JSON.stringify({ ...DataBody, image: downloadURL })
+                                }).then(res => res.json())
+                                    .then(result => {
+
+                                        if (result) {
+                                            if (result?.statusCode == 200) {
+                                                setMess("Add Successfullly")
+                                                setAlert(true)
+                                                setStatus("success")
+                                                handleClose();
+                                                featchCinemaList();
+                                            }
+
+                                        } else {
+                                            alert("Add UnSuccessfullly")
+                                        }
+                                        return res
+
+                                    })
+                                    .catch((error) => {
+                                        throw ('Invalid Token')
+                                    })
+
+                            }
+
+                        });
+                    }
+                );
+            }
         },
     });
     const handleClickOpen = (data) => {
@@ -183,18 +271,14 @@ export default function Content() {
         }
         setOpen(true);
         setSelectedValue(data);
-        setSelectedImage(data.img);
-        setImg(data.img)
-        setId(data.id)
-        setTitle(data.title)
-        setDescription(data.description)
-        setPrice(data.price)
+        setSelectedImage(data.image);
+
     };
     const handleClose = () => {
         setOpen(false);
         setSelectedImage(undefined);
         SetClick(false);
-
+        setSelectedValue([])
     };
 
     function createData(data) {
@@ -267,6 +351,7 @@ export default function Content() {
     }
 
     useEffect(() => {
+        featchTypeList();
         featchCinemaList();
         setPage(0);
     }, [search]);
@@ -291,8 +376,6 @@ export default function Content() {
     }
     async function featchCinemaList() {
         try {
-
-
             const requestURL = `http://www.cinemasystem.somee.com/api/Film?search=${search}`;
 
             const response = await fetch(requestURL, {
@@ -315,104 +398,47 @@ export default function Content() {
         }
     }
 
+    async function featchTypeList() {
+        try {
+            const requestURL = `http://cinemasystem.somee.com/api/Type`;
+
+            const response = await fetch(requestURL, {
+                method: `GET`,
+                headers: {
+                    'Content-Type': 'application/json',
+
+                },
+            });
+            const responseJSON = await response.json();
+
+            const data = responseJSON;
+
+            setDataType(responseJSON.data)
+
+            console.log("aa fetch", responseJSON.data)
+
+        } catch (error) {
+            console.log('Fail to fetch product list: ', error)
+        }
+    }
+
     const [progresspercent, setProgresspercent] = useState(0);
 
     async function handleUpload() {
-        if (click == false) { setImg(selectedImage) }
-        else {
-            const storageRef = ref(storage, `Package/${selectedImage.name + v4()}`);
-            const uploadTask = uploadBytesResumable(storageRef, selectedImage);
-            uploadTask.on("state_changed",
-                (snapshot) => {
-                    const progress =
-                        Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                    setProgresspercent(progress);
-                },
-                (error) => {
-                    alert(error);
-                },
-                () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                        setImg(downloadURL)
-                    });
-                }
-            );
-        }
+
     }
 
     const [message, setMess] = useState(false)
 
     async function handleUpdateOrCreate(data) {
 
-        if (selectedValue.id != undefined) {
-            const res = await fetch(`http://www.cinemasystem.somee.com/api/Film/${selectedValue.id}`, {
-                method: `PUT`,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
-                },
-                body: JSON.stringify(data)
-            }).then(res => res.json())
-                .then(result => {
-
-                    if (result) {
-                        if (result?.statusCode == 200) {
-                            setMess("Update Successfullly")
-                            setAlert(true)
-                            setStatus("success")
-                            handleClose();
-                            featchCinemaList();
-                        }
-
-                    } else {
-                        alert("Update UnSuccessfullly")
-                    }
-                    return res
-
-                })
-                .catch((error) => {
-                    throw ('Invalid Token')
-                })
-
-
-        } else {
-            const res = await fetch(`http://www.cinemasystem.somee.com/api/Cinema`, {
-                method: `POST`,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
-                },
-                body: JSON.stringify(data)
-            }).then(res => res.json())
-                .then(result => {
-
-                    if (result) {
-                        if (result?.statusCode == 200) {
-                            setMess("Add Successfullly")
-                            setAlert(true)
-                            setStatus("success")
-                            handleClose();
-                            featchCinemaList();
-                        }
-
-                    } else {
-                        alert("Add UnSuccessfullly")
-                    }
-                    return res
-
-                })
-                .catch((error) => {
-                    throw ('Invalid Token')
-                })
-
-        }
 
     }
     async function handleDelete(data) {
         try {
 
 
-            const requestURL = `http://www.cinemasystem.somee.com/api/Account/${data?.id}`;
+            const requestURL = `http://www.cinemasystem.somee.com/api/Film/${data?.id}`;
 
             const res = await fetch(requestURL, {
                 method: `DELETE`,
@@ -455,6 +481,14 @@ export default function Content() {
 
     };
     console.log(formik.values)
+    const CoupomOptions = dataType.map((item, index) => ({
+        value: item.id,
+        label: item.title
+    }))
+
+
+
+    console.log("11111", dataTypeId)
     return (
         <section className=" ml-0 xl:ml-64  px-5 pt-10  ">
             <Snackbar open={alert} autoHideDuration={4000} onClose={handleCloseAlert} className="float-left w-screen">
@@ -483,39 +517,34 @@ export default function Content() {
                         </BootstrapDialogTitle>
                         <DialogContent dividers >
 
-                            {id != undefined ? <div className='max-w-5xl my-5 mx-auto'>
+                            {selectedValue.id != null ? <div className='max-w-5xl my-5 mx-auto'>
                                 <TextField className='w-96 my-5' value={formik.values.id} disabled label="Id" variant="outlined" />
                             </div> : null}
-                            {formik.errors.image
-                                ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.image}</div>
-                                )
-                                : null}
+
                             <div className='max-w-5xl my-5 mx-auto'>
                                 <Button
                                     variant="contained"
                                     component="label"
+                                    className='bg-blue-600 text-white rounded-md ml-5 my-6 py-2 px-4'
                                 >
                                     Upload Image
                                     <input
                                         type="file"
                                         hidden
+                                        id="image"
                                         onChange={(event) => {
                                             setSelectedImage(event.target.files[0]);
                                             SetClick(true);
-                                            formik.setFieldValue("image", event.target.files[0]);
+
                                         }}
                                     />
                                 </Button>
+
                             </div>
                             <div className='max-w-5xl my-5 mx-auto'>
-                                {selectedImage == undefined ? <div></div> : <img alt="" className='mx-auto h-24 w-24 my-5' src={click == false ? selectedValue.img : window.URL.createObjectURL(selectedImage)} />}
+                                {selectedImage == undefined ? <div></div> : <img alt="" className='mx-auto h-24 w-24 my-5' error src={click == false ? selectedValue.image : window.URL.createObjectURL(selectedImage)} />}
                             </div>
-                            <Button variant="contained"
-                                component="label"
-
-                                onClick={handleUpload} className='bg-blue-600 text-white rounded-md ml-5 my-6 py-2 px-4' >
-                                Save Img
-                            </Button>
+                            
                             <div className='max-w-5xl  my-5 mx-auto'>
                                 {formik.errors.title
                                     ? (<div className="text-red-600 mb-2 font-bold">{formik.errors.title}</div>
@@ -578,6 +607,20 @@ export default function Content() {
                                 <TextField error={formik.errors.trailer ? "error" : null} onChange={formik.handleChange}
                                     onBlur={formik.handleBlur} value={formik.values.trailer}
                                     id="trailer" className='w-96 my-5' label="Trailer" variant="outlined" />
+                            </div>
+                            <div className='max-w-5xl my-5 mx-auto'>
+                             { selectedValue.id != null ? null :  <Select
+                                    isMulti
+                                    id="tags-outlined"
+                                    options={CoupomOptions}
+                                    isClearable={true}
+                                    isSearchable={true}
+                                    isDisabled={false}
+                                    isLoading={false}
+                                    isRtl={false}
+                                    closeMenuOnSelect={false}
+                                    onChange={(item) => setDataTypeId(item)}
+                                />}  
                             </div>
                             <div className='max-w-5xl my-5 mx-auto'>
                                 {formik.errors.description ? <div className="text-red-600 mb-2 font-bold">{formik.errors.description}</div> : null}

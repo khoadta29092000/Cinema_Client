@@ -12,7 +12,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import { useEffect, useState } from "react";
 import * as React from 'react';
 import { Fragment } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink , useHistory} from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import service from 'pages/Service';
 
@@ -38,6 +38,7 @@ const columns = [
 ];
 
 export default function Content() {
+    let history = useHistory();
     let location = useLocation();
     const [Total, setTotal] = useState(0);
     const [totalGhe, setTotalGhe] = useState(0);
@@ -55,17 +56,36 @@ export default function Content() {
     const [count, setCount] = useState(0);
     const [SeatList, setSeatList] = useState([]);
     const [dataSeat, setDataSeat] = useState([]);
-    
+
+    if( localStorage.getItem(`token`) == undefined ){
+        history.push("/login")
+        
+    }else{
+        function parseJwt(token) {
+            if (!token) { return; }
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace('-', '+').replace('_', '/');
+            return JSON.parse(window.atob(base64));
+        }
+        let id2 = parseJwt(localStorage.getItem('token'))
+        let prop = 'Id'
+        let proprole = 'role'
+        console.log(id2,id2[proprole], proprole )
+        if(id2[proprole] != 3 ){
+            history.push("/")  
+        }
+    }
+
     console.log("daa", location.state)
     const [ServiceArray, setServiceArray] = useState([]);
 
     const IncNum = (data) => {
 
         console.log(ServiceArray)
-        if (data.id == 1) {    
+        if (data.id == 1) {
             setBapPhoMai(BapPhoMai + 1);
             setTotalBapPhoMai(data.price * (BapPhoMai + 1));
-            setTotal( totalGhe + (data.price * (BapPhoMai + 1)) + TotalBap + TotalCocaCola + TotalNuocSuoi)
+            setTotal(totalGhe + (data.price * (BapPhoMai + 1)) + TotalBap + TotalCocaCola + TotalNuocSuoi)
             setServiceArray(oldArray => [...oldArray, data]);
         }
         if (data.id == 2) {
@@ -83,7 +103,7 @@ export default function Content() {
         if (data.id == 4) {
             setNuocSuoi(NuocSuoi + 1);
             setTotalNuocSuoi(data.price * (NuocSuoi + 1));
-            setTotal( totalGhe + TotalBapPhoMai + TotalBap + TotalCocaCola + (data.price * (NuocSuoi + 1)))
+            setTotal(totalGhe + TotalBapPhoMai + TotalBap + TotalCocaCola + (data.price * (NuocSuoi + 1)))
             setServiceArray(oldArray => [...oldArray, data]);
         }
 
@@ -97,7 +117,7 @@ export default function Content() {
             } else {
                 setBapPhoMai(0);
                 setTotalBapPhoMai(0);
-                setTotal( totalGhe + 0 + TotalBap + TotalCocaCola + TotalNuocSuoi)
+                setTotal(totalGhe + 0 + TotalBap + TotalCocaCola + TotalNuocSuoi)
                 setServiceArray(current =>
                     current.filter(employee => {
                         // 👇️ remove object that has id equal to 2
@@ -170,7 +190,7 @@ export default function Content() {
                     <RemoveIcon />
                 </button>
                 <input className='  w-10 h-8 border-2 text-center -mt-1' value={data.id == 1 ? BapPhoMai : data.id == 2 ? Bap : data.id == 3 ? CocaCola : NuocSuoi} />
-                <button className='h-5 w-5' onClick={() => IncNum(data)}>
+                <button disabled={(data.id == 1 ? BapPhoMai : data.id == 2 ? Bap : data.id == 3 ? CocaCola : NuocSuoi) == data.quantityInCinema} className='h-5 w-5' onClick={() => IncNum(data)}>
                     <AddIcon />
                 </button></div>
         )
@@ -207,35 +227,38 @@ export default function Content() {
             setServiceArray(location.state.ServiceArray)
 
         } if (location.state.totalGhe != undefined) {
-              setTotalGhe(totalGhe)
+            setTotalGhe(totalGhe)
         }
         featchCategoryList();
         featchCinemaList();
         featchRoomList();
         featchSeatList();
     }, []);
-    const rows1 = dataCate.map((data, index) => {
+    const sortData = dataCate.sort(function(a, b) {
+        return a.id - b.id;
+    });
+    const rows1 = sortData.map((data, index) => {
         return (createData(data))
     })
     async function featchSeatList() {
-        try {   
-          const requestURL = `http://www.cinemasystem.somee.com/api/Seat`;
-          const response = await fetch(requestURL, {
-            method: `GET`,
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-          const responseJSON = await response.json();
-    
-          const data = responseJSON;
-    
-          setDataSeat(responseJSON.data)
-    
+        try {
+            const requestURL = `http://www.cinemasystem.somee.com/api/Seat`;
+            const response = await fetch(requestURL, {
+                method: `GET`,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            const responseJSON = await response.json();
+
+            const data = responseJSON;
+
+            setDataSeat(responseJSON.data)
+
         } catch (error) {
-          console.log('Fail to fetch product list: ', error)
+            console.log('Fail to fetch product list: ', error)
         }
-      }
+    }
     async function featchCategoryList() {
         try {
 
@@ -284,8 +307,8 @@ export default function Content() {
             console.log('Fail to fetch product list: ', error)
         }
     }
-    
-   
+
+
     async function featchRoomList() {
         try {
             const requestURL = `http://www.cinemasystem.somee.com/api/Room`;
@@ -368,11 +391,11 @@ export default function Content() {
                         </Paper>
                     </div>
                     <div className='col-span-1 text-left  bg-gray-200'>
-                        <img src={location.state.name.film.image} className="w-full h-64 object-cover p-5" />
-                        <h2 className='font-medium ml-2 mb-2'>{location.state.name.film.title}</h2>
+                        <img src={location.state.name.image} className="w-full h-64 object-cover p-5" />
+                        <h2 className='font-medium ml-2 mb-2'>{location.state.name.title}</h2>
                         <div>
-                            <button className='text-white ml-2 mr-2 w-8 h-8 bg-blue-600'>C{location.state.name.film.rated}</button>
-                            Phim giành cho đổ tuổi từ {location.state.name.film.rated} trở lên
+                            <button className='text-white ml-2 mr-2 w-8 h-8 bg-blue-600'>C{location.state.name.rated}</button>
+                            Phim giành cho đổ tuổi từ {location.state.name.rated} trở lên
                         </div>
                         <div className='font-medium border-b-2 ml-2 mr-4 border-gray-200 px-2 my-2 flex'> Rạp:  <p className=' ml-2 font-normal'> {dataCinema.map(item => {
                             if (item.id == location.state.scheduling.cinemaId)
@@ -389,7 +412,7 @@ export default function Content() {
                                 <Fragment>  {item.title}({item.id == 1 ? BapPhoMai : item.id == 2 ? Bap : item.id == 3 ? CocaCola : NuocSuoi}) </Fragment>
                             )
                         })}   </div>
-                       <div className='font-medium border-b-2 ml-2 mr-4 border-gray-300 px-2  my-2 flex'> Chọn ghế: {SeatList.map(item => { if (item.Status == true) { return (item.title + " ") } })} </div>
+                        <div className='font-medium border-b-2 ml-2 mr-4 border-gray-300 px-2  my-2 flex'> Chọn ghế: {SeatList.map(item => { if (item.Status == true) { return (item.title + " ") } })} </div>
                         <div className='font-medium text-2xl  ml-2 mr-4  px-2  my-2 flex'> Total: <p className='ml-2 text-blue-600'>{Total.toFixed(3).replace(/\d(?=(\d{3})+\.)/g, "$&.") + "đ"} </p> </div>
                         <div className='w-full float-right'>
                             <NavLink to={{
@@ -408,7 +431,7 @@ export default function Content() {
                                     TotalNuocSuoi: TotalNuocSuoi,
                                     ServiceArray: filtered,
                                     DataSeat: dataSeat
-                                } 
+                                }
                             }} >
                                 <button className='h-12 w-24 bg-blue-600 mt-10 mx-auto float-right  mr-10'>Continue</button>
                             </NavLink>

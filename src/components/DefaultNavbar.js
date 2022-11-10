@@ -225,7 +225,7 @@ export default function DefaultNavbar() {
         )
     }
     if (localStorage.getItem("token") != null) {
-        if (id2[proprole]) {
+        if (id2[proprole] == 1) {
             adminDashboard = (
                 <Link to="/Admindashboard">
                     <NavLink
@@ -237,6 +237,21 @@ export default function DefaultNavbar() {
                             size="xl"
                         />
                         &nbsp;Admin Dashboard
+                    </NavLink>
+                </Link>
+            )
+        } if (id2[proprole] == 2) {
+            adminDashboard = (
+                <Link to="/Employeedashboard">
+                    <NavLink
+                        rel="noreferrer"
+                        ripple="light"
+                    >
+                        <DashboardIcon
+
+                            size="xl"
+                        />
+                        &nbsp;Employee Dashboard
                     </NavLink>
                 </Link>
             )

@@ -5,7 +5,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { TodayOutlined } from '@mui/icons-material';
 
 function formatTime(date) {
@@ -120,7 +120,7 @@ export default function TeamSection() {
         cinemaid = cinemaId
       }
 
-      const requestURL = `http://cinemasystem.somee.com/api/FilmInCinema/AllFilmInCinemaToday?CinemaId=${cinemaid}`;
+      const requestURL = `http://cinemasystem.somee.com/api/FilmInCinema/AllFilmInCinemaToday/${cinemaid}`;
 
       const response = await fetch(requestURL, {
         method: `GET`,
@@ -244,7 +244,15 @@ export default function TeamSection() {
 
                     return (
                       <div key={itemFilm.id} className='mb-5' style={{ width: '700px', display: 'flex' }} >
+                         <Link to={{
+                                        pathname: "/detail",
+                                        state: {
+                                            name: itemFilm.id
+                                        }
+                                       
+                                    }}   >
                         <img width={200} height={250} src={itemFilm.image} /> <br />
+                        </Link>
                         <div className="text-left ml-2 my-5 mt-2 mx-4  ">
                           <h3 className="text-3xl mb-2 text-green-700-300"> {itemFilm.title} </h3>
                           <div className="grid grid-cols-6 gap-5">
