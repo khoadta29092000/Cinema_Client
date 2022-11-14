@@ -114,6 +114,7 @@ export default function Content() {
     const [selectedValue, setSelectedValue] = React.useState([]);
     const [id, setId] = useState("");
     const [title, setTitle] = useState("");
+    const [message, setMess] = useState(false)
     const [description, setDescription] = useState("");
     const [img, setImg] = useState("");
     const [price, setPrice] = useState("");
@@ -161,7 +162,90 @@ export default function Content() {
                     active: true
                 }
             }
-            handleUpdateOrCreate(DataBody);
+            if (click == false) { setImg(selectedImage) }
+            else {
+                const storageRef = ref(storage, `Package/${selectedImage.name + v4()}`);
+                const uploadTask = uploadBytesResumable(storageRef, selectedImage);
+                uploadTask.on("state_changed",
+                    (snapshot) => {
+                        const progress =
+                            Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                        setProgresspercent(progress);
+                    },
+                    (error) => {
+                        alert(error);
+                    },
+                    () => {
+                        getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+                            setImg(downloadURL)
+                            if (selectedValue.id != undefined) {
+                                const res = await fetch(`http://www.cinemasystem.somee.com/api/Cinema/${selectedValue.id}`, {
+                                    method: `PUT`,
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                                    },
+                                    body: JSON.stringify( click == false ?  {...DataBody, image: selectedValue.image} :  {...DataBody, image: downloadURL})
+                                }).then(res => res.json())
+                                    .then(result => {
+
+                                        if (result) {
+                                            if (result?.statusCode == 200) {
+                                                setMess("Update Successfullly")
+                                                setAlert(true)
+                                                setStatus("success")
+                                                handleClose();
+                                                featchCinemaList();
+                                            }
+
+                                        } else {
+                                            alert("Update UnSuccessfullly")
+                                        }
+                                        return res
+
+                                    })
+                                    .catch((error) => {
+                                        throw ('Invalid Token')
+                                    })
+
+
+                            } else {
+                                const res = await fetch(`http://www.cinemasystem.somee.com/api/Cinema`, {
+                                    method: `POST`,
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                                    },
+                                    body: JSON.stringify({ ...DataBody, image: downloadURL })
+                                }).then(res => res.json())
+                                    .then(result => {
+
+                                        if (result) {
+                                            if (result?.statusCode == 200) {
+                                                setMess("Add Successfullly")
+                                                setAlert(true)
+                                                setStatus("success")
+                                                handleClose();
+                                                featchCinemaList();
+                                            }
+
+                                        } else {
+                                            alert("Add UnSuccessfullly")
+                                        }
+                                        return res
+
+                                    })
+                                    .catch((error) => {
+                                        throw ('Invalid Token')
+                                    })
+
+                            }
+
+                        });
+                    }
+                );
+            }
+        
         },
     });
     const handleClickOpen = (data) => {
@@ -223,6 +307,8 @@ export default function Content() {
         );
         return { Image, Id, Name, Address, Location, Active, Action };
     }
+    
+  
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [selectedImage, setSelectedImage] = React.useState();
@@ -345,95 +431,7 @@ export default function Content() {
 
     const [progresspercent, setProgresspercent] = useState(0);
 
-    async function handleUpload() {
-        if (click == false) { setImg(selectedImage) }
-        else {
-            const storageRef = ref(storage, `Package/${selectedImage.name + v4()}`);
-            const uploadTask = uploadBytesResumable(storageRef, selectedImage);
-            uploadTask.on("state_changed",
-                (snapshot) => {
-                    const progress =
-                        Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                    setProgresspercent(progress);
-                },
-                (error) => {
-                    alert(error);
-                },
-                () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                        setImg(downloadURL)
-                    });
-                }
-            );
-        }
-    }
-    const [message, setMess] = useState(false)
-    async function handleUpdateOrCreate(data) {
-
-        if (selectedValue.id != undefined) {
-            const res = await fetch(`http://www.cinemasystem.somee.com/api/Cinema/${selectedValue.id}`, {
-                method: `PUT`,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
-                },
-                body: JSON.stringify(data)
-            }).then(res => res.json())
-                .then(result => {
-
-                    if (result) {
-                        if (result?.statusCode == 200) {
-                            setMess("Update Successfullly")
-                            setAlert(true)
-                            setStatus("success")
-                            handleClose();
-                            featchCinemaList();
-                        }
-
-                    } else {
-                        alert("Update UnSuccessfullly")
-                    }
-                    return res
-
-                })
-                .catch((error) => {
-                    throw ('Invalid Token')
-                })
-
-
-        } else {
-            const res = await fetch(`http://www.cinemasystem.somee.com/api/Cinema`, {
-                method: `POST`,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
-                },
-                body: JSON.stringify(data)
-            }).then(res => res.json())
-                .then(result => {
-
-                    if (result) {
-                        if (result?.statusCode == 200) {
-                            setMess("Add Successfullly")
-                            setAlert(true)
-                            setStatus("success")
-                            handleClose();
-                            featchCinemaList();
-                        }
-
-                    } else {
-                        alert("Add UnSuccessfullly")
-                    }
-                    return res
-
-                })
-                .catch((error) => {
-                    throw ('Invalid Token')
-                })
-
-        }
-
-    }
+   
     async function handleDelete(data) {
         try {
 
@@ -533,12 +531,7 @@ export default function Content() {
                             <div className='max-w-5xl my-5 mx-auto'>
                                 {selectedImage == undefined ? <div></div> : <img alt="" className='mx-auto h-24 w-24 my-5' src={click == false ? selectedValue.image : window.URL.createObjectURL(selectedImage)} />}
                             </div>
-                            <Button variant="contained"
-                                component="label"
-
-                                onClick={handleUpload} className='bg-blue-600 text-white rounded-md ml-5 my-6 py-2 px-4' >
-                                Save Img
-                            </Button>
+                           
                             <div className='max-w-5xl my-5 mx-auto'>
                                 {formik.errors.name
                                     ? (<Box><div className="text-red-600 mb-2 font-bold">{formik.errors.name}</div>

@@ -263,7 +263,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://cinemasystem.somee.com/api/ServiceInCinema/AllServiceInCinema?CinemaId=${location.state.scheduling.cinemaId}`;
+            const requestURL = `http://cinemasystem2.somee.com/api/ServiceInCinema/AllServiceInCinema?CinemaId=${location.state.scheduling.cinemaId}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,

@@ -88,7 +88,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = "http://cinemasystem.somee.com/api/Film";
+            const requestURL = "http://cinemasystem2.somee.com/api/Film";
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -138,7 +138,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://cinemasystem.somee.com/api/Account`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Account`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -161,7 +161,7 @@ export default function Content() {
     }
     async function featchStationList() {
         try {
-            const requestURL = `http://cinemasystem.somee.com/api/Coupon`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Coupon`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -233,7 +233,7 @@ export default function Content() {
 
     async function featchPackageOrderList() {
         try {
-            const requestURL = `http://cinemasystem.somee.com/api/Bill`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Bill`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -257,7 +257,7 @@ export default function Content() {
 
     async function featchPackageList() {
         try {
-            const requestURL = `http://cinemasystem.somee.com/api/Cinema`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Cinema`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -306,7 +306,7 @@ export default function Content() {
 
     async function featchProductList() {
         try {
-            const requestURL = `http://cinemasystem.somee.com/api/Service`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Service`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,

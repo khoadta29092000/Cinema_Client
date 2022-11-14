@@ -277,7 +277,7 @@ export default function Content() {
     }
     async function featchDataServiceInBillList() {
         try {
-            const requestURL = `http://cinemasystem.somee.com/api/ServiceInBill/ServiceInBill`;
+            const requestURL = `http://cinemasystem2.somee.com/api/ServiceInBill/ServiceInBill`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -300,7 +300,7 @@ export default function Content() {
     }
     async function featchDataServiceInCinemaList() {
         try {
-            const requestURL = `http://cinemasystem.somee.com/api/ServiceInCinema?cinemaId=${state?.name}`;
+            const requestURL = `http://cinemasystem2.somee.com/api/ServiceInCinema?cinemaId=${state?.name}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -323,7 +323,7 @@ export default function Content() {
     }
     async function featchDataServiceList() {
         try {
-            const requestURL = `http://cinemasystem.somee.com/api/Service`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Service`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,

@@ -22,10 +22,10 @@ export default function CinemaDetails(props) {
                     <Link underline="hover" className='hover:underline' to="/" color="inherit" >
                         Home
                     </Link>
-                    <Link underline="hover" className='hover:underline' to="/Bill" color="inherit" >
-                    Bill
+                    <Link underline="hover" className='hover:underline' to="/CinemaManagement" color="inherit" >
+                    Cinema
                     </Link>
-                    <Typography color="text.primary" className='underline'>Bill Details</Typography>
+                    <Typography color="text.primary" className='underline'>Cinema Details</Typography>
                 </Breadcrumbs>
             </div>
             <div className='mb-12'>

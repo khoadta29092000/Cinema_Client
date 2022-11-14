@@ -201,7 +201,7 @@ export default function Content() {
                                         'Content-Type': 'application/json',
                                         'Authorization': `Bearer ${localStorage.getItem("token")}`,
                                     },
-                                    body: JSON.stringify({ ...DataBody, image: downloadURL })
+                                    body: JSON.stringify( click == false ?  {...DataBody, image: selectedValue.image} :  {...DataBody, image: downloadURL})
                                 }).then(res => res.json())
                                     .then(result => {
 
@@ -400,7 +400,7 @@ export default function Content() {
 
     async function featchTypeList() {
         try {
-            const requestURL = `http://cinemasystem.somee.com/api/Type`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Type`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,

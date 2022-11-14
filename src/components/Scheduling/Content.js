@@ -7,21 +7,18 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-
+import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
-
+import Button from '@mui/material/Button';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
-
 import CloseIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField';
 import PublicOffIcon from '@mui/icons-material/PublicOff';
@@ -31,7 +28,13 @@ import dayjs from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-
+import Box from '@mui/material/Box';
+import { useFormik } from 'formik';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import * as Yup from "yup";
 import Autocomplete from '@mui/material/Autocomplete';
 function formatDate(date) {
     var d = new Date(date),
@@ -127,11 +130,66 @@ export default function Content() {
     const [status, setStatus] = useState("success");
     const [alert, setAlert] = useState(false);
     const [Room, setRoom] = useState("");
+    const [data1, setData] = useState([]);
     const [Cinema, setCinema] = useState("");
     const [Film, setFilm] = useState("");
     const [StartDate, setStartDate] = useState("");
     const [Enđate, setEnđate] = useState("");
+    const [error, setError] = useState("");
     const [dataSeat, setDataSeat] = useState([]);
+    const formik = useFormik({
+        initialValues: {
+            cinemaId: "",
+            date: "",
+        },
+        validationSchema: Yup.object().shape({
+            //cinemaId: Yup.number().required("Not Required"),
+            //date: Yup.date().required("Not Required"),
+        }), onSubmit: values => {
+
+            let DataBody
+
+            DataBody = {
+                cinemaId: values.cinemaId,
+                date: dateValue,
+            }
+            handleCreate(DataBody);
+        },
+    });
+    async function handleCreate(data) {
+        const res = await fetch(`http://cinemasystem2.somee.com/api/Scheduling/${data.cinemaId}/${formatDate(data.date)}`, {
+            method: `POST`,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem("token")}`,
+            },
+
+        }).then(res => res.json())
+            .then(result => {
+
+                if (result) {
+                    if (result?.statusCode == 200) {
+                        setMess("Add Successfullly")
+                        setAlert(true)
+                        handleClose();
+                        featchSchedulingList();
+                    } else {
+                        setError(result?.message)
+                    }
+
+                } else {
+                    alert("Add UnSuccessfullly")
+                }
+                return res
+
+            })
+            .catch((error) => {
+                throw ('Invalid Token')
+            })
+
+
+    }
+
     async function handleUpdateStatus(data) {
         try {
 
@@ -168,44 +226,36 @@ export default function Content() {
         }
     }
     const handleClickOpen = (data) => {
-        console.log("111111", data);
-        dataFilmDetail.map(item => {
-            if (item.orderId == data.id) {
-                dataProduct.map(product => {
-                    if (product.id == item.productId) {
-                        setProductImg(product.img)
-                        setProductName(product.title)
-                    }
-                })
-            }
-        })
-        setOpen(true);
-        setId(data.id);
-        setDeliveryTripId(data.deliveryTripId);
-        setPackageOrderId(data.pacakeOrderId);
-        setSlotId(data.slotId);
-        setSelectedValue(data);
-    };
 
-async function featchSeatList() {
-        try {   
-          const requestURL = `http://www.cinemasystem.somee.com/api/Seat`;
-          const response = await fetch(requestURL, {
-            method: `GET`,
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-          const responseJSON = await response.json();
-    
-          const data = responseJSON;
-    
-          setDataSeat(responseJSON.data)
-    
+        setOpen(true);
+
+    };
+    async function featchProductList() {
+        try {
+
+
+            const requestURL = `http://www.cinemasystem.somee.com/api/Cinema`;
+
+            const response = await fetch(requestURL, {
+                method: `GET`,
+                headers: {
+                    'Content-Type': 'application/json',
+
+                },
+            });
+            const responseJSON = await response.json();
+
+            const data = responseJSON;
+
+            setData(responseJSON.data)
+
+            console.log("aa fetch", responseJSON.data)
+
         } catch (error) {
-          console.log('Fail to fetch product list: ', error)
+            console.log('Fail to fetch product list: ', error)
         }
-      }
+    }
+
 
     const handleClose = () => {
         setOpen(false);
@@ -261,7 +311,7 @@ async function featchSeatList() {
                     name: data.filmId,
                     scheduling: data,
                     DataSeat: dataSeat
-                } 
+                }
             }}> <RemoveRedEyeIcon /></Link>
         </button>);
 
@@ -301,8 +351,10 @@ async function featchSeatList() {
 
     const [value, setValue] = React.useState(today);
     const [startValue, setStartValue] = React.useState(today);
+    const [dateValue, setDateValue] = React.useState(today);
 
     useEffect(() => {
+        featchProductList();
         featchSchedulingList();
         featchAccList();
         featchCinemaList();
@@ -312,24 +364,43 @@ async function featchSeatList() {
         setPage(0);
     }, [search, Room, Film, value, startValue]);
     async function featchSeatList() {
-        try {   
-          const requestURL = `http://www.cinemasystem.somee.com/api/Seat`;
-          const response = await fetch(requestURL, {
-            method: `GET`,
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-          const responseJSON = await response.json();
-    
-          const data = responseJSON;
-    
-          setDataSeat(responseJSON.data)
-    
+        try {
+            const requestURL = `http://www.cinemasystem.somee.com/api/Seat`;
+            const response = await fetch(requestURL, {
+                method: `GET`,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            const responseJSON = await response.json();
+
+            const data = responseJSON;
+
+            setDataSeat(responseJSON.data)
+
         } catch (error) {
-          console.log('Fail to fetch product list: ', error)
+            console.log('Fail to fetch product list: ', error)
         }
-      }
+    }
+    async function featchSeatList() {
+        try {
+            const requestURL = `http://www.cinemasystem.somee.com/api/Seat`;
+            const response = await fetch(requestURL, {
+                method: `GET`,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            const responseJSON = await response.json();
+
+            const data = responseJSON;
+
+            setDataSeat(responseJSON.data)
+
+        } catch (error) {
+            console.log('Fail to fetch product list: ', error)
+        }
+    }
     async function featchSchedulingList() {
         try {
             let roomid;
@@ -469,7 +540,9 @@ async function featchSeatList() {
     const handleChange1 = (newValue) => {
         setStartValue(newValue);
     };
-
+    const handleChange2 = (newValue) => {
+        setDateValue(newValue);
+    };
 
 
 
@@ -518,6 +591,67 @@ async function featchSeatList() {
                     <div className='pt-2 pl-4 block font-semibold text-xl'>
                         Scheduling
                     </div>
+                    <button className='bg-blue-600 text-white rounded-md ml-5 my-6 py-2 px-4' onClick={handleClickOpen}>
+                        Add Scheduling
+                    </button>
+                    <BootstrapDialog
+                        onClose={handleClose}
+                        aria-labelledby="customized-dialog-title"
+                        open={open}
+                    >
+                        <form onSubmit={formik.handleSubmit}>
+                            <BootstrapDialogTitle id="" onClose={handleClose}>
+                                Scheduling
+                            </BootstrapDialogTitle>
+                            <DialogContent dividers >
+                                <div className='max-w-5xl my-5 mx-auto'>
+                                    <Box >
+                                        {error && <div className="text-red-600 mb-2 font-bold">{error}</div>}
+                                        {formik.errors.cinemaId
+                                            ? (<Box><div className="text-red-600 mb-2 font-bold">{formik.errors.cinemaId}</div>
+                                            </Box>)
+                                            : null}
+                                        <FormControl fullWidth>
+                                            <InputLabel id="demo-simple-select-label">Cinema</InputLabel>
+                                            <Select
+                                                id="cinemaId"
+                                                defaultValue={formik.values.cinemaId}
+                                                label="Cinema"
+                                                onChange={e => formik.setFieldValue("cinemaId", e.target.value)}
+                                            >
+                                                {data1.map((cate, index) => {
+                                                    if (cate.active == true) {
+                                                        return (
+                                                            <MenuItem value={cate.id}>{cate.name}</MenuItem>
+                                                        )
+                                                    }
+
+                                                })}
+
+                                            </Select>
+                                        </FormControl>
+                                    </Box>
+                                </div>
+                                <div className='max-w-5xl my-5 mx-auto'>
+                                    <LocalizationProvider className="w-80" dateAdapter={AdapterDayjs}>
+                                        <DesktopDatePicker
+                                            className='w-80'
+                                            label="Date"
+                                            inputFormat="MM/DD/YYYY"
+                                            value={dateValue}
+                                            onChange={handleChange2}
+                                            renderInput={(params) => <TextField {...params} />}
+                                        />
+                                    </LocalizationProvider>
+                                </div>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button type='submit' >
+                                    Save
+                                </Button>
+                            </DialogActions>
+                        </form>
+                    </BootstrapDialog>
                 </TableHead>
                 <div className='float-left ml-5 gap-5 my-6   lg:flex '>
                     <div className='col-span-1 outline-none hover:outline-none'>
@@ -568,28 +702,7 @@ async function featchSeatList() {
                         </LocalizationProvider>
                     </div>
                 </div>
-                <BootstrapDialog
-                    onClose={handleClose}
-                    aria-labelledby="customized-dialog-title"
-                    open={open}
-                >
-                    <BootstrapDialogTitle id="" onClose={handleClose}>
-                        Information Order Detail
-                    </BootstrapDialogTitle>
-                    <DialogContent dividers >
 
-                        {Id}
-
-
-                        <div className='max-w-5xl my-5 mx-auto'>
-                            <TextField className='w-96 my-5' defaultValue={productName} autoComplete='off' id="outlined-basic" label="Product" variant="outlined" />
-                        </div>
-                        <div className='max-w-5xl my-5 mx-auto'>
-                            <img alt="" className=' h-64 w-64 my-5' src={productImg} />
-                        </div>
-                    </DialogContent>
-
-                </BootstrapDialog>
 
                 <TableContainer sx={{}}>
                     <Table stickyHeader aria-label="sticky table">

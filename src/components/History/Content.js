@@ -196,7 +196,7 @@ export default function Content() {
     }, [selectedValue]);
     async function featchDataServiceInBillList() {
         try {
-            const requestURL = `http://cinemasystem.somee.com/api/ServiceInBill/ServiceInBill`;
+            const requestURL = `http://cinemasystem2.somee.com/api/ServiceInBill/ServiceInBill`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -361,15 +361,19 @@ export default function Content() {
             console.log('Fail to fetch product list: ', error)
         }
     }
+    function parseJwt(token) {
+        if (!token) { return; }
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace('-', '+').replace('_', '/');
+        return JSON.parse(window.atob(base64));
+    }
+    let id2 = parseJwt(localStorage.getItem('token'))
+    let prop = 'Id'
+    let proprole = 'role'
     async function featchBillList() {
         try {
-            let accid;
-            if (Account.id == undefined) {
-                accid = 0;
-            } else {
-                accid = Account.id
-            }
-            const requestURL = `http://www.cinemasystem.somee.com/api/Bill?AccountId=${accid}&CouponId=${Coupon.id == undefined ? "" : Coupon.label}`;
+            
+            const requestURL = `http://cinemasystem2.somee.com/api/Bill/HistoryBill/${id2[prop]}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -390,15 +394,8 @@ export default function Content() {
             console.log('Fail to fetch product list: ', error)
         }
     }
-    function parseJwt(token) {
-        if (!token) { return; }
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace('-', '+').replace('_', '/');
-        return JSON.parse(window.atob(base64));
-    }
-    let id2 = parseJwt(localStorage.getItem('token'))
-    let prop = 'Id'
-    let proprole = 'role'
+  
+  
     const rows1 = dataBill.map((data, index) => {
 
         return (createData(data));

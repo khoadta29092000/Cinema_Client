@@ -248,7 +248,7 @@ export default function Content() {
     async function hanleClickPayment() {
 
 
-        const res = await fetch(`http://cinemasystem.somee.com/api/Bill`, {
+        const res = await fetch(`http://cinemasystem2.somee.com/api/Bill`, {
             method: `POST`,
             headers: {
                 'Content-Type': 'application/json',
@@ -261,8 +261,8 @@ export default function Content() {
                 if (result) {
                     if (result?.statusCode == 200) {
 
-
-                        history.push("/Succesfully")
+                        handleSendMail();
+ 
 
                     }
                     if (result?.statusCode == 409) {
@@ -308,10 +308,10 @@ export default function Content() {
             image: location.state.name.image,
             service: filterServiceTitle,
             ticked: filterTickedTitle,
-            Total : Total.toFixed(3).replace(/\d(?=(\d{3})+\.)/g, "$&.") + "đ"
+           
         }
         console.log("location11",bodySendMail)
-        const res = await fetch(`https://localhost:5002/api/Bill/SendMail`, {
+        const res = await fetch(`http://cinemasystem2.somee.com/api/Bill/SendMail`, {
             method: `POST`,
             headers: {
                 'Content-Type': 'application/json',

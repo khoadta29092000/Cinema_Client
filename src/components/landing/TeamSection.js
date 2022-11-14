@@ -120,7 +120,7 @@ export default function TeamSection() {
         cinemaid = cinemaId
       }
 
-      const requestURL = `http://cinemasystem.somee.com/api/FilmInCinema/AllFilmInCinemaToday/${cinemaid}`;
+      const requestURL = `http://cinemasystem2.somee.com/api/FilmInCinema/AllFilmInCinemaToday/${cinemaid}`;
 
       const response = await fetch(requestURL, {
         method: `GET`,
@@ -149,7 +149,7 @@ export default function TeamSection() {
       } else {
         cinemaid = cinemaId
       }
-      const requestURL = `http://cinemasystem.somee.com/api/Scheduling?startDate=${formatDate(today)}&endDate=${formatDate(today)}&CinemaId=${cinemaid}`;
+      const requestURL = `http://cinemasystem2.somee.com/api/Scheduling?startDate=${formatDate(today)}&endDate=${formatDate(today)}&CinemaId=${cinemaid}`;
 
       const response = await fetch(requestURL, {
         method: `GET`,
@@ -197,7 +197,9 @@ export default function TeamSection() {
   function getUniqueListBy(arr, key) {
     return [...new Map(arr.map(item => [item[key], item])).values()]
   } 
-
+  const  sortdataScheduling = dataScheduling.sort(function (a, b) {
+    return ('' + a.startTime).localeCompare(b.startTime);
+})
 
   return (
     <section className="pb-20 ">
@@ -256,7 +258,7 @@ export default function TeamSection() {
                         <div className="text-left ml-2 my-5 mt-2 mx-4  ">
                           <h3 className="text-3xl mb-2 text-green-700-300"> {itemFilm.title} </h3>
                           <div className="grid grid-cols-6 gap-5">
-                            {dataScheduling.map(itemScheduling => {
+                            {sortdataScheduling.map(itemScheduling => {
                               
                               if (itemScheduling.filmId == itemFilm.id && formatTime(today) <= itemScheduling.startTime == true) {
                                 return (

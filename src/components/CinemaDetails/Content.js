@@ -232,7 +232,7 @@ export default function Content() {
         },
     });
     async function hanleCreateFilm(data) {
-        const res = await fetch(`http://cinemasystem.somee.com/api/FilmInCinema`, {
+        const res = await fetch(`http://cinemasystem2.somee.com/api/FilmInCinema`, {
             method: `POST`,
             headers: {
                 'Content-Type': 'application/json',
@@ -263,7 +263,7 @@ export default function Content() {
             })
     }
     async function hanleCreateService(data) {
-        const res = await fetch(`http://cinemasystem.somee.com/api/ServiceInCinema`, {
+        const res = await fetch(`http://cinemasystem2.somee.com/api/ServiceInCinema`, {
             method: `POST`,
             headers: {
                 'Content-Type': 'application/json',
@@ -276,6 +276,37 @@ export default function Content() {
                 if (result) {
                     if (result?.statusCode == 200) {
                         setMess("Add Successfullly")
+                        setAlert(true)
+                        setStatus("success")
+                        handleClose();
+                        featchFilmInCinemaList();
+                        featchServiceInCinemaList();
+                    }
+
+                } else {
+                    alert("Add UnSuccessfullly")
+                }
+                return res
+
+            })
+            .catch((error) => {
+                throw ('Invalid Token')
+            })
+    }
+    async function hanleDeleteService(data) {
+        const res = await fetch(`http://cinemasystem2.somee.com/api/ServiceInCinema/${data}`, {
+            method: `DELETE`,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify(data)
+        }).then(res => res.json())
+            .then(result => {
+
+                if (result) {
+                    if (result?.statusCode == 200) {
+                        setMess("DELETE Successfullly")
                         setAlert(true)
                         setStatus("success")
                         handleClose();
@@ -320,7 +351,7 @@ export default function Content() {
             <div className='gap-x-8 flex'>
 
                 <button className="text-white  outline-none bg-red-600 rounded-lg   h-8 w-8" >
-                    <DeleteIcon />
+                    <DeleteIcon onClick={() => hanleDeleteService(data.serviceInCinemaId)} />
                 </button>
             </div>
         );
@@ -394,7 +425,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://cinemasystem.somee.com/api/Film`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Film`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -419,7 +450,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://cinemasystem.somee.com/api/FilmInCinema/AllFilmNotInCinema/${state?.name}`;
+            const requestURL = `http://cinemasystem2.somee.com/api/FilmInCinema/AllFilmNotInCinema/${state?.name}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -444,7 +475,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://cinemasystem.somee.com/api/ServiceInCinema/AllServiceNotInCinema/${state?.name}`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Service`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -469,7 +500,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://cinemasystem.somee.com/api/FilmInCinema/AllFilmInCinema?CinemaId=${state?.name}`;
+            const requestURL = `http://cinemasystem2.somee.com/api/FilmInCinema/AllFilmInCinema?CinemaId=${state?.name}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -494,7 +525,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://cinemasystem.somee.com/api/ServiceInCinema/AllServiceInCinema?CinemaId=${state?.name}`;
+            const requestURL = `http://cinemasystem2.somee.com/api/ServiceInCinema/AllServiceInCinema?CinemaId=${state?.name}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,

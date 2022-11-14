@@ -124,7 +124,7 @@ export default function Content() {
                     roomId: "",
                 },
                 validationSchema: Yup.object().shape({
-                    title: Yup.string().min(1, "Too Short!").max(4000, "Too Long!").required(),
+                    title: Yup.string().matches(/^[A-E](?=.*\d){2,2}/, "Correct Example A1->E9").min(2, "Too Short!").max(2, "Too Long!").required(),
                     description: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required(),
                     roomId: Yup.number().required(),
                 }), onSubmit: values => {

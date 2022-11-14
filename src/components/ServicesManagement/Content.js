@@ -175,13 +175,13 @@ export default function Content() {
                          setImg(downloadURL)
                          formik.setFieldValue("image", downloadURL)
                          if (selectedValue.id != undefined) {
-                            const res = await fetch(`http://cinemasystem.somee.com/api/Service/${selectedValue?.id}`, {
+                            const res = await fetch(`http://cinemasystem2.somee.com/api/Service/${selectedValue?.id}`, {
                                 method: `PUT`,
                                 headers: {
                                     'Content-Type': 'application/json',
                                     'Authorization': `Bearer ${localStorage.getItem("token")}`,
                                 },
-                                body: JSON.stringify({...DataBody, image: downloadURL})
+                                body: JSON.stringify( click == false ?  {...DataBody, image: selectedValue.image} :  {...DataBody, image: downloadURL})
                             }).then(res => res.json())
                                 .then(result => {
                 
@@ -208,7 +208,7 @@ export default function Content() {
                 
                 
                         } else {
-                            const res = await fetch(`http://cinemasystem.somee.com/api/Service`, {
+                            const res = await fetch(`http://cinemasystem2.somee.com/api/Service`, {
                                 method: `POST`,
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -357,7 +357,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://cinemasystem.somee.com/api/Service?search=${search}`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Service?search=${search}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -405,7 +405,7 @@ export default function Content() {
     }
     async function handleDelete(data) {
 
-        let res = await fetch(`http://cinemasystem.somee.com/api/Service/${data?.id}`, {
+        let res = await fetch(`http://cinemasystem2.somee.com/api/Service/${data?.id}`, {
             method: `DELETE`,
             headers: {
                 'Content-Type': 'application/json',
@@ -499,12 +499,7 @@ export default function Content() {
                             <div className='max-w-5xl my-5 mx-auto'>
                                 {selectedImage == undefined ? <div></div> : <img alt="" className='mx-auto h-24 w-24 my-5' error src={click == false ? selectedValue.image : window.URL.createObjectURL(selectedImage)} />}
                             </div>
-                            <Button variant="contained"
-                                component="label"
-
-                                onClick={handleUpload} className='bg-blue-600 text-white rounded-md ml-5 my-6 py-2 px-4' >
-                                Save Img
-                            </Button>
+                          
                             <div className='max-w-5xl my-5 mx-auto'>
                                 {formik.errors.title
                                     ? (<Box><div className="text-red-600 mb-2 font-bold">{formik.errors.title}</div>

@@ -46,7 +46,7 @@ export default function Content() {
     async function hanleChangePassword(data) {
 
            
-            let res = await fetch(`http://cinemasystem.somee.com/api/Account/ChangePassword?${id2[prop]}`, {
+            let res = await fetch(`http://cinemasystem2.somee.com/api/Account/ChangePassword?${id2[prop]}`, {
                 method: `PUT`,
                 headers: {
                     'Content-Type': 'application/json',

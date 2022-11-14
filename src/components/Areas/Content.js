@@ -50,7 +50,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://cinemasystem.somee.com/api/Location`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Location`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,

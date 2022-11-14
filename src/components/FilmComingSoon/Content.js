@@ -65,7 +65,7 @@ export default function WorkingSection() {
         try {
 
 
-            const requestURL = `http://cinemasystem.somee.com/api/FilmInCinema/AllFilmInCinemaComingSoon`;
+            const requestURL = `http://cinemasystem2.somee.com/api/FilmInCinema/AllFilmInCinemaComingSoon`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,

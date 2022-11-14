@@ -85,7 +85,7 @@ export default function Content() {
     async function featchFilmDetails() {
         try {
 
-            const requestURL = `http://cinemasystem.somee.com/api/Film/${location.state.name}`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Film/${location.state.name}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -210,7 +210,7 @@ export default function Content() {
     }
     async function featchTickedList() {
         try {
-            const requestURL = `http://cinemasystem.somee.com/api/Ticked?SchedulingId=${location.state.scheduling.id}`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Ticked?SchedulingId=${location.state.scheduling.id}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,

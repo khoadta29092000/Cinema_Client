@@ -74,7 +74,7 @@ export default function Login() {
         const bodyToken = {      
                 token: tokenGG,     
         }
-        let res = await fetch(`http://cinemasystem.somee.com/api/Account/Login_Google`, {
+        let res = await fetch(`http://cinemasystem2.somee.com/api/Account/Login_Google`, {
             method: `POST`,
             headers: {
                 'Content-Type': 'application/json',

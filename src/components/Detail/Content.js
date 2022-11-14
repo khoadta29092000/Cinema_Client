@@ -55,11 +55,14 @@ export default function Content() {
     const [dataAcc, setDataAcc] = useState([]);
     const [Account, setAcccount] = useState(0);
     const [dataScheduling, setDataScheduling] = useState([]);
+    var today = new Date();
+
+    const [value, setValue] = React.useState(today);
     useEffect(() => {
         featchFilmDetails();
         featchAccList();
         featchSchedulingList();
-    }, [Account]);
+    }, [Account, value]);
     console.log("11", location.state, dataFilmInCinema)
     async function featchAccList() {
         try {
@@ -90,7 +93,7 @@ export default function Content() {
     async function featchFilmDetails() {
         try {
 
-            const requestURL = `http://cinemasystem.somee.com/api/Film/${location.state.name}`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Film/${location.state.name}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -135,9 +138,7 @@ export default function Content() {
             console.log('Fail to fetch product list: ', error)
         }
     }
-    var today = new Date();
 
-    const [value, setValue] = React.useState(today);
     const AccOptions = dataAcc.map((item, index) => ({
         id: item.id,
         label: item.name
@@ -150,6 +151,9 @@ export default function Content() {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+   const  sortdataScheduling = dataScheduling.sort(function (a, b) {
+        return ('' + a.startTime).localeCompare(b.startTime);
+    })
     return (
         <section className="pb-28  mb-28">
             <Modal
@@ -235,22 +239,25 @@ export default function Content() {
                                 </div>
                                 <div className=''>
 
-                                    {dataScheduling.map(itemScheduling => {
+                                    {sortdataScheduling.map(itemScheduling => {
 
-                                        if (itemScheduling.date.slice(0, 10) == formatDate(value) == true && itemScheduling.cinemaId == item.id && itemScheduling.filmId == dataFilmInCinema.id && formatTime(today) <= itemScheduling.startTime == true) {
-                                            return (
-                                                <NavLink to={{
-                                                    pathname: "/Service",
-                                                    state: {
-                                                        name: dataFilmInCinema,
-                                                        scheduling: itemScheduling,
-                                                    }
-                                                }} >
-                                                    <button className='border-2 p-2 mb-5 mx-5 text-xs pointer-events-auto  hover:border-yellow-600 hover:text-yellow-600'>{itemScheduling.startTime}
+                                        if ( itemScheduling.cinemaId == item.id && itemScheduling.filmId == dataFilmInCinema.id && formatDate(today) == formatDate(value) ? formatTime(today) <= itemScheduling.startTime == true : itemScheduling.cinemaId == item.id && itemScheduling.filmId == dataFilmInCinema.id) {
+                                         
+                                                return (
+                                                    <NavLink to={{
+                                                        pathname: "/Service",
+                                                        state: {
+                                                            name: dataFilmInCinema,
+                                                            scheduling: itemScheduling,
+                                                        }
+                                                    }} >
+                                                        <button className='border-2 p-2 mb-5 mx-5 text-xs pointer-events-auto  hover:border-yellow-600 hover:text-yellow-600'>{itemScheduling.startTime}
 
-                                                    </button>
-                                                </NavLink>
-                                            )
+                                                        </button>
+                                                    </NavLink>
+                                                )
+                                            
+
                                         }
                                     })}
 
