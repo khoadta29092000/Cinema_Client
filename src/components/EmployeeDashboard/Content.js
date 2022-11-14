@@ -228,7 +228,7 @@ export default function Content(props) {
     try {
 
 
-        const requestURL = `http://www.cinemasystem.somee.com/api/Bill/Checking?id=${data}&accountId=${id2[prop]}`;
+        const requestURL = `http://www.cinemasystem2.somee.com/api/Bill/Checking?id=${data}&accountId=${id2[prop]}`;
 
         const res = await fetch(requestURL, {
             method: `PUT`,
@@ -296,7 +296,7 @@ export default function Content(props) {
   }
   async function featchSeatList() {
       try {
-          const requestURL = `http://www.cinemasystem.somee.com/api/Seat`;
+          const requestURL = `http://cinemasystem2.somee.com/api/Seat`;
 
           const response = await fetch(requestURL, {
               method: `GET`,
@@ -320,7 +320,7 @@ export default function Content(props) {
   async function featchTickedList() {
       try {
 
-          const requestURL = `http://www.cinemasystem.somee.com/api/Ticked?BillId=${selectedValue.id}`;
+          const requestURL = `http://cinemasystem2.somee.com/api/Ticked?BillId=${selectedValue.id}`;
 
           const response = await fetch(requestURL, {
               method: `GET`,
@@ -345,7 +345,7 @@ export default function Content(props) {
       try {
 
 
-          const requestURL = `http://www.cinemasystem.somee.com/api/Account`;
+          const requestURL = `http://cinemasystem2.somee.com/api/Account`;
 
           const response = await fetch(requestURL, {
               method: `GET`,
@@ -371,7 +371,7 @@ export default function Content(props) {
       try {
 
 
-          const requestURL = `http://www.cinemasystem.somee.com/api/Scheduling`;
+          const requestURL = `http://cinemasystem2.somee.com/api/Scheduling`;
 
           const response = await fetch(requestURL, {
               method: `GET`,
@@ -394,7 +394,7 @@ export default function Content(props) {
   }
   async function featchFilmList() {
       try {
-          const requestURL = `http://www.cinemasystem.somee.com/api/Film`;
+          const requestURL = `http://cinemasystem2.somee.com/api/Film`;
 
           const response = await fetch(requestURL, {
               method: `GET`,
@@ -417,7 +417,7 @@ export default function Content(props) {
   }
   async function featchcouponList() {
       try {
-          const requestURL = `http://www.cinemasystem.somee.com/api/Coupon`;
+          const requestURL = `http://cinemasystem2.somee.com/api/Coupon`;
 
           const response = await fetch(requestURL, {
               method: `GET`,

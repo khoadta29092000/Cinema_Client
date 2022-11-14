@@ -209,7 +209,7 @@ export default function Content() {
 
     async function featchOrderList() {
         try {
-            const requestURL = `http://www.cinemasystem.somee.com/api/Scheduling?Startdate=${formatDate(startValue)}&EndDate=${formatDate(value)}`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Scheduling?Startdate=${formatDate(startValue)}&EndDate=${formatDate(value)}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,

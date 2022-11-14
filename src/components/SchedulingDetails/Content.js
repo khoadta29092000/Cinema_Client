@@ -110,7 +110,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem.somee.com/api/Service`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Service`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -135,7 +135,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem.somee.com/api/Seat`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Seat`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -163,7 +163,7 @@ export default function Content() {
     }
     async function featchCinemaList() {
         try {
-            const requestURL = `http://www.cinemasystem.somee.com/api/Cinema`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Cinema`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -187,7 +187,7 @@ export default function Content() {
 
     async function featchRoomList() {
         try {
-            const requestURL = `http://www.cinemasystem.somee.com/api/Room`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Room`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,

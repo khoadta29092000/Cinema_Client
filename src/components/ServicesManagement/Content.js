@@ -322,7 +322,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem.somee.com/api/Service/UpdateActive?id=${data}`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Service/UpdateActive?id=${data}`;
 
             const res = await fetch(requestURL, {
                 method: `PUT`,

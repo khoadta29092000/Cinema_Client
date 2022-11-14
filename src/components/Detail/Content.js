@@ -68,7 +68,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem.somee.com/api/Cinema`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Cinema`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -117,7 +117,7 @@ export default function Content() {
     async function featchSchedulingList() {
         try {
 
-            const requestURL = `http://www.cinemasystem.somee.com/api/Scheduling?Startdate=${formatDate(value)}&EndDate=${formatDate(value)}`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Scheduling?Startdate=${formatDate(value)}&EndDate=${formatDate(value)}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,

@@ -159,7 +159,7 @@ export default function Content() {
     async function handleUpdateOrCreate(values) {
         console.log("da bam", values)
         if (selectedValue.id != undefined) {
-            const res = await fetch(`http://www.cinemasystem.somee.com/api/Coupon/${selectedValue?.id}`, {
+            const res = await fetch(`http://cinemasystem2.somee.com/api/Coupon/${selectedValue?.id}`, {
                 method: `PUT`,
                 headers: {
                     'Content-Type': 'application/json',
@@ -193,7 +193,7 @@ export default function Content() {
             return body
 
         } else {
-            const res = await fetch(`http://www.cinemasystem.somee.com/api/Coupon`, {
+            const res = await fetch(`http://cinemasystem2.somee.com/api/Coupon`, {
                 method: `POST`,
                 headers: {
                     'Content-Type': 'application/json',
@@ -294,7 +294,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem.somee.com/api/Coupon/UpdateActive?id=${data}`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Coupon/UpdateActive?id=${data}`;
 
             const res = await fetch(requestURL, {
                 method: `PUT`,
@@ -350,7 +350,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem.somee.com/api/Coupon?search=${search}`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Coupon?search=${search}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -382,7 +382,7 @@ export default function Content() {
 
     async function handleDelete(data) {
 
-        let res = await fetch(`http://www.cinemasystem.somee.com/api/Coupon/${data?.id}`, {
+        let res = await fetch(`http://cinemasystem2.somee.com/api/Coupon/${data?.id}`, {
             method: `DELETE`,
             headers: {
                 'Content-Type': 'application/json',

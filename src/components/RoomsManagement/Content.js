@@ -217,7 +217,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem.somee.com/api/Room/UpdateActive?id=${data}`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Room/UpdateActive?id=${data}`;
 
             const res = await fetch(requestURL, {
                 method: `PUT`,
@@ -286,7 +286,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem.somee.com/api/Room?search=${search}`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Room?search=${search}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -311,7 +311,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem.somee.com/api/Cinema`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Cinema`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -364,7 +364,7 @@ export default function Content() {
     async function handleUpdateOrCreate(data) {
 
         if (selectedValue.id != undefined) {
-            const res = await fetch(`http://www.cinemasystem.somee.com/api/Room/${selectedValue?.id}`, {
+            const res = await fetch(`http://cinemasystem2.somee.com/api/Room/${selectedValue?.id}`, {
                 method: `PUT`,
                 headers: {
                     'Content-Type': 'application/json',
@@ -398,7 +398,7 @@ export default function Content() {
 
 
         } else {
-            const res = await fetch(`http://www.cinemasystem.somee.com/api/Room`, {
+            const res = await fetch(`http://cinemasystem2.somee.com/api/Room`, {
                 method: `POST`,
                 headers: {
                     'Content-Type': 'application/json',
@@ -435,7 +435,7 @@ export default function Content() {
     }
     async function handleDelete(data) {
 
-        let res = await fetch(`http://www.cinemasystem.somee.com/api/Room/${data?.id}`, {
+        let res = await fetch(`http://cinemasystem2.somee.com/api/Room/${data?.id}`, {
             method: `DELETE`,
             headers: {
                 'Content-Type': 'application/json',

@@ -39,7 +39,7 @@ export default function Login() {
                 email,
                 password
             };
-            let res = await fetch(`http://www.cinemasystem.somee.com/api/Account/Login`, {
+            let res = await fetch(`http://cinemasystem2.somee.com/api/Account/Login`, {
                 method: `POST`,
                 headers: {
                     'Content-Type': 'application/json',

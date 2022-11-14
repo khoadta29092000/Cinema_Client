@@ -75,7 +75,7 @@ export default function Content() {
 
 
 
-        let res = await fetch(`http://www.cinemasystem.somee.com/api/Account/${formik.values.id}`, {
+        let res = await fetch(`http://cinemasystem2.somee.com/api/Account/${formik.values.id}`, {
             method: `PUT`,
             headers: {
                 'Content-Type': 'application/json',
@@ -119,7 +119,7 @@ export default function Content() {
     let proprole = 'role'
     async function featchProfile(values) {
         try {
-            const requestURL = `http://www.cinemasystem.somee.com/api/Account/${id2[prop]}`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Account/${id2[prop]}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,

@@ -139,7 +139,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem.somee.com/api/Account`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Account`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -165,7 +165,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem.somee.com/api/Scheduling`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Scheduling`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -188,7 +188,7 @@ export default function Content() {
     }
     async function featchFilmList() {
         try {
-            const requestURL = `http://www.cinemasystem.somee.com/api/Film`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Film`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -211,7 +211,7 @@ export default function Content() {
     }
     async function featchcouponList() {
         try {
-            const requestURL = `http://www.cinemasystem.somee.com/api/Coupon`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Coupon`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -240,7 +240,7 @@ export default function Content() {
             } else {
                 accid = Account.id
             }
-            const requestURL = `http://www.cinemasystem.somee.com/api/Bill?AccountId=${accid}&CouponId=${Coupon.id == undefined ? "" : Coupon.label}`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Bill?AccountId=${accid}&CouponId=${Coupon.id == undefined ? "" : Coupon.label}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,

@@ -195,7 +195,7 @@ export default function Content() {
                         getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
                             setImg(downloadURL)
                             if (selectedValue.id != undefined) {
-                                const res = await fetch(`http://www.cinemasystem.somee.com/api/Film/${selectedValue.id}`, {
+                                const res = await fetch(`http://cinemasystem2.somee.com/api/Film/${selectedValue.id}`, {
                                     method: `PUT`,
                                     headers: {
                                         'Content-Type': 'application/json',
@@ -226,7 +226,7 @@ export default function Content() {
 
 
                             } else {
-                                const res = await fetch(`http://www.cinemasystem.somee.com/api/Film`, {
+                                const res = await fetch(`http://cinemasystem2.somee.com/api/Film`, {
                                     method: `POST`,
                                     headers: {
                                         'Content-Type': 'application/json',
@@ -318,7 +318,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem.somee.com/api/Film/UpdateActive?id=${data}`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Film/UpdateActive?id=${data}`;
 
             const res = await fetch(requestURL, {
                 method: `PUT`,
@@ -376,7 +376,7 @@ export default function Content() {
     }
     async function featchCinemaList() {
         try {
-            const requestURL = `http://www.cinemasystem.somee.com/api/Film?search=${search}`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Film?search=${search}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -438,7 +438,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.cinemasystem.somee.com/api/Film/${data?.id}`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Film/${data?.id}`;
 
             const res = await fetch(requestURL, {
                 method: `DELETE`,

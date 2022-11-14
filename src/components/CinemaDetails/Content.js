@@ -25,7 +25,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import CloseIcon from '@mui/icons-material/Close';
-import TextField from '@mui/material/TextField';
+
 import { useEffect, useState } from "react";
 import Search from 'components/Search';
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage"
@@ -36,6 +36,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import TextField from '@mui/material/TextField';
 import dayjs from 'dayjs';
 import { useFormik } from 'formik';
 import * as Yup from "yup";
@@ -52,6 +53,20 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
         padding: theme.spacing(1),
     },
 }));
+
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2)
+        month = '0' + month;
+    if (day.length < 2)
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+}
 
 const columns1 = [
     { id: 'Image', label: "Image", minWidth: 150 },
@@ -88,6 +103,16 @@ const columns = [
     {
         id: 'Time',
         label: 'Time',
+        minWidth: 100,
+    },
+    {
+        id: 'StartTime',
+        label: 'StartTime',
+        minWidth: 100,
+    },
+    {
+        id: 'EndTime',
+        label: 'EndTime',
         minWidth: 100,
     },
     {
@@ -176,6 +201,7 @@ export default function Content() {
     const [description, setDescription] = useState("");
     const [img, setImg] = useState("");
     const [price, setPrice] = useState("");
+    const [errorDate, setErrorDate] = useState("");
     const [data, setData] = useState([]);
     const [dataFilm, setDataFilm] = useState([]);
     const [dataFilmNotInCinema, setDataFilmNotInCinema] = useState([]);
@@ -184,6 +210,10 @@ export default function Content() {
     const [search, setSearch] = useState("");
     const [status, setStatus] = useState("success");
     const [alert, setAlert] = useState(false);
+    var today = new Date();
+    const [startDate, setStartDate] = React.useState(today);
+    const [endValue, setEndValue] = React.useState(today);
+    const [startValue, setStartValue] = React.useState(today);
     const formik = useFormik({
         initialValues: {
             filmId: "",
@@ -192,22 +222,25 @@ export default function Content() {
         },
         validationSchema: Yup.object().shape({
             filmId: Yup.string().required('Required'),
-            startime: Yup.date(),
-            endtime: Yup.date().min(Yup.ref('startime'),
-                "end date can't be before start date"
-            ),
+
 
         }), onSubmit: values => {
+            console.log("ngu ne", startValue, endValue, startValue < endValue)
+            if (startValue < endValue == false) {
+                setErrorDate("end date can't be before start date")
+            } else {
+                setErrorDate("")
+                let DataBody
+                DataBody = {
+                    filmId: values.filmId,
+                    cinemaId: state?.name,
+                    startime: startValue,
+                    endtime: endValue,
 
-            let DataBody
-            DataBody = {
-                filmId: values.filmId,
-                cinemaId: state?.name,
-                startime: values.startime,
-                endtime: values.endtime,
-
+                }
+                hanleCreateFilm(DataBody);
             }
-            hanleCreateFilm(DataBody);
+
         },
     });
     const formik1 = useFormik({
@@ -250,6 +283,7 @@ export default function Content() {
                         handleClose();
                         featchFilmInCinemaList();
                         featchServiceInCinemaList();
+                        featchFilmNotInCinemaList();
                     }
 
                 } else {
@@ -293,6 +327,38 @@ export default function Content() {
                 throw ('Invalid Token')
             })
     }
+    async function hanleDeleteFilm(data) {
+        const res = await fetch(`http://cinemasystem2.somee.com/api/FilmInCinema/${data}?CinemaId=${state?.name}`, {
+            method: `DELETE`,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify(data)
+        }).then(res => res.json())
+            .then(result => {
+
+                if (result) {
+                    if (result?.statusCode == 200) {
+                        setMess("DELETE Successfullly")
+                        setAlert(true)
+                        setStatus("success")
+                        handleClose();
+                        featchFilmInCinemaList();
+                        featchServiceInCinemaList();
+                        featchFilmNotInCinemaList();
+                    }
+
+                } else {
+                    alert("Add UnSuccessfullly")
+                }
+                return res
+
+            })
+            .catch((error) => {
+                throw ('Invalid Token')
+            })
+    }
     async function hanleDeleteService(data) {
         const res = await fetch(`http://cinemasystem2.somee.com/api/ServiceInCinema/${data}`, {
             method: `DELETE`,
@@ -324,9 +390,7 @@ export default function Content() {
                 throw ('Invalid Token')
             })
     }
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
+
     const handleClickOpen = (data) => {
 
 
@@ -364,6 +428,8 @@ export default function Content() {
         return { Image, Id, Title, Price, Quantity, Action };
     }
     function createData(data) {
+        let StartTime = data.startime.slice(8, 10) + "/" + data.startime.slice(5, 7) + "/" + data.startime.slice(0, 4);
+        let EndTime = data.endtime.slice(8, 10) + "/" + data.endtime.slice(5, 7) + "/" + data.endtime.slice(0, 4);
         let Title = data.title;
         let Time = data.time + " Phút";
         let Rated = data.rated;
@@ -380,12 +446,12 @@ export default function Content() {
             <div className='gap-x-8 flex'>
 
                 <button className="text-white  outline-none bg-red-600 rounded-lg   h-8 w-8" >
-                    <DeleteIcon />
+                    <DeleteIcon onClick={() => hanleDeleteFilm(data.id)} />
                 </button>
             </div>
         );
 
-        return { Image, Id, Title, Time, Rated, Action };
+        return { Image, Id, Title, Time, StartTime, EndTime, Rated, Action };
     }
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -399,7 +465,7 @@ export default function Content() {
         featchFilmNotInCinemaList();
         featchServiceNotInCinemaList();
         setPage(0);
-    }, [search]);
+    }, [search,startDate]);
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -500,7 +566,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://cinemasystem2.somee.com/api/FilmInCinema/AllFilmInCinema?CinemaId=${state?.name}`;
+            const requestURL = `http://cinemasystem2.somee.com/api/FilmInCinema/AllFilmInCinemaToday/${state?.name}/${formatDate(startDate)}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,
@@ -576,8 +642,24 @@ export default function Content() {
         id: item.id,
         label: item.title
     }))
+   
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };
+
+    const handleChange1 = (newValue) => {
 
 
+        setStartValue(newValue.format('YYYY/MM/DD'));
+
+    };
+    const handleChange2 = (newValue) => {
+        setEndValue(newValue.format('YYYY/MM/DD'));
+
+    }; const handleChange3 = (newValue) => {
+        setStartDate(newValue.format('YYYY/MM/DD'));
+
+    };
     console.log("ala", dataFilm)
     return (
         <section className=" ml-0 xl:ml-64  px-5 pt-10  ">
@@ -616,6 +698,7 @@ export default function Content() {
                                         Film
                                     </BootstrapDialogTitle>
                                     <DialogContent dividers >
+                                        {errorDate && <div className="text-red-600 mb-2 font-bold">{errorDate}</div>}
                                         <div className='max-w-5xl my-5 mx-auto'>
                                             {formik.errors.idFilm
                                                 ? (<Box><div className="text-red-600 mb-2 font-bold">{formik.errors.idFilm}</div>
@@ -639,17 +722,12 @@ export default function Content() {
                                                 <div className="text-red-600 mb-2 font-bold">{formik.errors.startime}</div>
 
                                             ) : null}
-
                                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                 <DesktopDatePicker
-
-                                                    className='w-96 my-5'
                                                     label="Start Date"
                                                     inputFormat="MM/DD/YYYY"
-                                                    id="startime"
-                                                    value={formik.values.startime}
-                                                    onChange={value => formik.setFieldValue("startime", value)}
-                                                    onBlur={formik.handleBlur}
+                                                    value={startValue}
+                                                    onChange={handleChange1}
                                                     renderInput={(params) => <TextField {...params} />}
                                                 />
                                             </LocalizationProvider>
@@ -667,8 +745,8 @@ export default function Content() {
                                                     label="End Date"
                                                     inputFormat="MM/DD/YYYY"
                                                     id="endtime"
-                                                    value={formik.values.endtime}
-                                                    onChange={value => formik.setFieldValue("endtime", value)}
+                                                    value={endValue}
+                                                    onChange={handleChange2}
                                                     onBlur={formik.handleBlur}
                                                     renderInput={(params) => <TextField {...params} />}
                                                 />
@@ -683,6 +761,18 @@ export default function Content() {
                                     </DialogActions>
                                 </form>
                             </BootstrapDialog>
+                            <div className=' float-left ml-5 gap-5 my-6   grid grid-cols-6'>
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <DesktopDatePicker
+                                        label="Date"
+                                        inputFormat="MM/DD/YYYY"
+                                        value={startDate}
+                                        onChange={handleChange3}
+                                        renderInput={(params) => <TextField {...params} />}
+                                    />
+                                </LocalizationProvider>
+
+                            </div>
                             <div className='pr-5 my-6 float-right'>
                                 <Search parentCallback={callbackSearch} />
                             </div>
@@ -777,7 +867,7 @@ export default function Content() {
                                                 renderInput={(params) => <TextField {...params} label="Service" />}
 
                                             />
-                                            
+
 
                                         </div>
                                         <div className='max-w-5xl  my-5 mx-auto'>
@@ -851,6 +941,6 @@ export default function Content() {
                 </TabPanel>
 
             </Box>
-        </section>
+        </section >
     );
 }

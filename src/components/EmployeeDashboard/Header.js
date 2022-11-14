@@ -26,7 +26,7 @@ export default function Header(props) {
         try {
 
 
-            const requestURL = `http://www.cinemasystem.somee.com/api/Account/${id2[prop]}`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Account/${id2[prop]}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,

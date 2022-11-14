@@ -25,7 +25,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://www.CinemaSystem.somee.com/api/Cinema?search=${search}`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Cinema?search=${search}`;
 
             const response = await fetch(requestURL, {
                 method: `GET`,

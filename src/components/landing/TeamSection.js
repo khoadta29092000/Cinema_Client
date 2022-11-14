@@ -7,7 +7,10 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { NavLink, Link } from 'react-router-dom';
 import { TodayOutlined } from '@mui/icons-material';
-
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import TextField from '@mui/material/TextField';
 function formatTime(date) {
   var hours = date.getHours();
   var minutes = date.getMinutes();
@@ -77,20 +80,20 @@ export default function TeamSection() {
   const [dataNowFilm, setDataNowFilm] = useState([]);
   const [dataFilmInCinema, setDataFilmInCinema] = useState([]);
   var today = new Date();
-
+  const [startDate, setStartDate] = React.useState(today);
 
   useEffect(() => {
     featchFilmNowList();
     featchCinemaList();
     featchSchedulingList();
     featchFimInCinemaList();
-  }, [cinemaId]);
+  }, [cinemaId, startDate]);
 
   async function featchCinemaList() {
     try {
 
 
-      const requestURL = `http://www.cinemasystem.somee.com/api/Cinema`;
+      const requestURL = `http://cinemasystem2.somee.com/api/Cinema`;
 
       const response = await fetch(requestURL, {
         method: `GET`,
@@ -120,7 +123,7 @@ export default function TeamSection() {
         cinemaid = cinemaId
       }
 
-      const requestURL = `http://cinemasystem2.somee.com/api/FilmInCinema/AllFilmInCinemaToday/${cinemaid}`;
+      const requestURL = `http://cinemasystem2.somee.com/api/FilmInCinema/AllFilmInCinemaToday/${cinemaid}/${formatDate(startDate)}`;;
 
       const response = await fetch(requestURL, {
         method: `GET`,
@@ -149,7 +152,7 @@ export default function TeamSection() {
       } else {
         cinemaid = cinemaId
       }
-      const requestURL = `http://cinemasystem2.somee.com/api/Scheduling?startDate=${formatDate(today)}&endDate=${formatDate(today)}&CinemaId=${cinemaid}`;
+      const requestURL = `http://cinemasystem2.somee.com/api/Scheduling?startDate=${formatDate(startDate)}&endDate=${formatDate(startDate)}&CinemaId=${cinemaid}`;
 
       const response = await fetch(requestURL, {
         method: `GET`,
@@ -174,7 +177,7 @@ export default function TeamSection() {
     try {
 
 
-      const requestURL = `http://www.cinemasystem.somee.com/api/Film`;
+      const requestURL = `http://cinemasystem2.somee.com/api/Film`;
 
       const response = await fetch(requestURL, {
         method: `GET`,
@@ -189,24 +192,41 @@ export default function TeamSection() {
 
       setDataNowFilm(responseJSON.data)
 
-     
+
     } catch (error) {
       console.log('Fail to fetch product list: ', error)
     }
   }
   function getUniqueListBy(arr, key) {
     return [...new Map(arr.map(item => [item[key], item])).values()]
-  } 
-  const  sortdataScheduling = dataScheduling.sort(function (a, b) {
+  }
+  const sortdataScheduling = dataScheduling.sort(function (a, b) {
     return ('' + a.startTime).localeCompare(b.startTime);
-})
+  })
+  const handleChange3 = (newValue) => {
+    setStartDate(newValue.format('YYYY/MM/DD'));
 
+};
   return (
     <section className="pb-20 ">
       <div className="container max-w-7xl mx-auto px-4">
 
         <div className=''>
           <h2 className='text-3xl ml-4 font-bold'>Cinema</h2>
+          <div className='ml-10 my-5'>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DesktopDatePicker
+              label="Date"
+              inputFormat="MM/DD/YYYY"
+              value={startDate}
+              onChange={handleChange3}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </LocalizationProvider>
+          </div>
+        
+
+
           <Box
             sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: 800 }}
           >
@@ -235,7 +255,7 @@ export default function TeamSection() {
                 )
               })}
             </Tabs>
-     
+
             {dataCinema.map((itemCinema, index) => {
               return (
 
@@ -246,20 +266,20 @@ export default function TeamSection() {
 
                     return (
                       <div key={itemFilm.id} className='mb-5' style={{ width: '700px', display: 'flex' }} >
-                         <Link to={{
-                                        pathname: "/detail",
-                                        state: {
-                                            name: itemFilm.id
-                                        }
-                                       
-                                    }}   >
-                        <img width={200} height={250} src={itemFilm.image} /> <br />
+                        <Link to={{
+                          pathname: "/detail",
+                          state: {
+                            name: itemFilm.id
+                          }
+
+                        }}   >
+                          <img width={200} height={250} src={itemFilm.image} /> <br />
                         </Link>
                         <div className="text-left ml-2 my-5 mt-2 mx-4  ">
                           <h3 className="text-3xl mb-2 text-green-700-300"> {itemFilm.title} </h3>
                           <div className="grid grid-cols-6 gap-5">
                             {sortdataScheduling.map(itemScheduling => {
-                              
+
                               if (itemScheduling.filmId == itemFilm.id && formatTime(today) <= itemScheduling.startTime == true) {
                                 return (
                                   <NavLink to={{

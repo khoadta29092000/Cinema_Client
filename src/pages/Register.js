@@ -103,7 +103,7 @@ export default function Register() {
                 phone:phone
 
             };
-            let res = await fetch("http://www.cinemasystem.somee.com/api/Account/Register", {
+            let res = await fetch("http://cinemasystem2.somee.com/api/Account/Register", {
                 method: `POST`,
                 headers: {
                     'Content-Type': 'application/json',
