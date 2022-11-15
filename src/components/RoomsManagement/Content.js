@@ -132,6 +132,7 @@ export default function Content() {
             title: "",
             description: "",
             cinemaId: "",
+            active: "",
         },
         validationSchema: Yup.object().shape({
             title: Yup.string().min(1, "Too Short!").max(4000, "Too Long!").required(),
@@ -145,7 +146,7 @@ export default function Content() {
                     title: values.title,
                     description: values.description,
                     cinemaId: values.cinemaId,
-                    active: true
+                    active: true   
                 }
             } else {
                 DataBody = {
@@ -153,9 +154,10 @@ export default function Content() {
                     title: values.title,
                     description: values.description,
                     cinemaId: values.cinemaId,
-                    active: values.active   
+                    active: true
                 }
             }
+            
             handleUpdateOrCreate(DataBody);
         },
     });
@@ -199,9 +201,7 @@ export default function Content() {
         let Action = (
             <div className='gap-x-8 flex'>
 
-                <button className="text-white  outline-none bg-blue-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
-                    <RemoveRedEyeIcon />
-                </button>
+               
                 <button className="text-white  outline-none bg-yellow-600 rounded-lg   h-8 w-8" onClick={() => handleClickOpen(data)}>
                     <EditIcon />
                 </button>
@@ -383,7 +383,7 @@ export default function Content() {
                             featchCategoryList();
                         } if (result?.statusCode == 409) {
                             setError(result?.message)
-                            featchProductList();
+                            featchCategoryList();
                         }
 
                     } else {
@@ -417,7 +417,7 @@ export default function Content() {
                             featchCategoryList();
                         } if (result?.statusCode == 409) {
                             setError(result?.message)
-                            featchProductList();
+                            featchCategoryList();
                         }
 
                     } else {
@@ -451,7 +451,7 @@ export default function Content() {
             setMess("Delete Successfully")
             setAlert(true)
             setStatus("success")
-            featchProductList();
+            featchCategoryList();
 
         }).catch(function (error) {
             console.log('There has been a problem with your fetch operation: ',

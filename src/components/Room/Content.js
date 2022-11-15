@@ -337,7 +337,9 @@ export default function Content() {
   })
 
   console.log("ner2", ArraySeat, filteredSeat, SeatList, dataTicked, checkSeat.length)
-
+  const  sortSeatList = SeatList.sort(function (a, b) {
+    return ('' + a.title).localeCompare(b.title);
+})
 
   return (
     <section className="relative pt-32 py-16 h-screen w-full ">
@@ -368,7 +370,7 @@ export default function Content() {
 
                   <div className='flex gap-2 my-5'>
                     {console.log("ner3", SeatList)}
-                    {SeatList.map(item => {
+                    {sortSeatList.map(item => {
 
                       if (item.roomId == location.state.scheduling.roomId && item.title.charAt(0) == "A") {
                         return (
@@ -386,7 +388,7 @@ export default function Content() {
                   </div>
                   <div className='flex gap-2 my-5'>
 
-                    {SeatList.map(item => {
+                    {sortSeatList.map(item => {
 
                       if (item.roomId == location.state.scheduling.roomId && item.title.charAt(0) == "B") {
                         return (
@@ -404,7 +406,7 @@ export default function Content() {
                   </div>
                   <div className='flex gap-2 my-5'>
 
-                    {SeatList.map(item => {
+                    {sortSeatList.map(item => {
 
                       if (item.roomId == location.state.scheduling.roomId && item.title.charAt(0) == "C") {
                         return (
@@ -422,7 +424,7 @@ export default function Content() {
                   </div>
                   <div className='flex gap-2 my-5'>
 
-                    {SeatList.map(item => {
+                    {sortSeatList.map(item => {
 
                       if (item.roomId == location.state.scheduling.roomId && item.title.charAt(0) == "D") {
                         return (
@@ -440,7 +442,7 @@ export default function Content() {
                   </div>
                   <div className='flex gap-2 my-5'>
 
-                    {SeatList.map(item => {
+                    {sortSeatList.map(item => {
 
                       if (item.roomId == location.state.scheduling.roomId && item.title.charAt(0) == "E") {
                         return (
@@ -458,7 +460,7 @@ export default function Content() {
                   </div>
                   <div className='flex gap-2 my-5'>
 
-                    {SeatList.map(item => {
+                    {sortSeatList.map(item => {
 
                       if (item.roomId == location.state.scheduling.roomId && item.title.charAt(0) == "F") {
                         return (
@@ -476,7 +478,7 @@ export default function Content() {
                   </div>
                   <div className='flex gap-2 my-5'>
 
-                    {SeatList.map(item => {
+                    {sortSeatList.map(item => {
 
                       if (item.roomId == location.state.scheduling.roomId && item.title.charAt(0) == "H") {
                         return (
@@ -494,7 +496,7 @@ export default function Content() {
                   </div>
                   <div className='flex gap-2 my-5'>
 
-                    {SeatList.map(item => {
+                    {sortSeatList.map(item => {
 
                       if (item.roomId == location.state.scheduling.roomId && item.title.charAt(0) == "G") {
                         return (

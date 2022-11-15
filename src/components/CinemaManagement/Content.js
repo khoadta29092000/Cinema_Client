@@ -130,7 +130,8 @@ export default function Content() {
             locationId: "",
             name: "",
             description: "",
-            image: ""
+            image: "",
+            active: ""
         },
         validationSchema: Yup.object().shape({
             name: Yup.string().min(5, "Too Short!").max(4000, "Too Long!").required(),
@@ -143,13 +144,12 @@ export default function Content() {
             let DataBody
             if (values.id == "") {
                 DataBody = {
-
                     name: values.name,
                     address: values.address,
                     locationId: values.locationId,
                     description: values.description,
                     image: img,
-                    active: true
+                    active: true 
                 }
             } else {
                 DataBody = {
@@ -436,7 +436,7 @@ export default function Content() {
         try {
 
 
-            const requestURL = `http://cinemasystem2.somee.com/api/Cinema    /${data?.id}`;
+            const requestURL = `http://cinemasystem2.somee.com/api/Cinema/${data?.id}`;
 
             const res = await fetch(requestURL, {
                 method: `DELETE`,

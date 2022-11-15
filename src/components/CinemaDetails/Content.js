@@ -684,7 +684,7 @@ export default function Content() {
                                     Films
                                 </div>
                             </TableHead>
-                            <button className='bg-blue-600 text-white rounded-md ml-5 my-6 py-2 px-4' onClick={handleClickOpen}>
+                            <button className='bg-blue-600 text-white rounded-md ml-5 mt-8 my-6 py-2 px-4' onClick={handleClickOpen}>
                                 Add Film In Cinema
                             </button>
                             <BootstrapDialog
@@ -724,6 +724,7 @@ export default function Content() {
                                             ) : null}
                                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                 <DesktopDatePicker
+                                                   className='w-96 my-5'
                                                     label="Start Date"
                                                     inputFormat="MM/DD/YYYY"
                                                     value={startValue}
@@ -761,7 +762,7 @@ export default function Content() {
                                     </DialogActions>
                                 </form>
                             </BootstrapDialog>
-                            <div className=' float-left ml-5 gap-5 my-6   grid grid-cols-6'>
+                            <div className=' float-left ml-5 gap-5 my-6   flex'>
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <DesktopDatePicker
                                         label="Date"

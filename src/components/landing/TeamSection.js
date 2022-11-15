@@ -280,7 +280,7 @@ export default function TeamSection() {
                           <div className="grid grid-cols-6 gap-5">
                             {sortdataScheduling.map(itemScheduling => {
 
-                              if (itemScheduling.filmId == itemFilm.id && formatTime(today) <= itemScheduling.startTime == true) {
+                              if (itemScheduling.filmId == itemFilm.id &&  formatDate(today) == formatDate(startDate) ? formatTime(today) <= itemScheduling.startTime == true  : itemScheduling.filmId == itemFilm.id) {
                                 return (
                                   <NavLink to={{
                                     pathname: "/Service",

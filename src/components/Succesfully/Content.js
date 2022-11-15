@@ -1,9 +1,10 @@
-
 import { useEffect, useState } from "react";
 import * as React from 'react';
 import DoneIcon from '@mui/icons-material/Done';
 import { NavLink } from 'react-router-dom';
 import { Button } from "antd";
+
+
 export default function Content() {
 
     return (
@@ -31,7 +32,8 @@ export default function Content() {
 
                     </div>
                     <div className=" ml-20 w-screen ">
-                        <img src="https://cdn4.iconfinder.com/data/icons/round-buttons/512/green_tick.png" className=" ml-20 pl-20 text-center text-green-400 h-40 w-40" />
+                        
+                        <img src="https://cdn4.iconfinder.com/data/icons/round-buttons/512/green_tick.png" className=" ml-20 pl-20 text-center text-green-400 h-80 w-96" />
                     </div>
 
                 </div>
